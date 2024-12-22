@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f9;
+          margin: 0;
+          padding: 0;
+      }
+      .navbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #007bff;
+          padding: 10px 20px;
+          color: #fff;
+      }
+      .navbar .site-name {
+          font-size: 20px;
+          font-weight: bold;
+      }
+      .navbar .nav-links {
+          display: flex;
+          gap: 15px;
+      }
+      .navbar .nav-links a {
+          color: #fff;
+          text-decoration: none;
+          font-size: 16px;
+      }
+      .navbar .nav-links a:hover {
+          text-decoration: underline;
+      }
+      .content {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: calc(100vh - 60px);
+          text-align: center;
+          padding: 20px;
+      }
+      .content h1 {
+          font-size: 32px;
+          color: #333;
+      }
+      .content p {
+          font-size: 18px;
+          color: #666;
+      }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <div class="site-name">My Website</div>
+  <div class="nav-links">
+    <a th:href="@{/about}">About Us</a>
+    <a th:href="@{/contact}">Contact</a>
+    <a th:href="@{/buyerAccount}" sec:authorize="isAuthenticated()">Account</a>
+    <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
+    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
+  </div>
+</div>
+<div class="content">
+  <div>
+    <h1>Welcome to My Website</h1>
+    <p>Explore our site to learn more about what we offer. Feel free to contact us or log in to access your account.</p>
+  </div>
+</div>
+</body>
+</html>
