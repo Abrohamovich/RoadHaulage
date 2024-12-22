@@ -14,17 +14,18 @@ This project is a web application designed to connect buyers and hauliers for ef
             * Delivery address
             * Destination address
             * IBAN account number
+            * Delivery cost
         * Cargo information:
             * Weight of the shipment
             * Dimensions (length-width-high)
-        * Date of order fulfillment (At the end)
+        * Date of order fulfillment (auto-generated)
 *   **Haulier Functionality:**
     *   Hauliers can view published transport orders.
     *   Hauliers can respond to orders:
         * Haulier information:
             * Name and Surname.
             * IBAN account number
-        * Date of order acceptance
+        * Date of order acceptance (auto-generated)
     *   Once a haulier accepts an order, the order status is updated to "In Progress".
 *   **Order Management:**
     *   Orders have different statuses:
