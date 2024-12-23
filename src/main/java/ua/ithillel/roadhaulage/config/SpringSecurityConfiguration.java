@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,16 +25,18 @@ public class SpringSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .permitAll()
                         .usernameParameter("email")
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/login?error=true")
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("css/**").permitAll()
                         .requestMatchers("/home").permitAll()
-                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/register").permitAll()
+                        .requestMatchers("/buyer/**").hasRole("BUYER")
+                        .requestMatchers("/haulier/**").hasRole("HAULIER")
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout

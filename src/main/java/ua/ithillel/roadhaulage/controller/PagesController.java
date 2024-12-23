@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PagesController {
 
-    @GetMapping({"/","/home"})
+    @GetMapping("/home")
     public String home() {
         return "index";
     }
@@ -14,5 +14,15 @@ public class PagesController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/haulier/account")
+    public String haulierAccount() {
+        return "haulier/haulierAccount";
+    }
+
+    @GetMapping("/buyer/account")
+    public String buyerAccount() {
+        return "buyer/buyerAccount";
     }
 }

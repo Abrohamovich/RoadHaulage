@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/index.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+  <title>RoadHaulage</title>
 </head>
 <body>
 <div class="navbar">
@@ -19,10 +19,20 @@
     <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
   </div>
 </div>
-<div class="content">
-  <div>
-    <h1>Welcome to RoadHaulage website</h1>
-    <p>Explore our site to learn more about what we offer. Feel free to contact us or log in to access your account.</p>
+<div class="container">
+  <div class="sidebar">
+    <h2>Settings</h2>
+    <ul>
+      <li><a th:href="@{/buyer/account/personalInformation}">Personal information</a></li>
+      <li><a href="#">Privacy</a></li>
+    </ul>
+    <h2>Estimates</h2>
+    <ul>
+      <li><a href="#">Draft</a></li>
+      <li><a href="#">In processing</a></li>
+      <li><a href="#">In performance</a></li>
+      <li><a href="#">Performed</a></li>
+    </ul>
   </div>
 </div>
 </body>

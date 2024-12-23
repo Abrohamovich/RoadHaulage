@@ -1,7 +1,6 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,4 +48,5 @@ public class UserServiceImp implements UserService, UserDetailsService {
         }
         return user;
     }
+
 }
