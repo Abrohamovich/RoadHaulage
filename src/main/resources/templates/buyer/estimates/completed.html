@@ -14,7 +14,7 @@
     <a th:href="@{/about}">About Us</a>
     <a th:href="@{/contact}">Contact</a>
     <a th:href="@{/buyer/account}">Account</a>
-    <a th:href="@{/logout}">Log out</a>
+    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
   </div>
 </div>
 <div class="container">
@@ -31,6 +31,9 @@
       <li><a th:href="@{/buyer/account/estimates/inProgress}">In progress</a></li>
       <li><a th:href="@{/buyer/account/estimates/completed}">Completed</a></li>
     </ul>
+  </div>
+  <div class="content">
+    <h2>Completed estimates</h2>
   </div>
 </div>
 </body>

@@ -12,7 +12,7 @@ This project is a web application designed to connect buyers and hauliers for ef
         * Buyer information:
             * Name and surname.
             * Delivery address
-            * Destination address
+            * Departure address
             * IBAN account number
             * Delivery cost
         * Cargo information:

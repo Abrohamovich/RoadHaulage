@@ -15,7 +15,7 @@ public class Estimate {
     private String buyerFullName;
     private String haulierFullName;
     private String deliveryAddress;
-    private String destinationAddress;
+    private String departureAddress;
     private String additionalInfo;
     private String weight; // in metric sys (kg, t ...)
     private String dimensions; // LENGTH-WIDTH-HIGH in metric sys (m, sm)

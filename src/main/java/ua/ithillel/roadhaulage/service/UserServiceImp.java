@@ -10,6 +10,9 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImp implements UserService, UserDetailsService {
@@ -21,6 +24,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null) {
             return false;
+
         }
         user.setRole(user.getRole());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -37,6 +41,21 @@ public class UserServiceImp implements UserService, UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean update(User user) {
+        Optional<User> userFromDB = userRepository.findById(user.getId());
+        if (userFromDB.isPresent() && !userFromDB.get().getPassword().equals(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override

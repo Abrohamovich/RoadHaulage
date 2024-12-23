@@ -39,6 +39,6 @@ public class RegistrationController {
             else
                 System.out.println("BAD");
         }
-        return "redirect:/home";
+        return "redirect:/login";
     }
 }

@@ -14,27 +14,26 @@
     <a th:href="@{/about}">About Us</a>
     <a th:href="@{/contact}">Contact</a>
     <a th:href="@{/buyer/account}">Account</a>
-    <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
-    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
+    <a th:href="@{/logout}">Log out</a>
   </div>
 </div>
 <div class="container">
   <div class="sidebar">
     <h2>Settings</h2>
     <ul>
-      <li><a href="#">Personal information</a></li>
-      <li><a href="#">Privacy</a></li>
+      <li><a th:href="@{/buyer/account/personalInformation}">Personal information</a></li>
+      <li><a th:href="@{/buyer/account/privacy}">Privacy</a></li>
     </ul>
     <h2>Estimates</h2>
     <ul>
-      <li><a href="#">Draft</a></li>
-      <li><a href="#">In processing</a></li>
-      <li><a href="#">In performance</a></li>
-      <li><a href="#">Performed</a></li>
+      <li><a th:href="@{/buyer/account/estimates/create}">Create new</a></li>
+      <li><a th:href="@{/buyer/account/estimates/published}">Published</a></li>
+      <li><a th:href="@{/buyer/account/inProgress}">In progress</a></li>
+      <li><a th:href="@{/buyer/account/estimates/completed}">Completed</a></li>
     </ul>
   </div>
   <div class="content">
-    <h2>Personal Information</h2>
+  <h2>Personal Information</h2>
     <form th:action="@{/buyer/account/personalInformation/update}" method="post">
       <div th:if="${param.error}">
         <p style="color: red;">Something went wrong</p>
