@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
+</head>
+<body>
+<div class="navbar">
+  <div class="site-name">RoadHaulage</div>
+  <div class="nav-links">
+    <a th:href="@{/about}">About Us</a>
+    <a th:href="@{/contact}">Contact</a>
+    <a th:href="@{/haulier/account}">Account</a>
+    <a th:href="@{/logout}">Log out</a>
+  </div>
+</div>
+<div class="container">
+  <div class="sidebar">
+    <h2>Settings</h2>
+    <ul>
+      <li><a th:href="@{/haulier/account/personalInformation}">Personal information</a></li>
+      <li><a th:href="@{/haulier/account/privacy}">Privacy</a></li>
+    </ul>
+  </div>
+  <div class="content">
+  <h2>Personal Information</h2>
+    <form th:action="@{/haulier/account/personalInformation/update}" method="post">
+      <div th:if="${param.error}">
+        <p style="color: red;">Something went wrong</p>
+      </div>
+      <div th:if="${param.sucess}">
+        <p style="color: green;">Your account information updated successfully</p>
+      </div>
+      <div class="form-group">
+        <label for="firstName">First name</label>
+        <input type="text" id="firstName" name="firstName" th:placeholder="${firstName}">
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last name</label>
+        <input type="text" id="lastName" name="lastName" th:placeholder="${lastName}">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" th:placeholder="${email}">
+      </div>
+      <div class="form-group">
+        <label for="phone">Contact phone</label>
+        <input type="tel" id="phone" name="phone" th:placeholder="${phone}">
+      </div>
+      <div class="form-group">
+        <label for="iban">IBAN</label>
+        <input type="text" id="iban" name="iban" th:placeholder="${iban}">
+      </div>
+      <button type="submit">Save changes</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

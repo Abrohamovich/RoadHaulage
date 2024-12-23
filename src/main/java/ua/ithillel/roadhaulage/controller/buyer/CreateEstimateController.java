@@ -53,10 +53,6 @@ public class CreateEstimateController {
         estimate.setDimensions(dimensions);
         estimate.setCost(cost);
         estimate.setAcceptDate(new Date(System.currentTimeMillis()));
-        estimateService.save(estimate);
-        List<Estimate> buyerEstimates = user.getBuyerEstimates();
-        buyerEstimates.add(estimate);
-        user.setBuyerEstimates(buyerEstimates);
         return "redirect:/buyer/account/estimates/published";
     }
 }
