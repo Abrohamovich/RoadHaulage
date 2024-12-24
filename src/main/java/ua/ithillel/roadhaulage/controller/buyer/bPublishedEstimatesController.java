@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/buyer/account/estimates/published")
 @AllArgsConstructor
-public class PublishedEstimatesController {
+public class bPublishedEstimatesController {
 
     @GetMapping
     public String publishedEstimatesPage() {

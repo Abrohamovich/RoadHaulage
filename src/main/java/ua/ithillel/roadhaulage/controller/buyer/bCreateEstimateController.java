@@ -11,16 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.entity.Estimate;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.EstimateService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/buyer/account/estimates/create")
 @AllArgsConstructor
-public class CreateEstimateController {
-    private UserService userService;
+public class bCreateEstimateController {
     private EstimateService estimateService;
 
 
@@ -53,6 +50,7 @@ public class CreateEstimateController {
         estimate.setDimensions(dimensions);
         estimate.setCost(cost);
         estimate.setAcceptDate(new Date(System.currentTimeMillis()));
+        estimateService.save(estimate);
         return "redirect:/buyer/account/estimates/published";
     }
 }

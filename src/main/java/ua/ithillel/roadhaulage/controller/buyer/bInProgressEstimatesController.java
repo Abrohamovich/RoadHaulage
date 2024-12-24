@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/buyer/account/estimates/completed")
+@RequestMapping("/buyer/account/estimates/inProgress")
 @AllArgsConstructor
-public class CompletedEstimatesController {
+public class bInProgressEstimatesController {
 
     @GetMapping
-    public String completedEstimatesPage() {
-        return "buyer/estimates/completed";
+    public String inProgressEstimatesPage() {
+        return "buyer/estimates/inProgress";
     }
 }

@@ -15,14 +15,6 @@ public class EstimateServiceImp implements EstimateService {
 
     @Override
     public boolean save(Estimate estimate) {
-//        estimate.setBuyerFullName(estimate.getBuyerFullName());
-//        estimate.setDeliveryAddress(estimate.getDeliveryAddress());
-//        estimate.setDepartureAddress(estimate.getDepartureAddress());
-//        estimate.setAdditionalInfo(estimate.getAdditionalInfo());
-//        estimate.setWeight(estimate.getWeight());
-//        estimate.setDimensions(estimate.getDimensions());
-//        estimate.setCost(estimate.getCost());
-//        estimate.setAcceptDate(estimate.getAcceptDate());
         estimatesRepository.save(estimate);
         return true;
     }

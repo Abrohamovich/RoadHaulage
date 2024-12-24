@@ -14,7 +14,7 @@ import ua.ithillel.roadhaulage.service.interfaces.UserService;
 @Controller
 @RequestMapping("/buyer/account/privacy")
 @AllArgsConstructor
-public class PrivacyController {
+public class bPrivacyController {
     private UserService userService;
 
     @GetMapping

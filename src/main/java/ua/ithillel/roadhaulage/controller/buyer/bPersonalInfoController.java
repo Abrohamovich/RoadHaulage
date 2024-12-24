@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 @Controller
 @RequestMapping("/buyer/account/personalInformation")
 @AllArgsConstructor
-public class PersonalInfoController {
+public class bPersonalInfoController {
     private UserService userService;
 
     @GetMapping
