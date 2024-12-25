@@ -2,36 +2,16 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoadHaulage</title>
 </head>
 <body>
-<div class="navbar">
-  <div class="site-name">RoadHaulage</div>
-  <div class="nav-links">
-    <a th:href="@{/about}">About Us</a>
-    <a th:href="@{/contact}">Contact</a>
-    <a th:href="@{/buyer/account}">Account</a>
-    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
-  </div>
-</div>
+<div th:replace="header.html"></div>
 <div class="container">
-  <div class="sidebar">
-    <h2>Settings</h2>
-    <ul>
-      <li><a th:href="@{/buyer/account/personalInformation}">Personal information</a></li>
-      <li><a th:href="@{/buyer/account/privacy}">Privacy</a></li>
-    </ul>
-    <h2>Estimates</h2>
-    <ul>
-      <li><a th:href="@{/buyer/account/estimates/create}">Create new</a></li>
-      <li><a th:href="@{/buyer/account/estimates/published}">Published</a></li>
-      <li><a th:href="@{/buyer/account/estimates/inProgress}">In progress</a></li>
-      <li><a th:href="@{/buyer/account/estimates/completed}">Completed</a></li>
-    </ul>
-  </div>
+  <div th:replace="buyer/sidebar.html"></div>
   <div class="content">
     <h2>Completed estimates</h2>
   </div>

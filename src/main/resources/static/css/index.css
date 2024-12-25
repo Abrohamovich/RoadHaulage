@@ -4,30 +4,6 @@ body {
     margin: 0;
     padding: 0;
 }
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #007bff;
-    padding: 10px 20px;
-    color: #fff;
-}
-.navbar .site-name {
-    font-size: 20px;
-    font-weight: bold;
-}
-.navbar .nav-links {
-    display: flex;
-    gap: 15px;
-}
-.navbar .nav-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-}
-.navbar .nav-links a:hover {
-    text-decoration: underline;
-}
 .content {
     display: flex;
     justify-content: center;
