@@ -1,32 +1,39 @@
 # Road Haulage
 
-This project is a web application designed to connect buyers and hauliers for efficient road freight management. It provides a platform for buyers to create and manage transport requests, and for hauliers to respond to these requests and manage their deliveries.
+Imagine that you are travelling from Odessa to Kiev, your car is half empty, and you are thinking: 
+‘How could you make some money in the process?
+
+Our project is a platform where everyone can become a courier or find a person 
+who will transport cargo along the necessary route. 
+It is a place where people with empty boots find those who are looking for a 
+convenient and economical way to send a parcel, things or even a small cargo.
 
 ## Features
 
 *   **User Authentication and Authorization:**
-    *   Users can create accounts with two distinct roles: `BUYER` and `HAULIER`.
+    *   Users can create accounts.
+    *   Each user can be both first and second at the same time
     *   Users can manage their account information.
-* **Buyer Functionality:**
-    * Buyers can create new transport orders, specifying details such as:
-        * Buyer information:
+* **Estimate Functionality:**
+    * User-customer can create new transport orders, specifying details such as:
+        * Customer information:
             * Name and surname.
+            * Category.
             * Delivery address
-            * Departure address
+            * Shipping address
             * IBAN account number
             * Delivery cost
         * Cargo information:
             * Weight of the shipment
             * Dimensions (length-width-high)
         * Date of order fulfillment (auto-generated)
-*   **Haulier Functionality:**
-    *   Hauliers can view published transport orders.
-    *   Hauliers can respond to orders:
-        * Haulier information:
+    *   User-courier can view published transport orders.
+    *   User-courier can respond to orders(update created estimates):
+        * Courier information:
             * Name and Surname.
             * IBAN account number
         * Date of order acceptance (auto-generated)
-    *   Once a haulier accepts an order, the order status is updated to "In Progress".
+    *   Once a courier accepts an order, the order status is updated to "In Progress".
 *   **Order Management:**
     *   Orders have different statuses:
         *   `Published`: The order is available for hauliers to view.
@@ -42,21 +49,21 @@ This project is a web application designed to connect buyers and hauliers for ef
 
 ## Usage
 
-*   **For Buyers:**
-    1.  Register an account with the `BUYER` role.
+*   **For Customer:**
+    1.  Register an account.
     2.  Log in to your account.
     3.  Create a new transport order by filling out the required information.
     4.  Publish the order.
-    5.  Review responses from hauliers.
+    5.  Review responses from courier.
     6.  Accept a suitable haulier's response.
     7.  Confirm order completion when the delivery is made.
-*   **For Hauliers:**
-    1.  Register an account with the `HAULIER` role.
+*   **For Courier:**
+    1.  Register an account.
     2.  Log in to your account.
     3.  Browse published transport orders.
     4.  Respond to orders you are interested in.
-    5.  Manage accepted orders and communicate with buyers.
+    5.  Manage accepted orders and communicate with customers.
 
 ## Contact
 
-gerasimov08nikital@gmail.com
+* Email: gerasimov08nikital@gmail.com

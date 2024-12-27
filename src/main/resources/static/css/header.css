@@ -7,7 +7,7 @@
     color: #fff;
 }
 .navbar .site-name {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
 }
 .navbar .nav-links {
@@ -15,9 +15,9 @@
     gap: 15px;
 }
 .navbar .nav-links a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 19px;
 }
 .navbar .nav-links a:hover {
     text-decoration: underline;

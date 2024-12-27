@@ -10,7 +10,6 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

@@ -25,6 +25,16 @@ public class EstimateServiceImp implements EstimateService {
     }
 
     @Override
+    public List<Estimate> findEstimatesByCustomerId(long id) {
+        return estimatesRepository.findEstimatesByCustomerId(id);
+    }
+
+    @Override
+    public List<Estimate> findEstimatesByCourierId(long id) {
+        return estimatesRepository.findEstimatesByCourierId(id);
+    }
+
+    @Override
     public List<Estimate> findAll() {
         return List.of();
     }

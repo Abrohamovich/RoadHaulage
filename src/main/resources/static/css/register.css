@@ -51,8 +51,3 @@ body {
 .register-container a:hover {
     text-decoration: underline;
 }
-.register-container .radio-group {
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-}

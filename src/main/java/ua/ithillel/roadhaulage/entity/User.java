@@ -22,14 +22,14 @@ public class User implements UserDetails {
     private String email;
     @Column(unique = true)
     private String phone;
-    private String role; // BUYER or HAULIER
+    private String role; // USER, ADMIN
     @Column(unique = true)
     private String iban;
     private String password;
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Estimate> buyerEstimates; //always empty if role is HAULIER
-    @OneToMany(mappedBy = "haulier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Estimate> haulierEstimates; //always empty if role is BUYER
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Estimate> customerEstimates; // List of orders you have created
+    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Estimate> courierEstimates; // List of orders you have fulfilled for other users
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

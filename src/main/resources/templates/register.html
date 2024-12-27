@@ -16,15 +16,6 @@
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Register</button>
-
-    <div class="radio-group">
-      <label>
-        <input type="radio" name="userRole" value = "ROLE_BUYER" required> Register as buyer
-      </label>
-      <label>
-        <input type="radio" name="userRole" value = "ROLE_HAULIER" required> Register as haulier
-      </label>
-    </div>
   </form>
   <p>Already have an account? <a th:href="@{/login}">Log in!</a></p>
 </div>

@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.haulier;
+package ua.ithillel.roadhaulage.controller.account.settings;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,16 +12,16 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 @Controller
-@RequestMapping("/haulier/account/privacy")
+@RequestMapping("/account/settings/privacy")
 @AllArgsConstructor
-public class hPrivacyController {
+public class PrivacyController {
     private UserService userService;
 
     @GetMapping
     public String privacyPage(@AuthenticationPrincipal User loggedUser,
                               Model model) {
         model.addAttribute("password", loggedUser.getPassword());
-        return "haulier/settings/privacy";
+        return "account/settings/privacy";
     }
 
     @PostMapping("/update")
@@ -31,6 +31,6 @@ public class hPrivacyController {
             loggedUser.setPassword(password);
             userService.update(loggedUser);
         }
-        return "redirect:/haulier/account/privacy";
+        return "redirect:/account/settings/privacy";
     }
 }

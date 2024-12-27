@@ -16,13 +16,8 @@ public class PagesController {
         return "login";
     }
 
-    @GetMapping("/haulier/account")
-    public String haulierAccount() {
-        return "haulier/haulierAccount";
-    }
-
-    @GetMapping("/buyer/account")
-    public String buyerAccount() {
-        return "buyer/buyerAccount";
+    @GetMapping("/account")
+    public String account() {
+        return "account/account";
     }
 }

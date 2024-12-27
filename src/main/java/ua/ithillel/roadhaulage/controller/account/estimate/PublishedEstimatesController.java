@@ -1,28 +1,29 @@
-package ua.ithillel.roadhaulage.controller.buyer;
+package ua.ithillel.roadhaulage.controller.account.estimate;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.authorization.method.AuthorizeReturnObject;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ua.ithillel.roadhaulage.entity.Estimate;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.EstimateService;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/buyer/account/estimates/published")
+@RequestMapping("/account/estimates/published")
 @AllArgsConstructor
-public class bPublishedEstimatesController {
+public class PublishedEstimatesController {
     private EstimateService estimateService;
 
     @GetMapping
     public String publishedEstimatesPage(@AuthenticationPrincipal User user,
                                          Model model) {
-
-        return "buyer/estimates/published";
+        List<Estimate> estimates = estimateService.findEstimatesByCustomerId(user.getId());
+        model.addAttribute("estimates", estimates);
+        return "account/estimates/published";
     }
 
 }

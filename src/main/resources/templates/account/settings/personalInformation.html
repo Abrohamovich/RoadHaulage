@@ -2,38 +2,19 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoadHaulage</title>
 </head>
 <body>
-<div class="navbar">
-  <div class="site-name">RoadHaulage</div>
-  <div class="nav-links">
-    <a th:href="@{/about}">About Us</a>
-    <a th:href="@{/contact}">Contact</a>
-    <a th:href="@{/haulier/account}">Account</a>
-    <a th:href="@{/logout}">Log out</a>
-  </div>
-</div>
+<div th:replace="~{header.html}"></div>
 <div class="container">
-  <div class="sidebar">
-    <h2>Settings</h2>
-    <ul>
-      <li><a th:href="@{/haulier/account/personalInformation}">Personal information</a></li>
-      <li><a th:href="@{/haulier/account/privacy}">Privacy</a></li>
-    </ul>
-  </div>
+  <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
   <h2>Personal Information</h2>
-    <form th:action="@{/haulier/account/personalInformation/update}" method="post">
-      <div th:if="${param.error}">
-        <p style="color: red;">Something went wrong</p>
-      </div>
-      <div th:if="${param.sucess}">
-        <p style="color: green;">Your account information updated successfully</p>
-      </div>
+    <form th:action="@{/account/settings/personal-information/update}" method="post">
       <div class="form-group">
         <label for="firstName">First name</label>
         <input type="text" id="firstName" name="firstName" th:placeholder="${firstName}">

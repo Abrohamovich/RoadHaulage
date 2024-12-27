@@ -9,12 +9,12 @@
   <title>RoadHaulage</title>
 </head>
 <body>
-<div th:replace="header.html"></div>
+<div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="buyer/sidebar.html"></div>
+  <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
     <h2>Privacy</h2>
-    <form th:action="@{/buyer/account/privacy/update}" method="post">
+    <form th:action="@{/templates/account/account/privacy/update}" method="post">
       <div th:if="${param.error}">
         <p style="color: red;">Something went wrong</p>
       </div>

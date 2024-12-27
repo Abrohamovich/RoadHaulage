@@ -24,8 +24,7 @@ public class RegistrationController {
     public String register(@RequestParam(required = true, defaultValue = "!@") String email,
                            @RequestParam (required = true, defaultValue = "!@") String password,
                            @RequestParam (required = true, defaultValue = "!@") String firstName,
-                           @RequestParam (required = true, defaultValue = "!@") String lastName,
-                           @RequestParam (required = true, defaultValue = "!@") String userRole) {
+                           @RequestParam (required = true, defaultValue = "!@") String lastName) {
         if (!(email.equals("!@") & password.equals("!@"))) {
             System.out.println(email + " " + password);
             User user = new User();
@@ -33,7 +32,7 @@ public class RegistrationController {
             user.setPassword(password);
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setRole(userRole);
+            user.setRole("ROLE_USER");
             if (userService.save(user))
                 System.out.println("GOOD");
             else

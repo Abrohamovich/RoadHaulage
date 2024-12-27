@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.buyer;
+package ua.ithillel.roadhaulage.controller.account.estimate;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/buyer/account/estimates/completed")
+@RequestMapping("/account/estimates/in-progress")
 @AllArgsConstructor
-public class bCompletedEstimatesController {
+public class InProgressEstimatesController {
 
     @GetMapping
-    public String completedEstimatesPage() {
-        return "buyer/estimates/completed";
+    public String inProgressEstimatesPage() {
+        return "account/estimates/inProgress";
     }
 }

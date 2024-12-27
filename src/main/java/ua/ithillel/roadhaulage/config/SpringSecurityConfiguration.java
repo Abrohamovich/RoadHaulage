@@ -35,8 +35,7 @@ public class SpringSecurityConfiguration {
                         .requestMatchers("/home").permitAll()
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/register").permitAll()
-                        .requestMatchers("/buyer/**").hasRole("BUYER")
-                        .requestMatchers("/haulier/**").hasRole("HAULIER")
+                        .requestMatchers("/account/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout

@@ -3,8 +3,7 @@
   <div class="nav-links">
     <a th:href="@{/about}">About us</a>
     <a th:href="@{/contact}">Contact</a>
-    <a th:href="@{/buyer/account}" sec:authorize="hasRole('ROLE_BUYER')">Account</a>
-    <a th:href="@{/haulier/account}" sec:authorize="hasRole('ROLE_HAULIER')">Account</a>
+    <a th:href="@{/account}" sec:authorize="hasRole('ROLE_USER')">Account</a>
     <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
     <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
   </div>

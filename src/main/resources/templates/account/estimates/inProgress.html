@@ -9,11 +9,11 @@
   <title>RoadHaulage</title>
 </head>
 <body>
-<div th:replace="header.html"></div>
+<div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="buyer/sidebar.html"></div>
+  <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Completed estimates</h2>
+    <h2>In progress estimates</h2>
   </div>
 </div>
 </body>
