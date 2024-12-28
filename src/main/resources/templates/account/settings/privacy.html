@@ -14,7 +14,7 @@
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
     <h2>Privacy</h2>
-    <form th:action="@{/templates/account/account/privacy/update}" method="post">
+    <form th:action="@{/account/settings/privacy/update}" method="post">
       <div th:if="${param.error}">
         <p style="color: red;">Something went wrong</p>
       </div>

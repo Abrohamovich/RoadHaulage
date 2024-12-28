@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
+  <style>
+      .content{
+          overflow-y: auto;
+      }
+      .estimate {
+          border: 1px solid #007bff;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          padding: 15px;
+          background-color: #f9f9f9;
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          overflow-x: hidden;
+          white-space: nowrap;
+      }
+
+      .estimate:hover {
+          background-color: #e6f0ff;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .estimate span {
+          padding: 5px 10px;
+          border-radius: 5px;
+          background-color: #ffffff;
+          border: 1px solid #ddd;
+          font-size: 16px;
+      }
+
+      .estimate button {
+          padding: 8px 15px;
+          font-size: 14px;
+          color: #fff;
+          background-color: #007bff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+
+      .estimate ion-icon {
+          font-size: 20px;
+          color: #007bff;
+      }
+  </style>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<div class="container">
+  <div th:replace="~{account/sidebar.html}"></div>
+  <div class="content">
+    <h2>Created estimates</h2>
+    <div th:each="estimate : ${estimates}">
+      <div class="estimate">
+        <span class="estimate-content" th:text="${estimate.category}">Cosmetics</span>
+        <span class="estimate-content" th:text="${estimate.departureAddress}"></span>
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+        <span class="estimate-content" th:text="${estimate.deliveryAddress}"></span>
+        <span class="estimate-content" th:text="${estimate.cost}"></span>
+        <button type="submit">Publish</button>
+        <button type="submit">Change</button>
+        <button type="submit">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const estimates = document.querySelectorAll('.estimate');
+
+        estimates.forEach(estimate => {
+            let scrollAmount = 0;
+            estimate.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const scrollStep = 15;
+                const direction = e.deltaY > 0 ? 1 : -1;
+                scrollAmount += scrollStep * direction;
+                estimate.scrollTo({
+                    left: estimate.scrollLeft + scrollStep * direction,
+                });
+            });
+        });
+    });
+</script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

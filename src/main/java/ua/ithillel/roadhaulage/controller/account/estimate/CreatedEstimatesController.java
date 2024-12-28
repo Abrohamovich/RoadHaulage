@@ -13,9 +13,9 @@ import ua.ithillel.roadhaulage.service.interfaces.EstimateService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/account/estimates/published")
+@RequestMapping("/account/estimates/created")
 @AllArgsConstructor
-public class PublishedEstimatesController {
+public class CreatedEstimatesController {
     private EstimateService estimateService;
 
     @GetMapping
@@ -23,7 +23,7 @@ public class PublishedEstimatesController {
                                          Model model) {
         List<Estimate> estimates = estimateService.findEstimatesByCustomerId(user.getId());
         model.addAttribute("estimates", estimates);
-        return "account/estimates/published";
+        return "account/estimates/created";
     }
 
 }

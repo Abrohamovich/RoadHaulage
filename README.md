@@ -19,8 +19,8 @@ convenient and economical way to send a parcel, things or even a small cargo.
         * Customer information:
             * Name and surname.
             * Category.
+            * Departure address
             * Delivery address
-            * Shipping address
             * IBAN account number
             * Delivery cost
         * Cargo information:

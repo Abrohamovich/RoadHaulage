@@ -37,7 +37,7 @@ public class CreateEstimateController {
     public String createEstimate(@AuthenticationPrincipal User user,
                                  @RequestParam(required = true) String category,
                                  @RequestParam(required = true) String deliveryAddress,
-                                 @RequestParam(required = true) String shippingAddress,
+                                 @RequestParam(required = true) String departureAddress,
                                  @RequestParam(required = true) String additionalInfo,
                                  @RequestParam(required = true) String weight,
                                  @RequestParam(required = true) String dimensions,
@@ -47,14 +47,14 @@ public class CreateEstimateController {
         estimate.setStatus("PUBLISHED");
         estimate.setCategory(category);
         estimate.setDeliveryAddress(deliveryAddress);
-        estimate.setShippingAddress(shippingAddress);
+        estimate.setDepartureAddress(departureAddress);
         estimate.setAdditionalInfo(additionalInfo);
         estimate.setWeight(weight);
         estimate.setDimensions(dimensions);
         estimate.setCost(cost);
         estimate.setCreationDate(new Date(System.currentTimeMillis()));
         estimateService.save(estimate);
-        return "redirect:/account/estimates/published";
+        return "redirect:/account/estimates/created";
     }
 
 }

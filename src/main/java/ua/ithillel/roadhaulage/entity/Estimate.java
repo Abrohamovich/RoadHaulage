@@ -13,8 +13,8 @@ public class Estimate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String category; // goods, food, toys...
-    private String shippingAddress;
-    private String deliveryAddress;
+    private String departureAddress; // Отправка
+    private String deliveryAddress; // Доставка
     private String additionalInfo;
     private String weight; // in metric sys (kg, t ...)
     private String status; // CREATED, PUBLISHED, IN-PROCESS, COMPLETED
