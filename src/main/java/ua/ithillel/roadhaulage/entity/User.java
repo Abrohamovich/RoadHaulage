@@ -27,9 +27,9 @@ public class User implements UserDetails {
     private String iban;
     private String password;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Estimate> customerEstimates; // List of orders you have created
+    private List<Order> customerOrders; // List of orders you have created
     @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Estimate> courierEstimates; // List of orders you have fulfilled for other users
+    private List<Order> courierOrders; // List of orders you have fulfilled for other users
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

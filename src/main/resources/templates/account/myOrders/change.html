@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
+  <style>
+      button {
+          padding: 8px 15px;
+          font-size: 14px;
+          color: #fff;
+          margin-bottom: 10px;
+          background-color: #007bff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+      .cancel-button{
+          padding: 8px 15px;
+          font-size: 14px;
+          color: #fff;
+          text-decoration: none;
+          background-color: red;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+  </style>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<div class="container">
+  <div th:replace="~{account/sidebar.html}"></div>
+  <div class="content">
+    <h2>Edit order</h2>
+    <form th:action="@{/account/my-orders/change/edit}" method="post">
+      <input type="hidden" name="id" th:value="${id}" />
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" th:value="${category}">
+      </div>
+      <div class="form-group">
+        <label for="departureAddress">Departure address</label>
+        <input type="text" id="departureAddress" name="departureAddress" th:value="${departureAddress}">
+      </div>
+      <div class="form-group">
+        <label for="deliveryAddress">Delivery address</label>
+        <input type="text" id="deliveryAddress" name="deliveryAddress" th:value="${deliveryAddress}">
+      </div>
+      <div class="form-group">
+        <label for="weight">Weight</label>
+        <input type="text" id="weight" name="weight" th:value="${weight}">
+      </div>
+      <div class="form-group">
+        <label for="dimensions">Dimensions</label>
+        <input type="text" id="dimensions" name="dimensions" th:value="${dimensions}">
+      </div>
+      <div class="form-group">
+        <label for="cost">Cost</label>
+        <input type="text" id="cost" name="cost" th:value="${cost}">
+      </div>
+      <div class="form-group">
+        <label for="additionalInfo">Additional info</label>
+        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${additionalInfo}">
+      </div>
+      <button type="submit">Edit</button>
+    </form>
+    <a class="cancel-button" th:href="@{/account/my-orders/created}">Cancel</a>
+  </div>
+</div>
+</body>
+</html>

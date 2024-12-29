@@ -1,5 +1,6 @@
-package ua.ithillel.roadhaulage.controller.account.estimate;
+package ua.ithillel.roadhaulage.controller.account.order;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -8,20 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.ithillel.roadhaulage.entity.Estimate;
+import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.service.interfaces.EstimateService;
+import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
+import java.util.List;
 
 @Controller
-@RequestMapping("/account/estimates/create")
+@RequestMapping("/account/my-orders/create")
 @AllArgsConstructor
-public class CreateEstimateController {
-    private EstimateService estimateService;
+public class CreateNewOrderController {
+    private OrderService orderService;
     private UserService userService;
-
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User loggedUser,
@@ -30,7 +31,7 @@ public class CreateEstimateController {
         model.addAttribute("firstName", loggedUser.getFirstName());
         model.addAttribute("lastName", loggedUser.getLastName());
         model.addAttribute("acceptDate", creationDate);
-        return "account/estimates/create";
+        return "account/myOrders/create";
     }
 
     @PostMapping("/create")
@@ -42,19 +43,19 @@ public class CreateEstimateController {
                                  @RequestParam(required = true) String weight,
                                  @RequestParam(required = true) String dimensions,
                                  @RequestParam(required = true) String cost){
-        Estimate estimate = new Estimate();
-        estimate.setCustomer(user);
-        estimate.setStatus("PUBLISHED");
-        estimate.setCategory(category);
-        estimate.setDeliveryAddress(deliveryAddress);
-        estimate.setDepartureAddress(departureAddress);
-        estimate.setAdditionalInfo(additionalInfo);
-        estimate.setWeight(weight);
-        estimate.setDimensions(dimensions);
-        estimate.setCost(cost);
-        estimate.setCreationDate(new Date(System.currentTimeMillis()));
-        estimateService.save(estimate);
-        return "redirect:/account/estimates/created";
+        Order order = new Order();
+        order.setCustomer(user);
+        order.setStatus("CREATED");
+        order.setCategory(category);
+        order.setDeliveryAddress(deliveryAddress);
+        order.setDepartureAddress(departureAddress);
+        order.setAdditionalInfo(additionalInfo);
+        order.setWeight(weight);
+        order.setDimensions(dimensions);
+        order.setCost(cost);
+        order.setCreationDate(new Date(System.currentTimeMillis()));
+        orderService.save(order);
+        return "redirect:/account/my-orders/created";
     }
 
 }

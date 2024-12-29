@@ -7,8 +7,8 @@ import java.sql.Date;
 
 @Data
 @Entity
-@Table(name="t_estimate")
-public class Estimate {
+@Table(name="t_order")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

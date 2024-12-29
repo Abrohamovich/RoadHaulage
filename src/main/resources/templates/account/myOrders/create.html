@@ -19,7 +19,7 @@
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
     <h2>Create new estimate</h2>
-    <form th:action="@{/account/estimates/create/create}" method="post">
+    <form th:action="@{/account/my-orders/create/create}" method="post">
       <div th:if="${param.error}">
         <p style="color: red;">Something went wrong</p>
       </div>
@@ -62,7 +62,7 @@
         <label for="acceptDate">Date of creation</label>
         <input type="text" id="acceptDate" name="acceptDate" th:value="${acceptDate}" readonly>
       </div>
-      <button type="submit">Publish</button>
+      <button type="submit">Create</button>
     </form>
   </div>
 </div>

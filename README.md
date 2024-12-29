@@ -14,7 +14,7 @@ convenient and economical way to send a parcel, things or even a small cargo.
     *   Users can create accounts.
     *   Each user can be both first and second at the same time
     *   Users can manage their account information.
-* **Estimate Functionality:**
+* **Order Functionality:**
     * User-customer can create new transport orders, specifying details such as:
         * Customer information:
             * Name and surname.
@@ -28,7 +28,7 @@ convenient and economical way to send a parcel, things or even a small cargo.
             * Dimensions (length-width-high)
         * Date of order fulfillment (auto-generated)
     *   User-courier can view published transport orders.
-    *   User-courier can respond to orders(update created estimates):
+    *   User-courier can respond to orders(update created orders):
         * Courier information:
             * Name and Surname.
             * IBAN account number
