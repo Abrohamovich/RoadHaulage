@@ -7,9 +7,12 @@
   <h2>My orders</h2>
   <ul>
     <li><a th:href="@{/account/my-orders/create}">Create new</a></li>
-    <li><a th:href="@{/account/my-orders/created}">Created</a></li>
-    <li><a th:href="@{/account/my-orders/in-progress}">In progress</a></li>
+    <li><a th:href="@{/account/my-orders/created}">All orders</a></li>
     <li><a th:href="@{/account/my-orders/completed}">Completed</a></li>
   </ul>
-  <h2>Completed orders</h2>
+  <h2>Delivered orders</h2>
+  <ul>
+    <li><a th:href="@{/account/delivered-orders/accepted}">Accepted</a></li>
+    <li><a th:href="@{/account/delivered-orders/delivered}">Delivered</a></li>
+  </ul>
 </div>

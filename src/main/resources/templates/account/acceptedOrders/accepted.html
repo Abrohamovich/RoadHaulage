@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
   <style>
       .content {
           display: flex;
@@ -85,24 +88,43 @@
           margin: 10px auto;
       }
   </style>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadHaulage</title>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Completed orders</h2>
+    <h2>Created orders</h2>
     <div th:each="order : ${orders}" class="estimate">
-      <span class="estimate-content" th:text="${order.category}"></span>
+      <span class="estimate-content" th:text="${order.customer.firstName} + ' ' + ${order.customer.lastName}"></span>
       <span class="estimate-content" th:text="${order.departureAddress}"></span>
-      <ion-icon name="arrow-down-outline"></ion-icon>
+      <ion-icon name="arrow-forward-outline"></ion-icon>
       <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
       <span class="estimate-content" th:text="${order.cost}"></span>
+      <form th:action="@{/account/delivered-orders/accepted/decline}" method="post">
+        <input type="hidden" name="id" th:value="${order.id}">
+        <button style="background-color: red">Decline</button>
+      </form>
     </div>
   </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const estimates = document.querySelectorAll('.estimate');
+
+        estimates.forEach(estimate => {
+            let scrollAmount = 0;
+            estimate.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const scrollStep = 15;
+                const direction = e.deltaY > 0 ? 1 : -1;
+                scrollAmount += scrollStep * direction;
+                estimate.scrollTo({
+                    left: estimate.scrollLeft + scrollStep * direction,
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>

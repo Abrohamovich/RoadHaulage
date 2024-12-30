@@ -8,20 +8,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoadHaulage</title>
   <style>
-      .content{
+      .content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 20px;
+          height: calc(100vh - 60px);
+          text-align: center;
+          padding: 20px;
           overflow-y: auto;
+          max-height: 65vh;
+      }
+      .content h1 {
+          font-size: 32px;
+          color: #333;
+      }
+      .content p {
+          font-size: 18px;
+          color: #666;
       }
       .estimate {
           border: 1px solid #007bff;
           border-radius: 10px;
-          margin-bottom: 20px;
           padding: 15px;
           background-color: #f9f9f9;
-          display: flex;
-          align-items: center;
-          gap: 15px;
+          display: block;
           overflow-x: hidden;
-          white-space: nowrap;
+          white-space: normal;
+          width: 200px; /* Фиксированная ширина для блоков */
       }
 
       .estimate:hover {
@@ -35,6 +50,8 @@
           background-color: #ffffff;
           border: 1px solid #ddd;
           font-size: 16px;
+          display: block;
+          margin-bottom: 10px;
       }
 
       .estimate button {
@@ -46,9 +63,11 @@
           border-radius: 5px;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          display: block;
+          margin-top: 10px;
       }
 
-      .estimate a{
+      .estimate a {
           padding: 8px 15px;
           font-size: 14px;
           color: #fff;
@@ -58,11 +77,15 @@
           border-radius: 5px;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          display: block;
+          margin-top: 10px;
       }
 
       .estimate ion-icon {
           font-size: 20px;
           color: #007bff;
+          display: block;
+          margin: 10px auto;
       }
   </style>
 </head>
@@ -71,21 +94,25 @@
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Created Orders</h2>
+    <h2>All orders</h2>
     <div th:each="order : ${orders}" class="estimate">
       <span class="estimate-content" th:text="${order.category}"></span>
       <span class="estimate-content" th:text="${order.departureAddress}"></span>
-      <ion-icon name="arrow-forward-outline"></ion-icon>
+      <ion-icon name="arrow-down-outline"></ion-icon>
       <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
       <span class="estimate-content" th:text="${order.cost}"></span>
       <span class="estimate-content" th:name="status" th:text="${order.status}"></span>
-      <form th:action="@{/account/my-orders/created/publish}" th:if="${order.status} != 'PUBLISHED'" method="post">
+      <form th:action="@{/account/my-orders/created/publish}" th:if="${order.status} == 'CREATED' or ${order.status} == 'CHANGED'" method="post">
         <input type="hidden" name="id" th:value="${order.id}" />
         <button type="submit">Publish</button>
       </form>
-      <form th:action="@{/account/my-orders/change}" method="post" style="display: inline;">
+      <form th:action="@{/account/my-orders/change}" th:if="${order.status} != 'ACCEPTED'" method="post">
         <input type="hidden" name="id" th:value="${order.id}" />
         <button type="submit">Change</button>
+      </form>
+      <form th:action="@{/account/my-orders/created/close}" th:if="${order.status} == 'ACCEPTED'" method="post">
+        <input type="hidden" name="id" th:value="${order.id}" />
+        <button type="submit">Close order</button>
       </form>
       <a style="background-color: red" th:href="@{'/account/my-orders/created/delete/' + ${order.id}}" role="button">Delete</a>
     </div>

@@ -1,6 +1,5 @@
-package ua.ithillel.roadhaulage.controller.account.order;
+package ua.ithillel.roadhaulage.controller.account.myOrders;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
@@ -55,7 +53,7 @@ public class CreateNewOrderController {
         order.setCost(cost);
         order.setCreationDate(new Date(System.currentTimeMillis()));
         orderService.save(order);
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/create";
     }
 
 }

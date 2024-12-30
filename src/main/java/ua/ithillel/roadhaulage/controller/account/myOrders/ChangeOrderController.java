@@ -1,7 +1,6 @@
-package ua.ithillel.roadhaulage.controller.account.order;
+package ua.ithillel.roadhaulage.controller.account.myOrders;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.entity.Order;
+
+import java.sql.Date;
 
 @Controller
 @RequestMapping("/account/my-orders/change")
@@ -47,6 +48,7 @@ public class ChangeOrderController {
         order.setAdditionalInfo(additionalInfo);
         order.setWeight(weight);
         order.setDimensions(dimensions);
+        order.setAmendmentDate(new Date(System.currentTimeMillis()));
         order.setStatus("CHANGED");
         orderService.save(order);
         return "redirect:/account/my-orders/created";

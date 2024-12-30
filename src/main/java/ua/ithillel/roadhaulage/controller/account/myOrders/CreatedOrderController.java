@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.account.order;
+package ua.ithillel.roadhaulage.controller.account.myOrders;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +9,7 @@ import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -21,6 +22,7 @@ public class CreatedOrderController {
     public String createdOrdersPage(@AuthenticationPrincipal User user,
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
+        orders = orders.stream().filter(order -> !order.getStatus().equals("COMPLETED")).toList();
         model.addAttribute("orders", orders);
         return "account/myOrders/created";
     }
@@ -31,6 +33,15 @@ public class CreatedOrderController {
         order.setStatus("PUBLISHED");
         orderService.update(order);
         return "redirect:/account/my-orders/created";
+    }
+
+    @PostMapping("/close")
+    public String closeOrder(@RequestParam long id){
+        Order order = orderService.findById(id);
+        order.setStatus("COMPLETED");
+        order.setCompletionDate(new Date(System.currentTimeMillis()));
+        orderService.update(order);
+        return "redirect:/account/my-orders/completed";
     }
 
     @GetMapping("/delete/{id}")

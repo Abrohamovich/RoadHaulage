@@ -18,7 +18,7 @@
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Create new estimate</h2>
+    <h2>Create new order</h2>
     <form th:action="@{/account/my-orders/create/create}" method="post">
       <div th:if="${param.error}">
         <p style="color: red;">Something went wrong</p>

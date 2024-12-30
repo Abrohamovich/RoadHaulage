@@ -37,7 +37,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public List<Order> findAll() {
-        return List.of();
+        return orderRepository.findAll();
     }
 
     @Override
