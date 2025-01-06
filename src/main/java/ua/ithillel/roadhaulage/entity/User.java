@@ -17,18 +17,22 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
+    private boolean enabled;
     private String lastName;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     @Column(unique = true)
     private String phone;
     private String role; // USER, ADMIN
     @Column(unique = true)
     private String iban;
+    @Column(nullable = false)
     private String password;
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(nullable = false)
+    private String verificationToken;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> customerOrders; // List of orders you have created
-    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
     private List<Order> courierOrders; // List of orders you have fulfilled for other users
 
     @Override
@@ -41,4 +45,26 @@ public class User implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+
 }

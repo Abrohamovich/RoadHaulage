@@ -21,16 +21,21 @@ public class PrivacyController {
     public String privacyPage(@AuthenticationPrincipal User loggedUser,
                               Model model) {
         model.addAttribute("password", loggedUser.getPassword());
+        model.addAttribute("email", loggedUser.getEmail());
         return "account/settings/privacy";
     }
 
     @PostMapping("/update")
     public String update(@AuthenticationPrincipal User loggedUser,
-                         @RequestParam String password) {
+                         @RequestParam String password,
+                         @RequestParam String email) {
+        if(!email.isEmpty()) {
+            loggedUser.setEmail(email);
+        }
         if(!password.isEmpty()) {
             loggedUser.setPassword(password);
-            userService.update(loggedUser);
         }
+        userService.update(loggedUser);
         return "redirect:/account/settings/privacy";
     }
 }

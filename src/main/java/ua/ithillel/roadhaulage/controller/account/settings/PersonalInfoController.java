@@ -34,7 +34,6 @@ public class PersonalInfoController {
         Map<String, Consumer<String>> fieldSetters = Map.of(
                 "firstName", loggedUser::setFirstName,
                 "lastName", loggedUser::setLastName,
-                "email", loggedUser::setEmail,
                 "phone", loggedUser::setPhone,
                 "iban", loggedUser::setIban
         );

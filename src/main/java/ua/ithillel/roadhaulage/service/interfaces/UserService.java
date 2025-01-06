@@ -7,5 +7,6 @@ public interface UserService{
     boolean delete(Long id);
     boolean update(User user);
     User findById(Long id);
-
+    User findByEmail(String email);
+    String validateVerificationToken(String token);
 }

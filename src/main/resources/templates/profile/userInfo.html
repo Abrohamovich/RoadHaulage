@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/userProfile.css}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
+</head>
+<body>
+<div class="navbar">
+  <div class="site-name">RoadHaulage</div>
+  <div class="nav-links">
+    <a th:href="@{/orders}">Orders</a>
+    <a th:href="@{/about}">About us</a>
+    <a th:href="@{/contact}">Contact</a>
+    <a th:href="@{/templates/account}" sec:authorize="hasRole('ROLE_USER')">Account</a>
+    <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
+    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
+  </div>
+</div>
+<div class="container">
+  <div class="sidebar">
+    <h2>User information</h2>
+    <ul>
+      <li><a th:href="@{'/user/personal-info/id/' + ${user.id}}">Personal information</a></li>
+    </ul>
+    <h2>Orders</h2>
+    <ul>
+      <li><a th:href="@{'/user/orders/id/' + ${user.id}}">Published orders</a></li>
+    </ul>
+  </div>
+  <div class="content">
+    <h2>All orders</h2>
+    <div th:object="${user}" class="estimate">
+      <span class="estimate-content" th:text="${user.firstName}"></span>
+      <span class="estimate-content" th:text="${user.lastName}"></span>
+      <span class="estimate-content" th:text="${user.phone}"></span>
+      <span class="estimate-content" th:text="${user.email}"></span>
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const estimates = document.querySelectorAll('.estimate');
+
+        estimates.forEach(estimate => {
+            let scrollAmount = 0;
+            estimate.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const scrollStep = 15;
+                const direction = e.deltaY > 0 ? 1 : -1;
+                scrollAmount += scrollStep * direction;
+                estimate.scrollTo({
+                    left: estimate.scrollLeft + scrollStep * direction,
+                });
+            });
+        });
+    });
+</script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

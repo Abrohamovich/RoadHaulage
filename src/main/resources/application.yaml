@@ -11,5 +11,16 @@ spring:
       hibernate:
         format-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

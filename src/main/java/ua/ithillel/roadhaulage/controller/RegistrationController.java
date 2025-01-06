@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/register")
@@ -33,11 +36,20 @@ public class RegistrationController {
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setRole("ROLE_USER");
-            if (userService.save(user))
-                System.out.println("GOOD");
-            else
-                System.out.println("BAD");
+            user.setVerificationToken(UUID.randomUUID().toString());
+            userService.save(user);
+
         }
-        return "redirect:/login";
+        return "redirect:/verify-email";
+    }
+
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token) {
+        String result = userService.validateVerificationToken(token);
+        if (result.equals("valid")) {
+            return "redirect:/login";
+        } else {
+            return "redirect:/home";
+        }
     }
 }

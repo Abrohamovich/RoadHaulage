@@ -37,6 +37,7 @@ public class SpringSecurityConfiguration {
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/orders").permitAll()
+                        .requestMatchers("register/verify-email").permitAll()
                         .requestMatchers("/account/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
