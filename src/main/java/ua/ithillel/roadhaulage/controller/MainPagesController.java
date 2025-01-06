@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -22,13 +23,12 @@ public class MainPagesController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@ModelAttribute("attentionMessage") String attentionMessage,
+                        @ModelAttribute("successMessage") String successMessage,
+                        Model model) {
+        model.addAttribute("attentionMessage", attentionMessage);
+        model.addAttribute("successMessage", successMessage);
         return "login";
-    }
-
-    @GetMapping("/account")
-    public String account() {
-        return "account/account";
     }
 
     @GetMapping("/orders")

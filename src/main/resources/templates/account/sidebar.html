@@ -1,0 +1,18 @@
+<div class="sidebar">
+  <h2>Settings</h2>
+  <ul>
+    <li><a th:href="@{/account/settings/personal-information}">Personal information</a></li>
+    <li><a th:href="@{/account/settings/privacy}">Privacy</a></li>
+  </ul>
+  <h2>My orders</h2>
+  <ul>
+    <li><a th:href="@{/account/my-orders/create}">Create new</a></li>
+    <li><a th:href="@{/account/my-orders/created}">All orders</a></li>
+    <li><a th:href="@{/account/my-orders/completed}">Completed</a></li>
+  </ul>
+  <h2>Delivered orders</h2>
+  <ul>
+    <li><a th:href="@{/account/delivered-orders/accepted}">Accepted</a></li>
+    <li><a th:href="@{/account/delivered-orders/delivered}">Delivered</a></li>
+  </ul>
+</div>

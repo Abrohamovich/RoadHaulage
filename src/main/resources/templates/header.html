@@ -4,7 +4,7 @@
     <a th:href="@{/orders}">Orders</a>
     <a th:href="@{/about}">About us</a>
     <a th:href="@{/contact}">Contact</a>
-    <a th:href="@{/account}" sec:authorize="hasRole('ROLE_USER')">Account</a>
+    <a th:href="@{/account/settings/personal-information}" sec:authorize="hasRole('ROLE_USER')">Account</a>
     <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
     <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
   </div>

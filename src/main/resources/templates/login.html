@@ -20,6 +20,12 @@
     <div th:if="${param.logout}">
       <p style="color: green;">You have been logged out</p>
     </div>
+    <div th:if="attentionMessage">
+      <p th:text="${attentionMessage}"></p>
+    </div>
+    <div th:if="${successMessage}">
+      <p th:text="${successMessage}"></p>
+    </div>
   </form>
   <p>Don't have an account? <a th:href="@{/register}">Sign up!</a></p>
 </div>

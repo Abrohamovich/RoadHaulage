@@ -27,6 +27,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
             return false;
         }
         user.setEnabled(false);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         String confirmUrl = "http://localhost:8080/register/verify-email?token=" + user.getVerificationToken();
         String emailBody = """
