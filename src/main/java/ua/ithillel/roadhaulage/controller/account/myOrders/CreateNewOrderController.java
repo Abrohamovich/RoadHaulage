@@ -20,7 +20,6 @@ import java.sql.Date;
 @AllArgsConstructor
 public class CreateNewOrderController {
     private OrderService orderService;
-    private UserService userService;
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User loggedUser,

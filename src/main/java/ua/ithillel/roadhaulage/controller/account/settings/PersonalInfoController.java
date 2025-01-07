@@ -3,6 +3,8 @@ package ua.ithillel.roadhaulage.controller.account.settings;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +26,11 @@ public class PersonalInfoController {
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,
                                    @ModelAttribute("lastNameError") String lastNameError,
                                    @ModelAttribute("phoneError") String phoneError,
-                                   @ModelAttribute("emailError") String emailError,
                                    @AuthenticationPrincipal User user,
                                    Model model) {
             model.addAttribute("firstName", user.getFirstName());
             model.addAttribute("lastName", user.getLastName());
             model.addAttribute("phone", user.getPhone());
-            model.addAttribute("email", user.getEmail());
             model.addAttribute("iban", user.getIban());
         return "account/settings/personalInformation";
     }
@@ -39,7 +39,6 @@ public class PersonalInfoController {
     public String update(@AuthenticationPrincipal User user,
                          @RequestParam String firstName,
                          @RequestParam String lastName,
-                         @RequestParam String email,
                          @RequestParam String phone,
                          @RequestParam String iban,
                          RedirectAttributes redirectAttributes) {
@@ -62,15 +61,9 @@ public class PersonalInfoController {
         } else if (phone.isEmpty()) {
            phone = user.getPhone();
         }
-        if(email.isEmpty()){
-            email = user.getEmail();
-        }else if(!email.equals(user.getEmail())){
-            user.setEmail(email);
-            user.setEnabled(false);
-        }
 
         if (i>0) return "redirect:/account/settings/personal-information";
-        user.setEmail(email);
+
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPhone(phone);

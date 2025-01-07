@@ -43,7 +43,7 @@ public class RegistrationController {
                            @RequestParam(required = true) String firstName,
                            @RequestParam(required = true) String lastName, RedirectAttributes redirectAttributes) {
         byte i = 0;
-        if(userService.findByEmail(email) != null) {
+        if(userService.findByEmail(email).isPresent()) {
             redirectAttributes.addFlashAttribute("emailExists", "Email already exists");
             i++;
         }

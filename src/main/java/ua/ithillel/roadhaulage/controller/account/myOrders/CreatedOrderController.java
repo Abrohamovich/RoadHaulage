@@ -11,6 +11,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/my-orders/created")
@@ -29,18 +30,18 @@ public class CreatedOrderController {
 
     @PostMapping("/publish")
     public String publishOrder(@RequestParam long id){
-        Order order = orderService.findById(id);
-        order.setStatus("PUBLISHED");
-        orderService.update(order);
+        Optional<Order> order = orderService.findById(id);
+        order.get().setStatus("PUBLISHED");
+        orderService.update(order.get());
         return "redirect:/account/my-orders/created";
     }
 
     @PostMapping("/close")
     public String closeOrder(@RequestParam long id){
-        Order order = orderService.findById(id);
-        order.setStatus("COMPLETED");
-        order.setCompletionDate(new Date(System.currentTimeMillis()));
-        orderService.update(order);
+        Optional<Order> order = orderService.findById(id);
+        order.get().setStatus("COMPLETED");
+        order.get().setCompletionDate(new Date(System.currentTimeMillis()));
+        orderService.update(order.get());
         return "redirect:/account/my-orders/completed";
     }
 

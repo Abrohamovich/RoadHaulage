@@ -14,6 +14,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/delivered-orders/accepted")
@@ -33,21 +34,21 @@ public class AcceptedOrdersController {
     @PostMapping("/accept")
     public String acceptOrder(@AuthenticationPrincipal User user,
                               @RequestParam long id){
-        Order order = orderService.findById(id);
-        order.setAcceptDate(new Date(System.currentTimeMillis()));
-        order.setStatus("ACCEPTED");
-        order.setCourier(user);
-        orderService.save(order);
+        Optional<Order> order = orderService.findById(id);
+        order.get().setAcceptDate(new Date(System.currentTimeMillis()));
+        order.get().setStatus("ACCEPTED");
+        order.get().setCourier(user);
+        orderService.save(order.get());
         return "redirect:/account/delivered-orders/accepted";
     }
 
     @PostMapping("/decline")
     public String declineOrder(@RequestParam long id){
-        Order order = orderService.findById(id);
-        order.setCourier(null);
-        order.setStatus("PUBLISHED");
-        order.setAcceptDate(null);
-        orderService.save(order);
+        Optional<Order> order = orderService.findById(id);
+        order.get().setCourier(null);
+        order.get().setStatus("PUBLISHED");
+        order.get().setAcceptDate(null);
+        orderService.save(order.get());
         return "redirect:/account/delivered-orders/accepted";
     }
 }

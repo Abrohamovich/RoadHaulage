@@ -3,13 +3,14 @@ package ua.ithillel.roadhaulage.service.interfaces;
 import ua.ithillel.roadhaulage.entity.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderService {
-    boolean save(Order order);
+    void save(Order order);
     void delete(long id);
     List<Order> findOrdersByCustomerId(long id);
     List<Order> findOrdersByCourierId(long id);
     List<Order> findAll();
-    boolean update(Order order);
-    Order findById(long id);
+    void update(Order order);
+    Optional<Order> findById(long id);
 }

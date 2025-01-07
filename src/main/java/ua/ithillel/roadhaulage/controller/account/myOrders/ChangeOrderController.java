@@ -10,6 +10,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.entity.Order;
 
 import java.sql.Date;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/my-orders/change")
@@ -19,15 +20,15 @@ public class ChangeOrderController {
 
     @PostMapping()
     public String changePage(@RequestParam("id") long id, Model model) {
-        Order order = orderService.findById(id);
+        Optional<Order> order = orderService.findById(id);
         model.addAttribute("id", id);
-        model.addAttribute("category", order.getCategory());
-        model.addAttribute("departureAddress", order.getDepartureAddress());
-        model.addAttribute("deliveryAddress", order.getDeliveryAddress());
-        model.addAttribute("additionalInfo", order.getAdditionalInfo());
-        model.addAttribute("weight", order.getWeight());
-        model.addAttribute("dimensions", order.getDimensions());
-        model.addAttribute("cost", order.getCost());
+        model.addAttribute("category", order.get().getCategory());
+        model.addAttribute("departureAddress", order.get().getDepartureAddress());
+        model.addAttribute("deliveryAddress", order.get().getDeliveryAddress());
+        model.addAttribute("additionalInfo", order.get().getAdditionalInfo());
+        model.addAttribute("weight", order.get().getWeight());
+        model.addAttribute("dimensions", order.get().getDimensions());
+        model.addAttribute("cost", order.get().getCost());
         return "account/myOrders/change";
     }
 
@@ -40,17 +41,17 @@ public class ChangeOrderController {
                               @RequestParam(required = false) String additionalInfo,
                               @RequestParam(required = false) String weight,
                               @RequestParam(required = false) String dimensions) {
-        Order order = orderService.findById(id);
-        order.setCategory(category);
-        order.setCost(cost);
-        order.setDepartureAddress(departureAddress);
-        order.setDeliveryAddress(deliveryAddress);
-        order.setAdditionalInfo(additionalInfo);
-        order.setWeight(weight);
-        order.setDimensions(dimensions);
-        order.setAmendmentDate(new Date(System.currentTimeMillis()));
-        order.setStatus("CHANGED");
-        orderService.save(order);
+        Optional<Order> order = orderService.findById(id);
+        order.get().setCategory(category);
+        order.get().setCost(cost);
+        order.get().setDepartureAddress(departureAddress);
+        order.get().setDeliveryAddress(deliveryAddress);
+        order.get().setAdditionalInfo(additionalInfo);
+        order.get().setWeight(weight);
+        order.get().setDimensions(dimensions);
+        order.get().setAmendmentDate(new Date(System.currentTimeMillis()));
+        order.get().setStatus("CHANGED");
+        orderService.save(order.get());
         return "redirect:/account/my-orders/created";
     }
 }

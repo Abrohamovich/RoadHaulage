@@ -15,9 +15,8 @@ public class OrderServiceImp implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public boolean save(Order order) {
+    public void save(Order order) {
         orderRepository.save(order);
-        return true;
     }
 
     @Override
@@ -41,17 +40,15 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public boolean update(Order order) {
+    public void update(Order order) {
         Optional<Order> orderDB = orderRepository.findById(order.getId());
         if (orderDB.isPresent()) {
             orderRepository.save(order);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public Order findById(long id) {
-        return orderRepository.findById(id).orElse(null);
+    public Optional<Order> findById(long id) {
+        return orderRepository.findById(id);
     }
 }

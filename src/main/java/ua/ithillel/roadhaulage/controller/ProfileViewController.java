@@ -12,6 +12,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -22,14 +23,14 @@ public class ProfileViewController {
 
     @GetMapping("personal-info/id/{id}")
     public String userInfoPage(@PathVariable long id, Model model) {
-        User user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         model.addAttribute("user", user);
         return "profile/userInfo";
     }
 
     @GetMapping("orders/id/{id}")
     public String userOrdersPage(@PathVariable long id, Model model) {
-        User user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         List<Order> orders = orderService.findOrdersByCustomerId(id);
         orders = orders.stream().filter(order -> order.getStatus().equals("PUBLISHED")).toList();
         model.addAttribute("orders", orders);
