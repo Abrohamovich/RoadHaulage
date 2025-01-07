@@ -67,7 +67,6 @@ public class PersonalInfoController {
         }else if(!email.equals(user.getEmail())){
             user.setEmail(email);
             user.setEnabled(false);
-            user.setVerificationToken(UUID.randomUUID().toString());
         }
 
         if (i>0) return "redirect:/account/settings/personal-information";

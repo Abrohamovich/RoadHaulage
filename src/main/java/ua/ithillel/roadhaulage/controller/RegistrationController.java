@@ -6,8 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.VerificationToken;
+import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
+import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -16,6 +20,8 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class RegistrationController {
     private UserService userService;
+    private VerificationTokenService verificationTokenService;
+    private EmailService emailService;
 
     @GetMapping
     public String register(@ModelAttribute("emailExists") String emailExists,
@@ -57,25 +63,57 @@ public class RegistrationController {
         }
         if(i>0) return "redirect:/register";
 
+        String emailBody = """
+    Hello, %s!
+    
+    You have provided this email address to register or update your details on our website. To complete the registration process and confirm your address, please click on the link below:
+    
+    %s
+    
+    If you have not requested a confirmation email, simply PASS this message. Your account will remain secure and no changes will be made.
+    
+    If you have any questions or concerns, please contact our support team.
+    
+    Thank you for using our service!
+    
+    Regards,
+    RoadHaulage Team
+    """;
+
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         user.setPhone(phone);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setEnabled(false);
         user.setRole("ROLE_USER");
-        user.setVerificationToken(UUID.randomUUID().toString());
         userService.save(user);
+
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(user);
+        verificationToken.setExpiresAt(LocalDateTime.now());
+        verificationTokenService.save(verificationToken);
+
+        String confirmUrl = "http://localhost:8080/register/verify-email?token=" + token;
+
+        emailService.sendEmail(
+                email,
+                "Confirmation of email address",
+                String.format(emailBody, firstName + " " + lastName, confirmUrl)
+        );
         redirectAttributes.addFlashAttribute("attentionMessage", "Please check your email to confirm your registration");
         return "redirect:/login";
     }
 
     @GetMapping("/verify-email")
     public String verifyEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
-        String result = userService.validateVerificationToken(token);
         String validMessage = "You have been successfully verified";
         String invalidMessage = "The verification token is invalid";
-        if (result.equals("valid")) {
+        boolean param = userService.verifyEmail(token);
+        if (param) {
             redirectAttributes.addFlashAttribute("successMessage", validMessage);
         } else {
             redirectAttributes.addFlashAttribute("successMessage", invalidMessage);

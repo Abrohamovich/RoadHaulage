@@ -6,7 +6,6 @@ import ua.ithillel.roadhaulage.entity.Order;
 
 import java.util.List;
 
-@Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findOrdersByCustomerId(long id);
     List<Order> findOrdersByCourierId(long id);

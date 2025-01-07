@@ -8,5 +8,5 @@ public interface UserService{
     boolean update(User user);
     User findById(Long id);
     User findByEmail(String email);
-    String validateVerificationToken(String token);
+    boolean verifyEmail(String token);
 }

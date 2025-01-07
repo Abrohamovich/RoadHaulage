@@ -28,8 +28,6 @@ public class User implements UserDetails {
     private String iban;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String verificationToken;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> customerOrders; // List of orders you have created
     @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
