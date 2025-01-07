@@ -19,14 +19,22 @@
         <label for="firstName">First name</label>
         <input type="text" id="firstName" name="firstName" th:placeholder="${firstName}">
       </div>
+      <p style="color: red" th:if="${firstNameError}" th:text="${firstNameError}"></p>
       <div class="form-group">
         <label for="lastName">Last name</label>
         <input type="text" id="lastName" name="lastName" th:placeholder="${lastName}">
       </div>
+      <p style="color: red" th:if="${lastNameError}" th:text="${lastNameError}"></p>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" th:placeholder="${email}">
+      </div>
+      <p style="color: red" th:if="${emailError}" th:text="${emailError}"></p>
       <div class="form-group">
         <label for="phone">Contact phone</label>
         <input type="tel" id="phone" name="phone" th:placeholder="${phone}">
       </div>
+      <p style="color: red" th:if="${phoneError}" th:text="${phoneError}"></p>
       <div class="form-group">
         <label for="iban">IBAN</label>
         <input type="text" id="iban" name="iban" th:placeholder="${iban}">
