@@ -3,6 +3,7 @@ package ua.ithillel.roadhaulage.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NonNull;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +20,12 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
-    private boolean enabled;
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(unique = true)
     private String phone;
+    private boolean enabled;
     private String role; // USER, ADMIN
     @Column(unique = true)
     private String iban;

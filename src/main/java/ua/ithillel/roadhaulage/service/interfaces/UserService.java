@@ -11,4 +11,5 @@ public interface UserService{
     Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
     short verifyEmail(String token);
+    short verifyPassword(String token, String password);
 }

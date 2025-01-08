@@ -35,12 +35,13 @@ public class SpringSecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "css/**",
+                                "/css/**",
                                 "/home",
                                 "/logout",
                                 "/register",
                                 "/orders",
-                                "/verify-email").permitAll()
+                                "/verify-email",
+                                "/password-recovery/**").permitAll()
                         .requestMatchers("/account/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )

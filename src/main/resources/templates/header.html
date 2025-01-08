@@ -2,7 +2,7 @@
   <div class="site-name">RoadHaulage</div>
   <div class="nav-links">
     <a th:href="@{/orders}">Orders</a>
-    <a th:href="@{/about}">About us</a>
+    <a th:href="@{/aboutUs}">About us</a>
     <a th:href="@{/contact}">Contact</a>
     <a th:href="@{/account/settings/personal-information}" sec:authorize="hasRole('ROLE_USER')">Account</a>
     <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>

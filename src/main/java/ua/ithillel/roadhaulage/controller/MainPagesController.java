@@ -22,6 +22,16 @@ public class MainPagesController {
         return "index";
     }
 
+    @GetMapping("/aboutUs")
+    public String aboutUs() {
+        return "aboutUs";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "contact";
+    }
+
     @GetMapping("/login")
     public String login(@ModelAttribute("attentionMessage") String attentionMessage,
                         @ModelAttribute("successMessage") String successMessage,

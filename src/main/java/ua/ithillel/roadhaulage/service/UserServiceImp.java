@@ -72,6 +72,24 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
+    public short verifyPassword(String token, String password) {
+        Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
+        if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
+            return 1;
+        }
+        User user = verificationToken.get().getUser();
+        if (user==null) {
+            return 2;
+        }
+        if(verificationToken.get().getExpiresAt().isBefore(LocalDateTime.now())){
+            return 3;
+        }
+        user.setPassword(password);
+        save(user);
+        return 0;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
 

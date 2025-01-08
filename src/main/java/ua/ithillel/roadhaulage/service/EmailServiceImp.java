@@ -45,4 +45,30 @@ public class EmailServiceImp implements EmailService {
         sendEmail(email, "Confirmation of email address",
                 String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl));
     }
+
+    @Override
+    public void sendPasswordResetEmail(String email, String token, User user, String password) {
+        String confirmUrl = "http://localhost:8080/password-recovery/recover?token=" + token;
+        String emailBody = """
+        Hello, %s!
+        
+        You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
+        
+        %s
+        
+        Your new password is: %s
+        
+        If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
+        
+        If you have any questions or concerns, please contact our support team.
+        
+        Thank you for using our service!
+        
+        Regards, \s
+        RoadHaulage Team
+        
+        """;
+        sendEmail(email, "Confirmation of password recovery",
+                String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl, password));
+    }
 }
