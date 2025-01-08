@@ -34,12 +34,13 @@ public class SpringSecurityConfiguration {
                         .failureUrl("/login?error=true")
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("css/**").permitAll()
-                        .requestMatchers("/home").permitAll()
-                        .requestMatchers("/logout").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/orders").permitAll()
-                        .requestMatchers("register/verify-email").permitAll()
+                        .requestMatchers(
+                                "css/**",
+                                "/home",
+                                "/logout",
+                                "/register",
+                                "/orders",
+                                "/verify-email").permitAll()
                         .requestMatchers("/account/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )

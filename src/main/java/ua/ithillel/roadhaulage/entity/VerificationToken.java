@@ -19,5 +19,4 @@ public class VerificationToken {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
-
 }

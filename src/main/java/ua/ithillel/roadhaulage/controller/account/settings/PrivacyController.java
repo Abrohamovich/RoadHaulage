@@ -64,11 +64,9 @@ public class PrivacyController {
             userService.update(user);
 
             String token = UUID.randomUUID().toString();
-            saveVerificationToken(user, token);
-            sendEmailConfirmation(email, token, user);
-
-            redirectAttributes.addFlashAttribute("attentionMessage",
-                    "Please check your email to confirm your registration.");
+            VerificationToken verificationToken = verificationTokenService.create(user, token);
+            verificationTokenService.save(verificationToken);
+            emailService.sendEmailConfirmation(email, token, user);
             return "redirect:/logout";
         }
 
@@ -78,38 +76,6 @@ public class PrivacyController {
     private boolean isValidPassword(String password) {
         return Pattern.compile("\\d").matcher(password).find()
                 && Pattern.compile("[A-Z]").matcher(password).find();
-    }
-
-    private void saveVerificationToken(User user, String token) {
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationToken.setExpiresAt(LocalDateTime.now().plusHours(24)); // Set token expiry
-        verificationTokenService.save(verificationToken);
-    }
-
-    private void sendEmailConfirmation(String email, String token, User user) {
-        String confirmUrl = "http://localhost:8080/register/verify-email?token=" + token;
-        String emailBody = """
-        Hello, %s!
-        
-        You have provided this email address to register or update your details on our website. 
-        To complete the registration process and confirm your address, please click on the link below:
-        
-        %s
-        
-        If you have not requested a confirmation email, simply PASS this message. 
-        Your account will remain secure and no changes will be made.
-        
-        If you have any questions or concerns, please contact our support team.
-        
-        Thank you for using our service!
-        
-        Regards,
-        RoadHaulage Team
-        """;
-        emailService.sendEmail(email, "Confirmation of email address",
-                String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl));
     }
 
 }

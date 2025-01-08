@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 
 @Service
@@ -18,5 +19,30 @@ public class EmailServiceImp implements EmailService {
         message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
+    }
+
+    @Override
+    public void sendEmailConfirmation(String email, String token, User user) {
+        String confirmUrl = "http://localhost:8080/verify-email?token=" + token;
+        String emailBody = """
+        Hello, %s!
+        
+        You have provided this email address to register or update your details on our website. 
+        To complete the registration process and confirm your address, please click on the link below:
+        
+        %s
+        
+        If you have not requested a confirmation email, simply PASS this message. 
+        Your account will remain secure and no changes will be made.
+        
+        If you have any questions or concerns, please contact our support team.
+        
+        Thank you for using our service!
+        
+        Regards,
+        RoadHaulage Team
+        """;
+        sendEmail(email, "Confirmation of email address",
+                String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl));
     }
 }

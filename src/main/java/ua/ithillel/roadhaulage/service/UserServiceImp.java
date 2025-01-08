@@ -1,8 +1,6 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,10 +9,10 @@ import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.repository.UserRepository;
-import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -55,19 +53,22 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean verifyEmail(String token) {
+    public short verifyEmail(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
         if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
-            return false;
+            return 1;
         }
         User user = verificationToken.get().getUser();
         if (user==null) {
-            return false;
+            return 2;
+        }
+        if(verificationToken.get().getExpiresAt().isBefore(LocalDateTime.now())){
+            return 3;
         }
         user.setEnabled(true);
         userRepository.save(user);
         verificationTokenService.delete(verificationToken.get());
-        return true;
+        return 0;
     }
 
     @Override

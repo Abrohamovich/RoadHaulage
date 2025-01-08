@@ -2,16 +2,27 @@ package ua.ithillel.roadhaulage.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class VerificationTokenServiceImp implements VerificationTokenService {
     private VerificationTokenRepository verificationTokenRepository;
+
+    @Override
+    public VerificationToken create(User user, String token) {
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setExpiresAt(LocalDateTime.now().plusMinutes(20));
+        verificationToken.setUser(user);
+        return verificationToken;
+    }
 
     @Override
     public void save(VerificationToken token) {

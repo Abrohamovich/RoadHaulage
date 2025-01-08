@@ -52,8 +52,7 @@ public class RegistrationController {
             redirectAttributes.addFlashAttribute("invalidNameContent", "Name can`t contain non-alphabets");
             i++;
         }
-        if (!Pattern.compile("\\d").matcher(password).find() ||
-                !Pattern.compile("[A-Z]").matcher(password).find()) {
+        if (!isValidPassword(password)) {
             redirectAttributes.addFlashAttribute("passwordContain", "Password must contain at least one digit and one uppercase");
             i++;
         }
@@ -62,23 +61,6 @@ public class RegistrationController {
             i++;
         }
         if(i>0) return "redirect:/register";
-
-        String emailBody = """
-    Hello, %s!
-    
-    You have provided this email address to register or update your details on our website. To complete the registration process and confirm your address, please click on the link below:
-    
-    %s
-    
-    If you have not requested a confirmation email, simply PASS this message. Your account will remain secure and no changes will be made.
-    
-    If you have any questions or concerns, please contact our support team.
-    
-    Thank you for using our service!
-    
-    Regards,
-    RoadHaulage Team
-    """;
 
         User user = new User();
         user.setEmail(email);
@@ -91,33 +73,19 @@ public class RegistrationController {
         userService.save(user);
 
         String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationToken.setExpiresAt(LocalDateTime.now());
+
+        VerificationToken verificationToken = verificationTokenService.create(user, token);
         verificationTokenService.save(verificationToken);
 
-        String confirmUrl = "http://localhost:8080/register/verify-email?token=" + token;
-
-        emailService.sendEmail(
-                email,
-                "Confirmation of email address",
-                String.format(emailBody, firstName + " " + lastName, confirmUrl)
-        );
-        redirectAttributes.addFlashAttribute("attentionMessage", "Please check your email to confirm your registration");
+        emailService.sendEmailConfirmation(email, token, user);
+        redirectAttributes.addFlashAttribute(
+                "attentionMessage",
+                "Please check your email to confirm registration. The link is valid for 20 minutes");
         return "redirect:/login";
     }
 
-    @GetMapping("/verify-email")
-    public String verifyEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
-        String validMessage = "You have been successfully verified";
-        String invalidMessage = "The verification token is invalid";
-        boolean param = userService.verifyEmail(token);
-        if (param) {
-            redirectAttributes.addFlashAttribute("successMessage", validMessage);
-        } else {
-            redirectAttributes.addFlashAttribute("successMessage", invalidMessage);
-        }
-        return "redirect:/login";
+    private boolean isValidPassword(String password) {
+        return Pattern.compile("\\d").matcher(password).find()
+                && Pattern.compile("[A-Z]").matcher(password).find();
     }
 }
