@@ -38,35 +38,35 @@
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
     <h2>Edit order</h2>
-    <form th:action="@{/account/my-orders/change/edit}" method="post">
-      <input type="hidden" name="id" th:value="${id}" />
+    <form th:action="@{/account/my-orders/change/edit}" th:object="${order}" method="post">
+      <input type="hidden" name="id" th:value="${order.id}" />
       <div class="form-group">
         <label for="category">Category</label>
-        <input type="text" id="category" name="category" th:value="${categoryNames}">
+        <input type="text" id="category" name="category" th:value="${order.categoriesAsString}">
       </div>
       <div class="form-group">
         <label for="departureAddress">Departure address</label>
-        <input type="text" id="departureAddress" name="departureAddress" th:value="${departureAddress}">
+        <input type="text" id="departureAddress" name="departureAddress" th:value="${order.departureAddress}">
       </div>
       <div class="form-group">
         <label for="deliveryAddress">Delivery address</label>
-        <input type="text" id="deliveryAddress" name="deliveryAddress" th:value="${deliveryAddress}">
+        <input type="text" id="deliveryAddress" name="deliveryAddress" th:value="${order.deliveryAddress}">
       </div>
       <div class="form-group">
         <label for="weight">Weight</label>
-        <input type="text" id="weight" name="weight" th:value="${weight}">
+        <input type="text" id="weight" name="weight" th:value="${order.weight}">
       </div>
       <div class="form-group">
         <label for="dimensions">Dimensions</label>
-        <input type="text" id="dimensions" name="dimensions" th:value="${dimensions}">
+        <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensions}">
       </div>
       <div class="form-group">
         <label for="cost">Cost</label>
-        <input type="text" id="cost" name="cost" th:value="${cost}">
+        <input type="text" id="cost" name="cost" th:value="${order.cost}">
       </div>
       <div class="form-group">
         <label for="additionalInfo">Additional info</label>
-        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${additionalInfo}">
+        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${order.additionalInfo}">
       </div>
       <button type="submit">Edit</button>
     </form>

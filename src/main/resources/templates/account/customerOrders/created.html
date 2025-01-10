@@ -97,7 +97,7 @@
   <div class="content">
     <h2>All orders</h2>
     <div th:each="order : ${orders}" class="estimate">
-      <span class="estimate-content" th:text="${order.categoryNames}"></span>
+      <span class="estimate-content" th:text="${order.categoriesAsString}"></span>
       <span class="estimate-content" th:text="${order.departureAddress}"></span>
       <ion-icon name="arrow-down-outline"></ion-icon>
       <span class="estimate-content" th:text="${order.deliveryAddress}"></span>

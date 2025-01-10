@@ -28,12 +28,7 @@ public class OrdersPageController {
                         .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
                 .filter(order -> order.getStatus().equals("PUBLISHED"))
                 .toList();
-        orders.forEach(order -> {
-            String name = order.getCategories().stream()
-                    .map(OrderCategory::getName)
-                    .collect(Collectors.joining(", "));
-            order.setCategoryNames(name);
-        });
+        orders.forEach(Order::defineCategoriesAsString);
         if(!orders.isEmpty()) {
             model.addAttribute("orders", orders);
         }

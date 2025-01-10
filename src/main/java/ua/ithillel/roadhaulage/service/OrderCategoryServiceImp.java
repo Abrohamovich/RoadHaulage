@@ -35,7 +35,7 @@ public class OrderCategoryServiceImp implements OrderCategoryService {
     }
 
     @Override
-    public Set<OrderCategory> transferFromString(String categoryNamesString) {
+    public Set<OrderCategory> createOrderCategorySet(String categoryNamesString) {
         String[] categoryNames = Arrays.stream(categoryNamesString.split(","))
                 .map(String::trim)
                 .map(category -> Arrays.stream(category.split(" "))
@@ -49,7 +49,6 @@ public class OrderCategoryServiceImp implements OrderCategoryService {
             if (orderCategory.isEmpty()) {
                 orderCategory = Optional.of(new OrderCategory());
                 orderCategory.get().setName(name);
-
             }
             orderCategoriesSet.add(orderCategory.get());
         });

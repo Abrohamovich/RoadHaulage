@@ -14,7 +14,6 @@ import ua.ithillel.roadhaulage.entity.Order;
 import java.sql.Date;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/change")
@@ -28,15 +27,8 @@ public class ChangeOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.defineCategoryNames();
-            model.addAttribute("id", id);
-            model.addAttribute("categoryNames", order.getCategoryNames());
-            model.addAttribute("departureAddress", order.getDepartureAddress());
-            model.addAttribute("deliveryAddress", order.getDeliveryAddress());
-            model.addAttribute("additionalInfo", order.getAdditionalInfo());
-            model.addAttribute("weight", order.getWeight());
-            model.addAttribute("dimensions", order.getDimensions());
-            model.addAttribute("cost", order.getCost());
+            order.defineCategoriesAsString();
+            model.addAttribute("order", order);
             return "account/customerOrders/change";
         }
         return "redirect:/error";
@@ -52,7 +44,7 @@ public class ChangeOrderController {
                               @RequestParam(required = false) String weight,
                               @RequestParam(required = false) String dimensions) {
         Optional<Order> orderOptional = orderService.findById(id);
-        Set<OrderCategory> orderCategories = orderCategoryService.transferFromString(categoryName);
+        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryName);
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();

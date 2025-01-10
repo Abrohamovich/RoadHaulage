@@ -44,7 +44,7 @@ public class CreateNewOrderController {
                                  @RequestParam(required = true) String dimensions,
                                  @RequestParam(required = true) String cost){
 
-        Set<OrderCategory> orderCategories = orderCategoryService.transferFromString(categoryName);
+        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryName);
         orderCategories.forEach(o -> orderCategoryService.save(o));
 
         Order order = new Order();

@@ -22,7 +22,7 @@ public class Order {
     )
     private Set<OrderCategory> categories;
     @Transient
-    private String categoryNames;
+    private String categoriesAsString;
     private String departureAddress; // Отправка
     private String deliveryAddress; // Доставка
     private String additionalInfo;
@@ -42,8 +42,8 @@ public class Order {
     private User courier;
 
 
-    public void defineCategoryNames(){
-        this.categoryNames = this.getCategories().stream()
+    public void defineCategoriesAsString(){
+        this.categoriesAsString = this.getCategories().stream()
                 .map(OrderCategory::getName)
                 .collect(Collectors.joining(", "));
     }

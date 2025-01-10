@@ -11,5 +11,5 @@ public interface OrderCategoryService {
     void delete(OrderCategory orderCategory);
     Optional<OrderCategory> findByName(String name);
     List<OrderCategory> findAll();
-    Set<OrderCategory> transferFromString(String categoryNames);
+    Set<OrderCategory> createOrderCategorySet(String categoryNames);
 }
