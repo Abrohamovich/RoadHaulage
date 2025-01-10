@@ -23,8 +23,16 @@ public class Order {
     private Set<OrderCategory> categories;
     @Transient
     private String categoryNames;
-    private String departureAddress; // Отправка
-    private String deliveryAddress; // Доставка
+    @ManyToOne
+    @JoinColumn(name = "departure_address_id")
+    private Address departureAddress; // From
+    @Transient
+    private String departureAddressString;
+    @ManyToOne
+    @JoinColumn(name = "delivery_address_id")
+    private Address deliveryAddress; // To
+    @Transient
+    private String deliveryAddressString;
     private String additionalInfo;
     private String weight; // in metric sys (kg, t ...)
     private String status; // CREATED, PUBLISHED, IN-PROCESS, COMPLETED
