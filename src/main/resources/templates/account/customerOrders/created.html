@@ -29,16 +29,17 @@
           color: #666;
       }
       .estimate {
-          border: 1px solid #007bff;
-          border-radius: 10px;
-          padding: 15px;
-          background-color: #f9f9f9;
-          display: block;
-          overflow-x: hidden;
-          white-space: normal;
-          width: 200px; /* Фиксированная ширина для блоков */
+        border: 1px solid #007bff;
+        border-radius: 10px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: normal;
+        width: 200px;
+        max-height: 300px;
       }
-
       .estimate:hover {
           background-color: #e6f0ff;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -96,7 +97,7 @@
   <div class="content">
     <h2>All orders</h2>
     <div th:each="order : ${orders}" class="estimate">
-      <span class="estimate-content" th:text="${order.category}"></span>
+      <span class="estimate-content" th:text="${order.categoryNames}"></span>
       <span class="estimate-content" th:text="${order.departureAddress}"></span>
       <ion-icon name="arrow-down-outline"></ion-icon>
       <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
@@ -119,22 +120,22 @@
   </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const estimates = document.querySelectorAll('.estimate');
+  document.addEventListener('DOMContentLoaded', () => {
+    const estimates = document.querySelectorAll('.estimate');
 
-        estimates.forEach(estimate => {
-            let scrollAmount = 0;
-            estimate.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const scrollStep = 15;
-                const direction = e.deltaY > 0 ? 1 : -1;
-                scrollAmount += scrollStep * direction;
-                estimate.scrollTo({
-                    left: estimate.scrollLeft + scrollStep * direction,
-                });
-            });
-        });
+    estimates.forEach(estimate => {
+      estimate.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          estimate.scrollBy({
+            top: e.deltaY, // Прокрутка по вертикали
+            behavior: 'smooth'
+          });
+        }
+      });
     });
+  });
+
 </script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

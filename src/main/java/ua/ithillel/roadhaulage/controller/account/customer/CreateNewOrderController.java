@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.account.myOrders;
+package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,41 +9,47 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.entity.Order;
+import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
+import java.util.*;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
 @AllArgsConstructor
 public class CreateNewOrderController {
     private OrderService orderService;
+    private OrderCategoryService orderCategoryService;
 
     @GetMapping
-    public String createPage(@AuthenticationPrincipal User loggedUser,
+    public String createPage(@AuthenticationPrincipal User user,
                              Model model){
         Date creationDate = new Date(System.currentTimeMillis());
-        model.addAttribute("firstName", loggedUser.getFirstName());
-        model.addAttribute("lastName", loggedUser.getLastName());
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
         model.addAttribute("acceptDate", creationDate);
-        return "account/myOrders/create";
+        return "account/customerOrders/create";
     }
 
     @PostMapping("/create")
     public String createEstimate(@AuthenticationPrincipal User user,
-                                 @RequestParam(required = true) String category,
+                                 @RequestParam(required = true) String categoryName,
                                  @RequestParam(required = true) String deliveryAddress,
                                  @RequestParam(required = true) String departureAddress,
                                  @RequestParam(required = true) String additionalInfo,
                                  @RequestParam(required = true) String weight,
                                  @RequestParam(required = true) String dimensions,
                                  @RequestParam(required = true) String cost){
+
+        Set<OrderCategory> orderCategories = orderCategoryService.transferFromString(categoryName);
+        orderCategories.forEach(o -> orderCategoryService.save(o));
+
         Order order = new Order();
         order.setCustomer(user);
         order.setStatus("CREATED");
-        order.setCategory(category);
         order.setDeliveryAddress(deliveryAddress);
         order.setDepartureAddress(departureAddress);
         order.setAdditionalInfo(additionalInfo);
@@ -51,6 +57,7 @@ public class CreateNewOrderController {
         order.setDimensions(dimensions);
         order.setCost(cost);
         order.setCreationDate(new Date(System.currentTimeMillis()));
+        order.setCategories(orderCategories);
         orderService.save(order);
         return "redirect:/account/my-orders/create";
     }

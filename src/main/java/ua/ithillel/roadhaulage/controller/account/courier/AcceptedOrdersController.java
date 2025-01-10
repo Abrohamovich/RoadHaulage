@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.account.deliveredOrders;
+package ua.ithillel.roadhaulage.controller.account.courier;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,28 +27,36 @@ public class AcceptedOrdersController {
                                      Model model) {
         List<Order> orders = orderService.findOrdersByCourierId(user.getId());
         orders = orders.stream().filter(order -> order.getStatus().equals("ACCEPTED")).toList();
+        orders.forEach(Order::defineCategoryNames);
         model.addAttribute("orders", orders);
-        return "account/acceptedOrders/accepted";
+        return "account/courierOrders/accepted";
     }
 
     @PostMapping("/accept")
     public String acceptOrder(@AuthenticationPrincipal User user,
                               @RequestParam long id){
-        Optional<Order> order = orderService.findById(id);
-        order.get().setAcceptDate(new Date(System.currentTimeMillis()));
-        order.get().setStatus("ACCEPTED");
-        order.get().setCourier(user);
-        orderService.save(order.get());
+        Optional<Order> orderOptional = orderService.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setAcceptDate(new Date(System.currentTimeMillis()));
+            order.setStatus("ACCEPTED");
+            order.setCourier(user);
+            orderService.save(order);
+        }
+
         return "redirect:/account/delivered-orders/accepted";
     }
 
     @PostMapping("/decline")
     public String declineOrder(@RequestParam long id){
-        Optional<Order> order = orderService.findById(id);
-        order.get().setCourier(null);
-        order.get().setStatus("PUBLISHED");
-        order.get().setAcceptDate(null);
-        orderService.save(order.get());
+        Optional<Order> orderOptional = orderService.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setCourier(null);
+            order.setStatus("PUBLISHED");
+            order.setAcceptDate(null);
+            orderService.save(order);
+        }
         return "redirect:/account/delivered-orders/accepted";
     }
 }

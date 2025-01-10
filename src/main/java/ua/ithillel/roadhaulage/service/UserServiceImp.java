@@ -54,36 +54,24 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public short verifyEmail(String token) {
-        Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
-        if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
-            return 1;
+        short st = verifyToken(token);
+        if (st != 0) {
+            return st;
         }
-        User user = verificationToken.get().getUser();
-        if (user==null) {
-            return 2;
-        }
-        if(verificationToken.get().getExpiresAt().isBefore(LocalDateTime.now())){
-            return 3;
-        }
+        User user = verificationTokenService.getToken(token).get().getUser();
         user.setEnabled(true);
         userRepository.save(user);
-        verificationTokenService.delete(verificationToken.get());
+        verificationTokenService.delete(verificationTokenService.getToken(token).get());
         return 0;
     }
 
     @Override
     public short verifyPassword(String token, String password) {
-        Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
-        if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
-            return 1;
+        short st = verifyToken(token);
+        if (st != 0) {
+            return st;
         }
-        User user = verificationToken.get().getUser();
-        if (user==null) {
-            return 2;
-        }
-        if(verificationToken.get().getExpiresAt().isBefore(LocalDateTime.now())){
-            return 3;
-        }
+        User user = verificationTokenService.getToken(token).get().getUser();
         user.setPassword(password);
         save(user);
         return 0;
@@ -99,4 +87,17 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return user.get();
     }
 
+    private short verifyToken(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
+        if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
+            return 1;
+        }
+        if (verificationToken.get().getUser() == null) {
+            return 2;
+        }
+        if (verificationToken.get().getExpiresAt().isBefore(LocalDateTime.now())) {
+            return 3;
+        }
+        return 0;
+    }
 }

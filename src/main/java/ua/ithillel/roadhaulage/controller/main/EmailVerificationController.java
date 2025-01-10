@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller;
+package ua.ithillel.roadhaulage.controller.main;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller;
+package ua.ithillel.roadhaulage.controller.main;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

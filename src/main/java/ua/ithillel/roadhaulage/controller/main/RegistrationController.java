@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller;
+package ua.ithillel.roadhaulage.controller.main;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,6 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 

@@ -4,15 +4,25 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
-@Table(name="t_order")
+@Table(name = "t_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String category; // goods, food, toys...
+    @ManyToMany
+    @JoinTable(
+            name = "t_order_category",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<OrderCategory> categories;
+    @Transient
+    private String categoryNames;
     private String departureAddress; // Отправка
     private String deliveryAddress; // Доставка
     private String additionalInfo;
@@ -30,4 +40,12 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "courier_id")
     private User courier;
+
+
+    public void defineCategoryNames(){
+        this.categoryNames = this.getCategories().stream()
+                .map(OrderCategory::getName)
+                .collect(Collectors.joining(", "));
+    }
+
 }

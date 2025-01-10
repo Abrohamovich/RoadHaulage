@@ -1,4 +1,4 @@
-package ua.ithillel.roadhaulage.controller.account.deliveredOrders;
+package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,18 +13,18 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/account/delivered-orders/delivered")
+@RequestMapping("/account/my-orders/completed")
 @AllArgsConstructor
-public class DeliveredOrdersController {
+public class CompletedOrderController {
     private OrderService orderService;
 
     @GetMapping
-    public String acceptedOrdersPage(@AuthenticationPrincipal User user,
-                                     Model model) {
-        List<Order> orders = orderService.findOrdersByCourierId(user.getId());
+    public String completedEstimatesPage(@AuthenticationPrincipal User user,
+                                         Model model) {
+        List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
+        orders.forEach(Order::defineCategoryNames);
         model.addAttribute("orders", orders);
-        return "account/acceptedOrders/delivered";
+        return "account/customerOrders/completed";
     }
-
 }
