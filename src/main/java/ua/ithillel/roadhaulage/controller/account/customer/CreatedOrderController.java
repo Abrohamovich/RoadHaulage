@@ -55,8 +55,8 @@ public class CreatedOrderController {
         }
         return "redirect:/account/my-orders/completed";
     }
-    @GetMapping("/delete/{id}")
-    public String deleteOrder(@PathVariable(name = "id") long id){
+    @GetMapping("/delete")
+    public String deleteOrder(@RequestParam long id){
         orderService.delete(id);
         return "redirect:/account/my-orders/created";
     }

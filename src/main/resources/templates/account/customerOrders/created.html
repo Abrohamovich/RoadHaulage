@@ -115,7 +115,10 @@
         <input type="hidden" name="id" th:value="${order.id}" />
         <button type="submit">Close order</button>
       </form>
-      <a style="background-color: red" th:href="@{'/account/my-orders/created/delete/' + ${order.id}}" role="button">Delete</a>
+      <form th:action="@{/account/my-orders/created/delete}" method="get">
+        <input type="hidden" name="id" th:value="${order.id}" />
+        <button type="submit">Delete</button>
+      </form>
     </div>
   </div>
 </div>
