@@ -28,7 +28,7 @@ public class CreatedOrderController {
         orders = orders.stream().filter(order -> !order.getStatus().equals("COMPLETED")).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
-        return "account/customerOrders/created";
+        return "account/customer-orders/created";
     }
     @PostMapping("/publish")
     public String publishOrder(@RequestParam long id){

@@ -7,26 +7,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoadHaulage</title>
-  <style>
-    .content{
-        overflow-y: auto;
-    }
-    .form-group select {
-      width: 45%;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid blue;
-      border-radius: 15px;
-    }
-
-  </style>
 </head>
+<style>
+  #create-new-link{
+    display: inline-block;
+    padding: 10px;
+    margin: 0 0 0 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  #create-new-link a{
+    color: white;
+  }
+  #create-new-link a::after{
+    background-color: white;
+  }
+</style>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Create new order</h2>
     <form th:action="@{/account/my-orders/create/create}" method="post">
       <div class="form-group">
         <label for="firstName">Customer full name</label>

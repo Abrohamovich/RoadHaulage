@@ -1,0 +1,84 @@
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    height: calc(100vh - 60px);
+    text-align: center;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 65vh;
+}
+
+.content h1 {
+    font-size: 32px;
+    color: #333;
+}
+
+.content p {
+    font-size: 18px;
+    color: #666;
+}
+
+.order {
+    border: 1px solid #007bff;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    white-space: normal;
+    width: 200px;
+    max-height: 300px;
+}
+
+.order:hover {
+    background-color: #e6f0ff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.order span {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.order button {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-top: 10px;
+}
+
+.order a {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #fff;
+    text-decoration: none;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-top: 10px;
+}
+
+.order ion-icon {
+    font-size: 20px;
+    color: #007bff;
+    display: block;
+    margin: 10px auto;
+}

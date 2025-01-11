@@ -29,7 +29,7 @@ public class AcceptedOrdersController {
         orders = orders.stream().filter(order -> order.getStatus().equals("ACCEPTED")).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
-        return "account/courierOrders/accepted";
+        return "account/courier-orders/accepted";
     }
 
     @PostMapping("/accept")

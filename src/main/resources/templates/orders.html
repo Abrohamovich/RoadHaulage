@@ -3,87 +3,8 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/index.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/orders.css}">
 <head>
-  <style>
-      .content {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: flex-start;
-          align-items: flex-start;
-          gap: 20px;
-          height: calc(100vh - 60px);
-          text-align: center;
-          padding: 20px;
-          overflow-y: auto;
-      }
-      .content h1 {
-          font-size: 32px;
-          color: #333;
-      }
-      .content p {
-          font-size: 18px;
-          color: #666;
-      }
-      .estimate {
-          border: 1px solid #007bff;
-          border-radius: 10px;
-          padding: 15px;
-          background-color: #f9f9f9;
-          display: block;
-          overflow-x: hidden;
-          white-space: normal;
-          width: 220px;
-      }
-
-      .estimate:hover {
-          background-color: #e6f0ff;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .estimate span {
-          padding: 5px 10px;
-          border-radius: 5px;
-          background-color: #ffffff;
-          border: 1px solid #ddd;
-          font-size: 16px;
-          display: block;
-          margin-bottom: 10px;
-      }
-
-      .estimate button {
-          padding: 8px 15px;
-          font-size: 14px;
-          color: #fff;
-          background-color: #007bff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          display: block;
-          margin-top: 10px;
-      }
-
-      .estimate a {
-          padding: 8px 15px;
-          font-size: 14px;
-          color: #fff;
-          text-decoration: none;
-          background-color: #007bff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          display: block;
-          margin-top: 10px;
-      }
-
-      .estimate ion-icon {
-          font-size: 20px;
-          color: #007bff;
-          display: block;
-          margin: 10px auto;
-      }
-  </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orders</title>
@@ -91,19 +12,18 @@
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="content">
-  <div th:each="order : ${orders}" class="estimate">
-    <span class="estimate-content" th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
-    <span class="estimate-content" th:text="${order.categoriesString}"></span>
-    <span class="estimate-content" th:text="${order.departureAddressString}"></span>
+  <div th:each="order : ${orders}" class="order">
+    <span class="order-content" th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
+    <span class="order-content" th:text="${order.categoriesString}"></span>
+    <span class="order-content" th:text="${order.departureAddressString}"></span>
     <ion-icon name="arrow-forward-outline"></ion-icon>
-    <span class="estimate-content" th:text="${order.deliveryAddressString}"></span>
-    <span class="estimate-content" th:text="${order.costString}"></span>
+    <span class="order-content" th:text="${order.deliveryAddressString}"></span>
+    <span class="order-content" th:text="${order.costString}"></span>
     <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
       <div style="visibility: hidden"></div>
       <input type="hidden" name="id" th:value="${order.id}" />
       <button type="submit">Accept</button>
     </form>
-    <a th:href="@{/user/personal-info/id/{id}(id=${order.customer.id})}">View customer</a>
   </div>
 </div>
 </body>

@@ -28,7 +28,7 @@ public class PasswordRecoveryController {
     @GetMapping
     public String getPasswordRecoveryPage(@ModelAttribute("attentionMessage") String attentionMessage, Model model) {
         model.addAttribute("attentionMessage", attentionMessage);
-        return "passwordRecovery";
+        return "password-recovery";
     }
 
     @PostMapping("/confirm")

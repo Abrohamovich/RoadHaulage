@@ -32,7 +32,7 @@ public class ChangeOrderController {
             Order order = orderOptional.get();
             order.defineAllTransactional();
             model.addAttribute("order", order);
-            return "account/customerOrders/change";
+            return "account/customer-orders/change";
         }
         return "redirect:/error";
     }

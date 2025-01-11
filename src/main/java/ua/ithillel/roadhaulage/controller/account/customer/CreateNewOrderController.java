@@ -34,7 +34,7 @@ public class CreateNewOrderController {
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("acceptDate", creationDate);
-        return "account/customerOrders/create";
+        return "account/customer-orders/create";
     }
 
     @PostMapping("/create")

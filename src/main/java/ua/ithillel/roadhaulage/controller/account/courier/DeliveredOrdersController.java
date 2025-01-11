@@ -25,7 +25,7 @@ public class DeliveredOrdersController {
         orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
-        return "account/courierOrders/delivered";
+        return "account/courier-orders/delivered";
     }
 
 }

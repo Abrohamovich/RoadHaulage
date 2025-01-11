@@ -8,18 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoadHaulage</title>
   <style>
-      button {
-          padding: 8px 15px;
-          font-size: 14px;
-          color: #fff;
-          margin-bottom: 10px;
-          background-color: #007bff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-      }
       .cancel-button{
+        margin-bottom: 10px;
           padding: 8px 15px;
           font-size: 14px;
           color: #fff;
@@ -37,7 +27,6 @@
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
   <div class="content">
-    <h2>Edit order</h2>
     <form th:action="@{/account/my-orders/change/edit}" th:object="${order}" method="post">
       <input type="hidden" name="id" th:value="${order.id}" />
       <div class="form-group">

@@ -25,6 +25,6 @@ public class CompletedOrderController {
         orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
-        return "account/customerOrders/completed";
+        return "account/customer-orders/completed";
     }
 }

@@ -1,20 +1,13 @@
 package ua.ithillel.roadhaulage.controller.account.settings;
 
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 @Controller
 @RequestMapping("/account/settings/personal-information")
@@ -32,7 +25,7 @@ public class PersonalInfoController {
             model.addAttribute("lastName", user.getLastName());
             model.addAttribute("phone", user.getPhone());
             model.addAttribute("iban", user.getIban());
-        return "account/settings/personalInformation";
+        return "account/settings/personal-information";
     }
 
     @PostMapping("/update")

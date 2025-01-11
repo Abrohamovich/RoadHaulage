@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/orders.css}">
+<script src="/js/script.js"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadHaulage</title>
+</head>
+<style>
+  #accepted-link{
+    display: inline-block;
+    padding: 10px;
+    margin: 0 0 0 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  #accepted-link a{
+    color: white;
+  }
+  #accepted-link a::after{
+    background-color: white;
+  }
+</style>
+<body>
+<div th:replace="~{header.html}"></div>
+<div class="container">
+  <div th:replace="~{account/sidebar.html}"></div>
+  <div class="content">
+    <div th:each="order : ${orders}" class="order">
+      <span class="order-content" th:text="${order.customer.firstName} + ' ' + ${order.customer.lastName}"></span>
+      <span class="order-content" th:text="${order.departureAddressString}"></span>
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+      <span class="order-content" th:text="${order.deliveryAddressString}"></span>
+      <span class="order-content" th:text="${order.costString}"></span>
+      <form th:action="@{/account/delivered-orders/accepted/decline}" method="post">
+        <input type="hidden" name="id" th:value="${order.id}">
+        <button style="background-color: red">Decline</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
