@@ -96,10 +96,10 @@
   <div class="content">
     <h2>All orders</h2>
     <div th:each="order : ${orders}" class="estimate">
-      <span class="estimate-content" th:text="${order.category}"></span>
-      <span class="estimate-content" th:text="${order.departureAddress}"></span>
+      <span class="estimate-content" th:text="${order.categoriesString}"></span>
+      <span class="estimate-content" th:text="${order.departureAddressString}"></span>
       <ion-icon name="arrow-down-outline"></ion-icon>
-      <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
+      <span class="estimate-content" th:text="${order.deliveryAddressString}"></span>
       <span class="estimate-content" th:text="${order.cost}"></span>
     </div>
   </div>

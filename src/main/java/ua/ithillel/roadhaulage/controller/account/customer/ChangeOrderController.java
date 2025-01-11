@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.entity.Order;
@@ -21,13 +23,16 @@ import java.util.Set;
 public class ChangeOrderController {
     private OrderService orderService;
     private OrderCategoryService orderCategoryService;
+    private AddressService addressService;
 
     @PostMapping()
     public String changePage(@RequestParam("id") long id, Model model) {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.defineCategoriesAsString();
+            order.setCategoriesString();
+            order.setDepartureAddressString();
+            order.setDeliveryAddressString();
             model.addAttribute("order", order);
             return "account/customerOrders/change";
         }
@@ -36,22 +41,27 @@ public class ChangeOrderController {
 
     @PostMapping("/edit")
     public String changeOrder(@RequestParam long id,
-                              @RequestParam(required = false) String categoryName,
+                              @RequestParam(required = false) String categoriesString,
                               @RequestParam(required = false) String cost,
-                              @RequestParam(required = false) String departureAddress,
-                              @RequestParam(required = false) String deliveryAddress,
+                              @RequestParam(required = false) String deliveryAddressString,
+                              @RequestParam(required = false) String departureAddressString,
                               @RequestParam(required = false) String additionalInfo,
                               @RequestParam(required = false) String weight,
                               @RequestParam(required = false) String dimensions) {
         Optional<Order> orderOptional = orderService.findById(id);
-        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryName);
+        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
-        if (orderOptional.isPresent()) {
+        Optional<Address> deliveryAddress = addressService.createAddress(deliveryAddressString);
+        Optional<Address> departureAddress = addressService.createAddress(departureAddressString);
+
+        if (orderOptional.isPresent() && deliveryAddress.isPresent() && departureAddress.isPresent()) {
+            addressService.save(departureAddress.get());
+            addressService.save(deliveryAddress.get());
             Order order = orderOptional.get();
             order.setCategories(orderCategories);
             order.setCost(cost);
-            order.setDepartureAddress(departureAddress);
-            order.setDeliveryAddress(deliveryAddress);
+            order.setDepartureAddress(departureAddress.get());
+            order.setDeliveryAddress(deliveryAddress.get());
             order.setAdditionalInfo(additionalInfo);
             order.setWeight(weight);
             order.setDimensions(dimensions);

@@ -22,9 +22,17 @@ public class Order {
     )
     private Set<OrderCategory> categories;
     @Transient
-    private String categoriesAsString;
-    private String departureAddress; // Отправка
-    private String deliveryAddress; // Доставка
+    private String categoriesString;
+    @ManyToOne
+    @JoinColumn(name = "departure_address_id")
+    private Address departureAddress; // From
+    @Transient
+    private String departureAddressString;
+    @ManyToOne
+    @JoinColumn(name = "delivery_address_id")
+    private Address deliveryAddress; // To
+    @Transient
+    private String deliveryAddressString;
     private String additionalInfo;
     private String weight; // in metric sys (kg, t ...)
     private String status; // CREATED, PUBLISHED, IN-PROCESS, COMPLETED
@@ -42,10 +50,17 @@ public class Order {
     private User courier;
 
 
-    public void defineCategoriesAsString(){
-        this.categoriesAsString = this.getCategories().stream()
+    public void setCategoriesString(){
+        this.categoriesString = this.getCategories().stream()
                 .map(OrderCategory::getName)
                 .collect(Collectors.joining(", "));
     }
 
+    public void setDepartureAddressString() {
+        this.departureAddressString = this.getDepartureAddress().toString();
+    }
+
+    public void setDeliveryAddressString() {
+        this.deliveryAddressString = this.getDeliveryAddress().toString();
+    }
 }
