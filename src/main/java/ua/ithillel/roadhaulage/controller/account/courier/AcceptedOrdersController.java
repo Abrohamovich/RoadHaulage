@@ -27,7 +27,11 @@ public class AcceptedOrdersController {
                                      Model model) {
         List<Order> orders = orderService.findOrdersByCourierId(user.getId());
         orders = orders.stream().filter(order -> order.getStatus().equals("ACCEPTED")).toList();
-        orders.forEach(Order::defineCategoryNames);
+        orders.forEach(o -> {
+            o.defineCategoryNames();
+            o.setDeliveryAddressString();
+            o.setDepartureAddressString();
+        });
         model.addAttribute("orders", orders);
         return "account/courierOrders/accepted";
     }

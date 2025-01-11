@@ -98,9 +98,9 @@
     <h2>All orders</h2>
     <div th:each="order : ${orders}" class="estimate">
       <span class="estimate-content" th:text="${order.categoryNames}"></span>
-      <span class="estimate-content" th:text="${order.departureAddress}"></span>
+      <span class="estimate-content" th:text="${order.departureAddressString}"></span>
       <ion-icon name="arrow-down-outline"></ion-icon>
-      <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
+      <span class="estimate-content" th:text="${order.deliveryAddressString}"></span>
       <span class="estimate-content" th:text="${order.cost}"></span>
       <span class="estimate-content" th:name="status" th:text="${order.status}"></span>
       <form th:action="@{/account/my-orders/created/publish}" th:if="${order.status} == 'CREATED' or ${order.status} == 'CHANGED'" method="post">

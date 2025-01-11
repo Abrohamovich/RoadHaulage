@@ -1,7 +1,9 @@
 package ua.ithillel.roadhaulage.entity;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Setter;
 
 import java.sql.Date;
 import java.util.Set;
@@ -56,4 +58,11 @@ public class Order {
                 .collect(Collectors.joining(", "));
     }
 
+    public void setDepartureAddressString() {
+        this.departureAddressString = this.getDepartureAddress().toString();
+    }
+
+    public void setDeliveryAddressString() {
+        this.deliveryAddressString = this.getDeliveryAddress().toString();
+    }
 }

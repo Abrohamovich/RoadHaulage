@@ -93,10 +93,10 @@
 <div class="content">
   <div th:each="order : ${orders}" class="estimate">
     <span class="estimate-content" th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
-    <span class="estimate-content" th:text="${order.category}"></span>
-    <span class="estimate-content" th:text="${order.departureAddress}"></span>
+    <span class="estimate-content" th:text="${order.categoryNames}"></span>
+    <span class="estimate-content" th:text="${order.departureAddressString}"></span>
     <ion-icon name="arrow-forward-outline"></ion-icon>
-    <span class="estimate-content" th:text="${order.deliveryAddress}"></span>
+    <span class="estimate-content" th:text="${order.deliveryAddressString}"></span>
     <span class="estimate-content" th:text="${order.cost}"></span>
     <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
       <div style="visibility: hidden"></div>

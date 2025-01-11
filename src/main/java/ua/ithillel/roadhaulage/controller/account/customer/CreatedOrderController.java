@@ -26,7 +26,11 @@ public class CreatedOrderController {
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> !order.getStatus().equals("COMPLETED")).toList();
-        orders.forEach(Order::defineCategoryNames);
+        orders.forEach(o -> {
+            o.defineCategoryNames();
+            o.setDeliveryAddressString();
+            o.setDepartureAddressString();
+        });
         model.addAttribute("orders", orders);
         return "account/customerOrders/created";
     }
