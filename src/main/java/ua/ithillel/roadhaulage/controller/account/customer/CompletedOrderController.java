@@ -23,11 +23,7 @@ public class CompletedOrderController {
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
-        orders.forEach(order -> {
-            order.setCategoriesString();
-            order.setDeliveryAddressString();
-            order.setDepartureAddressString();
-        });
+        orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
         return "account/customerOrders/completed";
     }

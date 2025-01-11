@@ -14,6 +14,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String status;
     @ManyToMany
     @JoinTable(
             name = "t_order_category",
@@ -25,23 +26,36 @@ public class Order {
     private String categoriesString;
     @ManyToOne
     @JoinColumn(name = "departure_address_id")
-    private Address departureAddress; // From
+    private Address departureAddress;
     @Transient
     private String departureAddressString;
     @ManyToOne
     @JoinColumn(name = "delivery_address_id")
-    private Address deliveryAddress; // To
+    private Address deliveryAddress;
     @Transient
     private String deliveryAddressString;
+
+    private String weight;
+    private String weightUnit;
+    @Transient
+    private String weightString;
+
+    private String dimensions;
+    private String dimensionsUnit;
+    @Transient
+    private String dimensionsString;
+
+    private String cost;
+    private String currency;
+    @Transient
+    private String costString;
+
     private String additionalInfo;
-    private String weight; // in metric sys (kg, t ...)
-    private String status; // CREATED, PUBLISHED, IN-PROCESS, COMPLETED
-    private String dimensions; // LENGTH-WIDTH-HIGH in metric sys (m, sm)
-    private String cost; // example: 700 USD or 8,340 UAH or 560 BYN
-    private Date creationDate; // YYYY-MM-DD 2024-12-27
-    private Date amendmentDate; // YYYY-MM-DD 2025-01-09
-    private Date acceptDate; // YYYY-MM-DD 2025-01-09
-    private Date completionDate; // YYYY-MM-DD 2025-01-09
+
+    private Date creationDate;
+    private Date amendmentDate;
+    private Date acceptDate;
+    private Date completionDate;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private User customer;
@@ -49,18 +63,38 @@ public class Order {
     @JoinColumn(name = "courier_id")
     private User courier;
 
+    public void defineAllTransactional(){
+        defineCategoriesString();
+        defineDepartureAddressString();
+        defineDeliveryAddressString();
+        defineWeightString();
+        defineDimensionsString();
+        defineCostString();
+    }
 
-    public void setCategoriesString(){
+    public void defineCategoriesString(){
         this.categoriesString = this.getCategories().stream()
                 .map(OrderCategory::getName)
                 .collect(Collectors.joining(", "));
     }
 
-    public void setDepartureAddressString() {
+    public void defineDepartureAddressString() {
         this.departureAddressString = this.getDepartureAddress().toString();
     }
 
-    public void setDeliveryAddressString() {
+    public void defineDeliveryAddressString() {
         this.deliveryAddressString = this.getDeliveryAddress().toString();
+    }
+
+    public void defineWeightString() {
+        this.weightString = this.getWeight() + " " + this.getWeightUnit();
+    }
+
+    public void defineDimensionsString(){
+        this.dimensionsString = this.getDimensions() + " " + this.getDimensionsUnit();
+    }
+
+    public void defineCostString(){
+        this.costString = this.getCost() + " " + this.getCurrency();
     }
 }

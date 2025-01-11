@@ -100,7 +100,7 @@
       <span class="estimate-content" th:text="${order.departureAddressString}"></span>
       <ion-icon name="arrow-forward-outline"></ion-icon>
       <span class="estimate-content" th:text="${order.deliveryAddressString}"></span>
-      <span class="estimate-content" th:text="${order.cost}"></span>
+      <span class="estimate-content" th:text="${order.costString}"></span>
       <form th:action="@{/account/delivered-orders/accepted/decline}" method="post">
         <input type="hidden" name="id" th:value="${order.id}">
         <button style="background-color: red">Decline</button>

@@ -30,9 +30,7 @@ public class ChangeOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.setCategoriesString();
-            order.setDepartureAddressString();
-            order.setDeliveryAddressString();
+            order.defineAllTransactional();
             model.addAttribute("order", order);
             return "account/customerOrders/change";
         }
@@ -47,7 +45,10 @@ public class ChangeOrderController {
                               @RequestParam(required = false) String departureAddressString,
                               @RequestParam(required = false) String additionalInfo,
                               @RequestParam(required = false) String weight,
-                              @RequestParam(required = false) String dimensions) {
+                              @RequestParam(required = false) String dimensions,
+                              @RequestParam(required = true, name = "weight-unit") String weightUnit,
+                              @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
+                              @RequestParam(required = true, name = "currency") String currency) {
         Optional<Order> orderOptional = orderService.findById(id);
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
@@ -60,11 +61,14 @@ public class ChangeOrderController {
             Order order = orderOptional.get();
             order.setCategories(orderCategories);
             order.setCost(cost);
+            order.setCurrency(currency);
             order.setDepartureAddress(departureAddress.get());
             order.setDeliveryAddress(deliveryAddress.get());
             order.setAdditionalInfo(additionalInfo);
             order.setWeight(weight);
+            order.setWeightUnit(weightUnit);
             order.setDimensions(dimensions);
+            order.setDimensionsUnit(dimensionsUnit);
             order.setAmendmentDate(new Date(System.currentTimeMillis()));
             order.setStatus("CHANGED");
             orderService.save(order);

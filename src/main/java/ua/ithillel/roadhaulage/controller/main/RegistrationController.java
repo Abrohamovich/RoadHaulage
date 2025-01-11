@@ -69,7 +69,7 @@ public class RegistrationController {
         user.setLastName(lastName);
         //todo
         // All registered users are auto-verified for ease of use
-        user.setEnabled(false);
+        user.setEnabled(true);
         user.setRole("ROLE_USER");
         userService.save(user);
 

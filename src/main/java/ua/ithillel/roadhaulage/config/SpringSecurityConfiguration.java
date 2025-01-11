@@ -35,6 +35,7 @@ public class SpringSecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/js/**",
                                 "/css/**",
                                 "/home",
                                 "/logout",

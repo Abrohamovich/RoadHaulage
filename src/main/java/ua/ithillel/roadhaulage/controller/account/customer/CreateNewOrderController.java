@@ -39,15 +39,18 @@ public class CreateNewOrderController {
 
     @PostMapping("/create")
     public String createEstimate(@AuthenticationPrincipal User user,
-                                 @RequestParam(required = true) String categoryName,
+                                 @RequestParam(required = true) String categoryNames,
                                  @RequestParam(required = true) String deliveryAddressString,
                                  @RequestParam(required = true) String departureAddressString,
                                  @RequestParam(required = true) String additionalInfo,
                                  @RequestParam(required = true) String weight,
                                  @RequestParam(required = true) String dimensions,
-                                 @RequestParam(required = true) String cost){
+                                 @RequestParam(required = true) String cost,
+                                 @RequestParam(required = true, name = "weight-unit") String weightUnit,
+                                 @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
+                                 @RequestParam(required = true, name = "currency") String currency){
 
-        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryName);
+        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories.forEach(o -> orderCategoryService.save(o));
 
         Optional<Address> deliveryAddress = addressService.createAddress(deliveryAddressString);
@@ -63,8 +66,11 @@ public class CreateNewOrderController {
             order.setDepartureAddress(departureAddress.get());
             order.setAdditionalInfo(additionalInfo);
             order.setWeight(weight);
+            order.setWeightUnit(weightUnit);
             order.setDimensions(dimensions);
+            order.setDimensionsUnit(dimensionsUnit);
             order.setCost(cost);
+            order.setCurrency(currency);
             order.setCreationDate(new Date(System.currentTimeMillis()));
             order.setCategories(orderCategories);
             orderService.save(order);

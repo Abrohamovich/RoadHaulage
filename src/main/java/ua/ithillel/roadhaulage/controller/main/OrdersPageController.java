@@ -26,11 +26,7 @@ public class OrdersPageController {
                         .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
                 .filter(order -> order.getStatus().equals("PUBLISHED"))
                 .toList();
-        orders.forEach(o -> {
-            o.setCategoriesString();
-            o.setDeliveryAddressString();
-            o.setDepartureAddressString();
-        });
+        orders.forEach(Order::defineAllTransactional);
         if(!orders.isEmpty()) {
             model.addAttribute("orders", orders);
         }
