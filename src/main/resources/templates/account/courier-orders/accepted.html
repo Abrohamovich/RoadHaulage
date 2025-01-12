@@ -38,10 +38,12 @@
       <ion-icon name="arrow-forward-outline"></ion-icon>
       <span class="order-content" th:text="${order.deliveryAddressString}"></span>
       <span class="order-content" th:text="${order.costString}"></span>
-      <form th:action="@{/account/delivered-orders/accepted/decline}" method="post">
-        <input type="hidden" name="id" th:value="${order.id}">
-        <button style="background-color: red">Decline</button>
-      </form>
+      <div class="button-container">
+        <form th:action="@{/account/delivered-orders/accepted/decline}" method="post">
+          <input type="hidden" name="id" th:value="${order.id}">
+          <button style="background-color: red">Decline</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>

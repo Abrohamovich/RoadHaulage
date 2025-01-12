@@ -26,7 +26,8 @@
     border-radius: 10px;
     padding: 15px;
     background-color: #f9f9f9;
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
     white-space: normal;
@@ -48,9 +49,19 @@
     display: block;
     margin-bottom: 10px;
 }
-
-.order button {
+.button-container {
+    position: sticky;
+    bottom: 0;
+    padding: 10px;
+    background-color: #fff;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.button-container button {
     padding: 8px 15px;
+    width: 150px;
     font-size: 14px;
     color: #fff;
     background-color: #007bff;

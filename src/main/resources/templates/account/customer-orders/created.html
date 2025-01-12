@@ -39,22 +39,24 @@
       <span class="order-content" th:text="${order.deliveryAddressString}"></span>
       <span class="order-content" th:text="${order.costString}"></span>
       <span class="order-content" th:name="status" th:text="${order.status}"></span>
-      <form th:action="@{/account/my-orders/created/publish}" th:if="${order.status} == 'CREATED' or ${order.status} == 'CHANGED'" method="post">
-        <input type="hidden" name="id" th:value="${order.id}" />
-        <button type="submit">Publish</button>
-      </form>
-      <form th:action="@{/account/my-orders/change}" th:if="${order.status} != 'ACCEPTED'" method="post">
-        <input type="hidden" name="id" th:value="${order.id}" />
-        <button type="submit">Change</button>
-      </form>
-      <form th:action="@{/account/my-orders/created/close}" th:if="${order.status} == 'ACCEPTED'" method="post">
-        <input type="hidden" name="id" th:value="${order.id}" />
-        <button type="submit">Close order</button>
-      </form>
-      <form th:action="@{/account/my-orders/created/delete}" method="get">
-        <input type="hidden" name="id" th:value="${order.id}" />
-        <button type="submit">Delete</button>
-      </form>
+      <div class="button-container">
+        <form th:action="@{/account/my-orders/created/publish}" th:if="${order.status} == 'CREATED' or ${order.status} == 'CHANGED'" method="post">
+          <input type="hidden" name="id" th:value="${order.id}" />
+          <button type="submit">Publish</button>
+        </form>
+        <form th:action="@{/account/my-orders/change}" th:if="${order.status} != 'ACCEPTED'" method="post">
+          <input type="hidden" name="id" th:value="${order.id}" />
+          <button type="submit">Change</button>
+        </form>
+        <form th:action="@{/account/my-orders/created/close}" th:if="${order.status} == 'ACCEPTED'" method="post">
+          <input type="hidden" name="id" th:value="${order.id}" />
+          <button type="submit">Close order</button>
+        </form>
+        <form th:action="@{/account/my-orders/created/delete}" method="get">
+          <input type="hidden" name="id" th:value="${order.id}" />
+          <button type="submit">Delete</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
