@@ -64,37 +64,15 @@ public class Order {
     private User courier;
 
     public void defineAllTransactional(){
-        defineCategoriesString();
-        defineDepartureAddressString();
-        defineDeliveryAddressString();
-        defineWeightString();
-        defineDimensionsString();
-        defineCostString();
-    }
-
-    public void defineCategoriesString(){
         this.categoriesString = this.getCategories().stream()
                 .map(OrderCategory::getName)
                 .collect(Collectors.joining(", "));
-    }
-
-    public void defineDepartureAddressString() {
         this.departureAddressString = this.getDepartureAddress().toString();
-    }
-
-    public void defineDeliveryAddressString() {
         this.deliveryAddressString = this.getDeliveryAddress().toString();
-    }
-
-    public void defineWeightString() {
         this.weightString = this.getWeight() + " " + this.getWeightUnit();
-    }
-
-    public void defineDimensionsString(){
         this.dimensionsString = this.getDimensions() + " " + this.getDimensionsUnit();
-    }
-
-    public void defineCostString(){
         this.costString = this.getCost() + " " + this.getCurrency();
     }
 }
+
+

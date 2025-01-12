@@ -40,7 +40,7 @@ public class SpringSecurityConfiguration {
                                 "/home",
                                 "/logout",
                                 "/register",
-                                "/orders",
+                                "/orders/**",
                                 "/verify-email",
                                 "/password-recovery/**").permitAll()
                         .requestMatchers("/account/**").hasRole("USER")

@@ -51,4 +51,17 @@ public class OrderServiceImp implements OrderService {
     public Optional<Order> findById(long id) {
         return orderRepository.findById(id);
     }
+
+    @Override
+    public List<Order> returnOtherPublishedOrders(long id) {
+        List<Order> allOrders = findAll();
+        List<Order> customerOrders = findOrdersByCustomerId(id);
+        List<Order> orders = allOrders.stream()
+                .filter(order -> customerOrders.stream()
+                        .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
+                .filter(order -> order.getStatus().equals("PUBLISHED"))
+                .toList();
+        orders.forEach(Order::defineAllTransactional);
+        return orders;
+    }
 }

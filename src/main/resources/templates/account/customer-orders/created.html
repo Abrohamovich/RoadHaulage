@@ -26,6 +26,18 @@
   #all-orders-link a::after{
     background-color: white;
   }
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    height: calc(100vh - 60px);
+    text-align: center;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 65vh;
+  }
 </style>
 <body>
 <div th:replace="~{header.html}"></div>

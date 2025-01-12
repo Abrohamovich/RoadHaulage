@@ -1,31 +1,98 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/index.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
+<link rel="stylesheet" th:href="@{/css/orders-filter.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orders</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="content">
-  <div th:each="order : ${orders}" class="order">
-    <span class="order-content" th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
-    <span class="order-content" th:text="${order.categoriesString}"></span>
-    <span class="order-content" th:text="${order.departureAddressString}"></span>
-    <ion-icon name="arrow-forward-outline"></ion-icon>
-    <span class="order-content" th:text="${order.deliveryAddressString}"></span>
-    <span class="order-content" th:text="${order.costString}"></span>
-    <div class="button-container">
-      <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
-        <input type="hidden" name="id" th:value="${order.id}" />
-        <button type="submit">Accept</button>
-      </form>
-    </div>
-  </div>
+    <aside class="filter-bar">
+        <form method="get" th:action="@{/orders/filter}">
+
+            <label for="category">Category:</label>
+            <input id="selectedValues" type="text" name="categoriesString" th:value="${categoriesString}" readonly>
+            <select id="category">
+                <option th:each="category : ${categories}" th:text="${category.name}"></option>
+            </select>
+
+            <label for="min-cost">Min cost:</label>
+            <input type="range" id="min-cost" name="min-cost" min="0" th:max="${maxCost}" th:value="${minCost}" step="1">
+            <span class="value" id="min-cost-value"  th:text="${minCost}"></span>
+
+            <label for="max-cost">Max cost:</label>
+            <input type="range" id="max-cost" name="max-cost" min="0" th:max="${maxCost}" th:value="${maxCost}" step="1">
+            <span class="value" id="max-cost-value" th:text="${maxCost}"></span>
+
+            <label for="currency">Currency:</label>
+            <select id = "currency" name="currency">
+                <option>ALL</option>
+                <option>EUR</option>
+                <option>USD</option>
+                <option>UAH</option>
+                <option>GBP</option>
+            </select>
+
+            <button type="submit">Filter</button>
+            <button type="reset" onclick="window.location.href='/orders'">Reset</button>
+        </form>
+    </aside>
+    <main class="orders">
+        <div th:each="order : ${orders}" class="order">
+            <span class="order-content"
+                  th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
+            <span class="order-content" th:text="${order.categoriesString}"></span>
+            <span class="order-content" th:text="${order.departureAddressString}"></span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+            <span class="order-content" th:text="${order.deliveryAddressString}"></span>
+            <span class="order-content" th:text="${order.costString}"></span>
+            <div class="button-container">
+                <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
+                    <input type="hidden" name="id" th:value="${order.id}"/>
+                    <button type="submit">Accept</button>
+                </form>
+            </div>
+        </div>
+    </main>
 </div>
 </body>
+<script>
+    const select = document.getElementById('category');
+    const input = document.getElementById('selectedValues');
+    const selectedOptions = new Set();
+
+    select.addEventListener('change', () => {
+        const options = Array.from(select.options);
+        options.forEach(option => {
+            if (option.selected) {
+                if (selectedOptions.has(option.value)) {
+                    selectedOptions.delete(option.value);
+                    option.selected = false;
+                } else {
+                    selectedOptions.add(option.value);
+                }
+            }
+        });
+        input.value = Array.from(selectedOptions).join(', ');
+    });
+
+    function updateValue(sliderId, displayId) {
+        const slider = document.getElementById(sliderId);
+        const display = document.getElementById(displayId);
+
+        slider.addEventListener('input', () => {
+            display.textContent = slider.value;
+        });
+    }
+    updateValue('min-cost', 'min-cost-value');
+    updateValue('max-cost', 'max-cost-value');
+</script>
+<script src="/js/script.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </html>
