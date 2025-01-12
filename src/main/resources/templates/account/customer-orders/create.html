@@ -41,11 +41,11 @@
       </div>
       <div class="form-group">
         <label for="departureAddressString">Departure address</label>
-        <input type="text" id="departureAddressString" name="departureAddressString" placeholder="Residential complex Lozenets, 48 Sv. Naum Blvd, 1164 Sofia, Bulgaria" required>
+        <input type="text" id="departureAddressString" name="departureAddressString" required>
       </div>
       <div class="form-group">
         <label for="deliveryAddressString">Delivery address</label>
-        <input type="text" id="deliveryAddressString" name="deliveryAddressString" placeholder="Mińska 23/lok U7, 03-808 Warszawa, Polska" required>
+        <input type="text" id="deliveryAddressString" name="deliveryAddressString" required>
       </div>
       <div class="form-group">
         <label for="weight">Weight</label>
@@ -64,9 +64,9 @@
         <div>
           <label for="dimensions-unit"></label>
           <select id="dimensions-unit" name="dimensions-unit" required>
-            <option value="m">m</option>
             <option value="cm">cm</option>
             <option value="inch">inch</option>
+            <option value="cm">m</option>
             <option value="foot">foot</option>
           </select>
         </div>
@@ -77,8 +77,8 @@
         <div>
           <label for="currency"></label>
           <select id="currency" name="currency" required>
-            <option value="USD">USD</option>
             <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
             <option value="UAH">UAH</option>
             <option value="GBP">GBP</option>
           </select>

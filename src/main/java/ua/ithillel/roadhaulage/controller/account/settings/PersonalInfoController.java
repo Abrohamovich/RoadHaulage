@@ -32,6 +32,7 @@ public class PersonalInfoController {
     public String update(@AuthenticationPrincipal User user,
                          @RequestParam String firstName,
                          @RequestParam String lastName,
+                         @RequestParam(name = "countryCode") String phoneCode,
                          @RequestParam String phone,
                          @RequestParam String iban,
                          RedirectAttributes redirectAttributes) {
@@ -59,7 +60,7 @@ public class PersonalInfoController {
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        user.setPhone(phone);
+        user.setPhone(phoneCode + phone);
         user.setIban(iban);
         userService.update(user);
         return "redirect:/account/settings/personal-information";

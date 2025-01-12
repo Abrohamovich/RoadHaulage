@@ -3,26 +3,83 @@
       xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/register.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
 </head>
 <body>
 <div class="register-container">
-  <h1>Register</h1>
-  <form th:action="@{/register}" method="POST">
-    <input type="text" name="firstName" placeholder="First name" required >
-    <input type="text" name="lastName" placeholder="Last name" required >
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="tel" name="phone" placeholder="Phone number" required>
-    <input type="password" name="password" placeholder="Password" required minlength="8">
-    <button type="submit">Register</button>
-  </form>
-  <p style="color: red" th:if="${emailExists}" th:text="${emailExists}"></p>
-  <p style="color: red" th:if="${invalidNameContent}" th:text="${invalidNameContent}"></p>
-  <p style="color: red" th:if="${passwordContain}" th:text="${passwordContain}"></p>
-  <p style="color: red" th:if="${phoneError}" th:text="${phoneError}"></p>
-  <p>Already have an account? <a th:href="@{/login}">Log in!</a></p>
+    <h1>Register</h1>
+    <form th:action="@{/register}" method="POST">
+        <input type="text" name="firstName" placeholder="First name" required
+               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
+        <input type="text" name="lastName" placeholder="Last name" required
+               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
+        <input type="email" name="email" placeholder="Email" required>
+        <div class="phone-container">
+            <select name="countryCode" id=""><option data-countryCode="AD" value="376">+376</option>
+                <option data-countryCode="AL" value="355">+355</option>
+                <option data-countryCode="AM" value="374">+374</option>
+                <option data-countryCode="AT" value="43">+43</option>
+                <option data-countryCode="AZ" value="994">+994</option>
+                <option data-countryCode="BY" value="375">+375</option>
+                <option data-countryCode="BE" value="32">+32</option>
+                <option data-countryCode="BA" value="387">+387</option>
+                <option data-countryCode="BG" value="359">+359</option>
+                <option data-countryCode="HR" value="385">+385</option>
+                <option data-countryCode="CY" value="357">+357</option>
+                <option data-countryCode="CZ" value="420">+420</option>
+                <option data-countryCode="DK" value="45">+45</option>
+                <option data-countryCode="EE" value="372">+372</option>
+                <option data-countryCode="FI" value="358">+358</option>
+                <option data-countryCode="FR" value="33">+33</option>
+                <option data-countryCode="GE" value="995">+995</option>
+                <option data-countryCode="DE" value="49">+49</option>
+                <option data-countryCode="GR" value="30">+30</option>
+                <option data-countryCode="HU" value="36">+36</option>
+                <option data-countryCode="IS" value="354">+354</option>
+                <option data-countryCode="IE" value="353">+353</option>
+                <option data-countryCode="IT" value="39">+39</option>
+                <option data-countryCode="KZ" value="7">+7</option>
+                <option data-countryCode="LV" value="371">+371</option>
+                <option data-countryCode="LI" value="423">+423</option>
+                <option data-countryCode="LT" value="370">+370</option>
+                <option data-countryCode="LU" value="352">+352</option>
+                <option data-countryCode="MT" value="356">+356</option>
+                <option data-countryCode="MD" value="373">+373</option>
+                <option data-countryCode="MC" value="377">+377</option>
+                <option data-countryCode="ME" value="382">+382</option>
+                <option data-countryCode="NL" value="31">+31</option>
+                <option data-countryCode="MK" value="389">+389</option>
+                <option data-countryCode="NO" value="47">+47</option>
+                <option data-countryCode="PL" value="48">+48</option>
+                <option data-countryCode="PT" value="351">+351</option>
+                <option data-countryCode="RO" value="40">+40</option>
+                <option data-countryCode="RU" value="7">+7</option>
+                <option data-countryCode="SM" value="378">+378</option>
+                <option data-countryCode="RS" value="381">+381</option>
+                <option data-countryCode="SK" value="421">+421</option>
+                <option data-countryCode="SI" value="386">+386</option>
+                <option data-countryCode="ES" value="34">+34</option>
+                <option data-countryCode="SE" value="46">+46</option>
+                <option data-countryCode="CH" value="41">+41</option>
+                <option data-countryCode="TR" value="90">+90</option>
+                <option data-countryCode="UA" value="380">+380</option>
+                <option data-countryCode="GB" value="44">+44</option>
+                <option data-countryCode="VA" value="379">+379</option>
+                <option data-countryCode="XK" value="383">+383</option>
+            </select>
+            <input type="text" pattern="[0-9]+" name="phone" placeholder="Phone number" required
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+        </div>
+        <input type="password" name="password" placeholder="Password" required minlength="8">
+        <button type="submit">Register</button>
+    </form>
+    <p style="color: red" th:if="${emailExists}" th:text="${emailExists}"></p>
+    <p style="color: red" th:if="${invalidNameContent}" th:text="${invalidNameContent}"></p>
+    <p style="color: red" th:if="${passwordContain}" th:text="${passwordContain}"></p>
+    <p style="color: red" th:if="${phoneError}" th:text="${phoneError}"></p>
+    <p>Already have an account? <a th:href="@{/login}">Log in!</a></p>
 </div>
 </body>
 </html>

@@ -38,6 +38,7 @@ public class RegistrationController {
     @PostMapping
     public String register(@RequestParam(required = true) String email,
                            @RequestParam(required = true) String password,
+                           @RequestParam(required = true, name = "countryCode") String phoneCode,
                            @RequestParam(required = true) String phone,
                            @RequestParam(required = true) String firstName,
                            @RequestParam(required = true) String lastName, RedirectAttributes redirectAttributes) {
@@ -64,7 +65,7 @@ public class RegistrationController {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
-        user.setPhone(phone);
+        user.setPhone(phoneCode + phone);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         //todo

@@ -51,3 +51,30 @@ body {
 .register-container a:hover {
     text-decoration: underline;
 }
+.phone-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.phone-container select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 200px;
+    border-radius: 4px;
+    font-size: 16px;
+    appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.phone-container input {
+    flex: 2;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}

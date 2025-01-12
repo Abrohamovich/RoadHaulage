@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.entity.User;
@@ -36,7 +34,6 @@ public class OrdersPageController {
     public String ordersPage(@AuthenticationPrincipal User user,
                              Model model) {
         List<Order> orders = orderService.returnOtherPublishedOrders(user.getId());
-        model.addAttribute("orders", orders);
         model.addAttribute("categories", allOrderCategories);
         addModels(model, orders);
         return "orders";
@@ -58,18 +55,17 @@ public class OrdersPageController {
         if(!categoriesString.isEmpty()) {
             Set<OrderCategory> setCategories = orderCategoryService.createOrderCategorySet(categoriesString);
             orders = orders.stream()
-                    .filter(order -> order.getCategories().equals(setCategories))
+                    .filter(order -> order.getCategories().contains(setCategories.iterator().next()))
                     .toList();
         }
         orders = orders.stream()
                 .filter(order ->Double.parseDouble(order.getCost()) <= Double.parseDouble(maxCost))
                 .filter(order -> Double.parseDouble(order.getCost()) >= Double.parseDouble(minCost))
                 .toList();
-
-        model.addAttribute("orders", orders);
+        if(!orders.isEmpty()) addModels(model, orders);
         model.addAttribute("categories", allOrderCategories);
         model.addAttribute("categoriesString", categoriesString);
-        addModels(model, orders);
+        model.addAttribute("currency", currency);
         return "orders";
     }
 
@@ -78,11 +74,12 @@ public class OrdersPageController {
                 .map(Order::getCost)
                 .mapToDouble(Double::parseDouble)
                 .max().getAsDouble();
-        model.addAttribute("maxCost", maxCost);
         double minCost = orders.stream()
                 .map(Order::getCost)
                 .mapToDouble(Double::parseDouble)
                 .min().getAsDouble();
+        model.addAttribute("maxCost", maxCost);
         model.addAttribute("minCost", minCost);
+        model.addAttribute("orders", orders);
     }
 }
