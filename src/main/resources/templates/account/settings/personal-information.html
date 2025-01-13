@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
@@ -24,12 +25,16 @@
   #personal-info-link a::after{
     background-color: white;
   }
+  .form-group select{
+    margin-left: 0;
+    margin-right: 30px;
+  }
 </style>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <div class="content">
+  <main>
     <form th:action="@{/account/settings/personal-information/update}" method="post">
       <div class="form-group">
         <label for="firstName">First name</label>
@@ -43,8 +48,8 @@
                oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
       </div>
       <p style="color: red" th:if="${lastNameError}" th:text="${lastNameError}"></p>
-      <div class="form-group">
-        <label for="phone">Contact phone</label>
+      <div class="form-group selector">
+        <label>Contact phone</label>
         <select name="countryCode" id=""><option data-countryCode="AD" value="376">+376</option>
           <option data-countryCode="AL" value="355">+355</option>
           <option data-countryCode="AM" value="374">+374</option>
@@ -107,7 +112,7 @@
       </div>
       <button type="submit">Save changes</button>
     </form>
-  </div>
+  </main>
 </div>
 </body>
 </html>

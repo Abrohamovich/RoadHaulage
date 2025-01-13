@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
@@ -26,7 +27,7 @@
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <div class="content">
+  <main>
     <form th:action="@{/account/my-orders/change/edit}" th:object="${order}" method="post">
       <input type="hidden" name="id" th:value="${order.id}" />
       <div class="form-group">
@@ -85,7 +86,7 @@
       <button type="submit">Edit</button>
     </form>
     <a class="cancel-button" th:href="@{/account/my-orders/created}">Cancel</a>
-  </div>
+  </main>
 </div>
 </body>
 </html>

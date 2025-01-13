@@ -1,4 +1,4 @@
-<div class="navbar">
+<header>
   <div class="site-name">RoadHaulage</div>
   <div class="nav-links">
     <a th:href="@{/orders}" sec:authorize="isAuthenticated()">Orders</a>
@@ -8,4 +8,4 @@
     <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
     <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Log out</a>
   </div>
-</div>
+</header>

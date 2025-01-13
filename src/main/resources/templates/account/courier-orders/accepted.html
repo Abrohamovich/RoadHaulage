@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
@@ -31,7 +32,7 @@
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <div class="content">
+  <main>
     <div th:each="order : ${orders}" class="order">
       <span class="order-content" th:text="${order.customer.firstName} + ' ' + ${order.customer.lastName}"></span>
       <span class="order-content" th:text="${order.departureAddressString}"></span>
@@ -45,7 +46,7 @@
         </form>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 </body>
 </html>

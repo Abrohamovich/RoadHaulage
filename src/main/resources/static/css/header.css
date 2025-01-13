@@ -1,4 +1,4 @@
-.navbar {
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -6,19 +6,19 @@
     padding: 10px 20px;
     color: #fff;
 }
-.navbar .site-name {
+header .site-name {
     font-size: 22px;
     font-weight: bold;
 }
-.navbar .nav-links {
+header .nav-links {
     display: flex;
     gap: 15px;
 }
-.navbar .nav-links a {
+header .nav-links a {
     color: #ffffff;
     text-decoration: none;
     font-size: 19px;
 }
-.navbar .nav-links a:hover {
+header .nav-links a:hover {
     text-decoration: underline;
 }

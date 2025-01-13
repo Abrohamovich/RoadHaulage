@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
@@ -29,15 +30,17 @@
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <div class="content">
+  <main>
     <form th:action="@{/account/my-orders/create/create}" method="post">
       <div class="form-group">
         <label for="firstName">Customer full name</label>
-        <input type="text" id="firstName" name="buyerFullName" th:value="${firstName} + ' '+ ${lastName}" readonly>
+        <input type="text" id="firstName" name="buyerFullName" th:value="${firstName} + ' '+ ${lastName}"
+               readonly>
       </div>
       <div class="form-group">
         <label for="categoryNames">Category</label>
-        <input type="text" id="categoryNames" name="categoryNames" placeholder="Goods, Food, Toys, Grocery" required>
+        <input type="text" id="categoryNames" name="categoryNames" placeholder="Goods, Food, Toys, Grocery"
+               required>
       </div>
       <div class="form-group">
         <label for="departureAddressString">Departure address</label>
@@ -47,42 +50,35 @@
         <label for="deliveryAddressString">Delivery address</label>
         <input type="text" id="deliveryAddressString" name="deliveryAddressString" required>
       </div>
-      <div class="form-group">
+      <div class="form-group selector">
         <label for="weight">Weight</label>
         <input type="text" id="weight" name="weight" placeholder="2.5" required>
-        <div>
-          <label for="weight-unit"></label>
-          <select id="weight-unit" name="weight-unit" required>
-            <option value="kg">kg</option>
-            <option value="lbs">lbs</option>
-          </select>
-        </div>
+        <select id="weight-unit" name="weight-unit" required>
+          <option value="kg">kg</option>
+          <option value="lbs">lbs</option>
+        </select>
       </div>
-      <div class="form-group">
+      <div class="form-group selector">
         <label for="dimensions">Dimensions</label>
         <input type="text" id="dimensions" name="dimensions" placeholder="20-40-50" required>
-        <div>
-          <label for="dimensions-unit"></label>
-          <select id="dimensions-unit" name="dimensions-unit" required>
-            <option value="cm">cm</option>
-            <option value="inch">inch</option>
-            <option value="cm">m</option>
-            <option value="foot">foot</option>
-          </select>
-        </div>
+        <select id="dimensions-unit" name="dimensions-unit" required>
+          <option value="cm">cm</option>
+          <option value="inch">inch</option>
+          <option value="cm">m</option>
+          <option value="foot">foot</option>
+        </select>
       </div>
-      <div class="form-group">
+      <div class="form-group selector">
         <label for="cost">Cost</label>
         <input type="text" id="cost" name="cost" placeholder="70.5" required>
-        <div>
-          <label for="currency"></label>
-          <select id="currency" name="currency" required>
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-            <option value="UAH">UAH</option>
-            <option value="GBP">GBP</option>
-          </select>
-        </div>
+        <select id="currency" name="currency" required>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+          <option value="GBP">GBP</option>
+          <option value="CHF">CHF</option>
+          <option value="PLN">PLN</option>
+          <option value="UAH">UAH</option>
+        </select>
       </div>
       <div class="form-group">
         <label for="additionalInfo">Additional info</label>
@@ -94,7 +90,7 @@
       </div>
       <button type="submit">Create</button>
     </form>
-  </div>
+  </main>
 </div>
 </body>
 </html>

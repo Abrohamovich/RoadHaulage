@@ -1,15 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-}
-.content {
-    display: flex;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    height: 100vh;
-}
 .filter-bar {
     background: #fff;
     padding: 15px;
@@ -52,15 +40,4 @@ body {
 
 .filter-bar button:hover {
     background-color: #0056b3;
-}
-
-.orders {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    gap: 20px;
-    margin: 20px;
-    padding: 20px;
-    justify-content: flex-start;
-    align-items: flex-start;
 }

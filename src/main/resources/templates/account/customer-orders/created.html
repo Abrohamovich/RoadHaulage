@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
@@ -26,24 +27,12 @@
   #all-orders-link a::after{
     background-color: white;
   }
-  .content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 20px;
-    height: calc(100vh - 60px);
-    text-align: center;
-    padding: 20px;
-    overflow-y: auto;
-    max-height: 65vh;
-  }
 </style>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <div class="content">
+  <main>
     <div th:each="order : ${orders}" class="order">
       <span class="order-content" th:text="${order.categoriesString}"></span>
       <span class="order-content" th:text="${order.departureAddressString}"></span>
@@ -70,7 +59,7 @@
         </form>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

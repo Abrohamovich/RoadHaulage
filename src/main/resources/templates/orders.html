@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
 <link rel="stylesheet" th:href="@{/css/orders-filter.css}">
+<link rel="stylesheet" th:href="@{/css/orders-page.css}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +13,7 @@
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
-<div class="content">
+<div class="container">
     <aside class="filter-bar">
         <form method="get" th:action="@{/orders/filter}">
 
@@ -34,10 +36,11 @@
                 <option>ALL</option>
                 <option>EUR</option>
                 <option>USD</option>
-                <option>UAH</option>
                 <option>GBP</option>
+                <option>CHF</option>
+                <option>PLN</option>
+                <option>UAH</option>
             </select>
-
             <button type="submit">Filter</button>
             <button type="reset" onclick="window.location.href='/orders'">Reset</button>
         </form>

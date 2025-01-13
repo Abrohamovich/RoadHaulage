@@ -2,6 +2,7 @@ package ua.ithillel.roadhaulage.controller.main;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +13,9 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.List;
+import java.util.Set;
+
 
 @Controller
 @AllArgsConstructor
@@ -27,15 +29,14 @@ public class OrdersPageController {
     @PostConstruct
     public void init(){
         this.allOrderCategories  = orderCategoryService.findAll();
-
     }
 
     @GetMapping
     public String ordersPage(@AuthenticationPrincipal User user,
                              Model model) {
         List<Order> orders = orderService.returnOtherPublishedOrders(user.getId());
+        if(!orders.isEmpty()) addModels(model, orders);
         model.addAttribute("categories", allOrderCategories);
-        addModels(model, orders);
         return "orders";
     }
 
@@ -65,7 +66,6 @@ public class OrdersPageController {
         if(!orders.isEmpty()) addModels(model, orders);
         model.addAttribute("categories", allOrderCategories);
         model.addAttribute("categoriesString", categoriesString);
-        model.addAttribute("currency", currency);
         return "orders";
     }
 

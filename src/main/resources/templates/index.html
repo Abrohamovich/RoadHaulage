@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/index.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
 </head>
 <body>
-<div th:replace="~{header.html}"></div>
-<div class="content">
-  <div>
-    <h1>Welcome to RoadHaulage website</h1>
-    <p>Explore our site to learn more about what we offer. Feel free to contact us or log in to access your account.</p>
-  </div>
-</div>
+    <div th:replace="~{header.html}"></div>
 </body>
 </html>
