@@ -56,7 +56,7 @@
         </form>
         <form th:action="@{/account/my-orders/created/delete}" method="get">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit" title="Delete order"><ion-icon name="trash-outline"></ion-icon></button>
+          <button style="background-color: red" type="submit" title="Delete order"><ion-icon name="trash-outline"></ion-icon></button>
         </form>
       </div>
     </div>

@@ -59,9 +59,11 @@
                     <input type="hidden" name="id" th:value="${order.id}"/>
                     <button type="submit" title="Accept order"><ion-icon name="arrow-down-outline"></ion-icon></button>
                 </form>
-                <form th:action="@{/order-view/order}" method="get">
-                    <input type="hidden" name="id" th:value="${order.id}"/>
+                <form th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}" method="get">
                     <button type="submit" title="See full order"><ion-icon name="eye-outline"></ion-icon></button>
+                </form>
+                <form th:action="@{/user/{email}/info(email=${order.customer.email})}" method="get">
+                    <button type="submit" title="See customer info"><ion-icon name="person-outline"></ion-icon></button>
                 </form>
             </div>
         </div>

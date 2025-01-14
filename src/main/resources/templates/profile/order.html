@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadHaulage</title>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<div class="container">
+    <div th:replace="~{profile/sidebar.html}"></div>
+    <main style="flex-direction: column; flex-wrap: nowrap;">
+        <div class="form-group">
+            <label for="customerFullName">Customer full name</label>
+            <input type="text" id="customerFullName" name="customerFullName"
+                   th:value="${order.customer.firstName} + ' ' + ${order.customer.lastName}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="categoriesString">Category</label>
+            <input type="text" id="categoriesString" name="categoriesString"
+                   th:value="${order.categoriesString}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="departureAddressString">Departure address</label>
+            <input type="text" id="departureAddressString" name="departureAddressString"
+                   th:value="${order.departureAddressString}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="deliveryAddressString">Delivery address</label>
+            <input type="text" id="deliveryAddressString" name="deliveryAddressString"
+                   th:value="${order.deliveryAddressString}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="weight">Weight</label>
+            <input type="text" id="weight" name="weight" th:value="${order.weightString}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="dimensions">Dimensions</label>
+            <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensionsString}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="cost">Cost</label>
+            <input type="text" id="cost" name="cost" th:value="${order.costString}" readonly>
+        </div>
+        <div class="form-group">
+            <label>Additional info</label>
+            <input type="text"  name="additionalInfo" th:value="${order.additionalInfo}" readonly>
+        </div>
+        <div class="form-group">
+            <label>Date of creation</label>
+            <input type="text" name="creationDate" th:value="${order.creationDate.toString()}" readonly>
+        </div>
+        <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
+            <input type="hidden" name="id" th:value="${order.id}"/>
+            <button type="submit" title="Accept order"><ion-icon name="arrow-down-outline"></ion-icon></button>
+        </form>
+    </main>
+</div>
+</body>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</html>

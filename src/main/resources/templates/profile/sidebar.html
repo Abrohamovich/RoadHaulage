@@ -1,0 +1,10 @@
+<aside>
+    <h2>User information</h2>
+    <ul>
+        <li id="personal-info-link"><a th:href="@{/user/{email}/info(email=${email})}">Personal information</a></li>
+    </ul>
+    <h2>User orders</h2>
+    <ul>
+        <li id="orders-link"><a th:href="@{/user/{email}/orders(email=${email})}">Orders</a></li>
+    </ul>
+</aside>

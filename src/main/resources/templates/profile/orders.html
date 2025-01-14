@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/orders.css}">
+<script src="/js/script.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadHaulage</title>
+</head>
+<style>
+    #orders-link{
+        display: inline-block;
+        padding: 10px;
+        margin: 0 0 0 20px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+    #orders-link a{
+        color: white;
+    }
+    #orders-link a::after{
+        background-color: white;
+    }
+</style>
+<body>
+<div th:replace="~{header.html}"></div>
+<div class="container">
+    <div th:replace="~{profile/sidebar.html}"></div>
+    <main>
+        <div th:each="order : ${orders}" class="order">
+            <span class="order-content" th:text="${order.categoriesString}"></span>
+            <span class="order-content" th:text="${order.departureAddressString}"></span>
+            <ion-icon name="arrow-down-outline"></ion-icon>
+            <span class="order-content" th:text="${order.deliveryAddressString}"></span>
+            <span class="order-content" th:text="${order.costString}"></span>
+            <div class="button-container">
+                <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
+                    <input type="hidden" name="id" th:value="${order.id}"/>
+                    <button type="submit" title="Accept order"><ion-icon name="arrow-down-outline"></ion-icon></button>
+                </form>
+                <form th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}" method="get">
+                    <button type="submit" title="See full order"><ion-icon name="eye-outline"></ion-icon></button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
