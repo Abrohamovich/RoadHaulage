@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -31,7 +32,7 @@ public class CompletedOrderController {
     public String completedEstimatesPage(@AuthenticationPrincipal User user,
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
-        orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
+        orders = orders.stream().filter(order -> order.getStatus().equals(OrderStatus.COMPLETED)).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
         return "account/customer-orders/completed";

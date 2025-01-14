@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
@@ -25,7 +26,7 @@ public class CreatedOrderController {
     public String createdOrdersPage(@AuthenticationPrincipal User user,
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
-        orders = orders.stream().filter(order -> !order.getStatus().equals("COMPLETED")).toList();
+        orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
         return "account/customer-orders/created";
@@ -35,7 +36,7 @@ public class CreatedOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             Order order = orderOptional.get();
-            order.setStatus("PUBLISHED");
+            order.setStatus(OrderStatus.PUBLISHED);
             orderService.update(order);
         }
         return "redirect:/account/my-orders/created";
@@ -45,7 +46,7 @@ public class CreatedOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             Order order = orderOptional.get();
-            order.setStatus("COMPLETED");
+            order.setStatus(OrderStatus.COMPLETED);
             order.setCompletionDate(new Date(System.currentTimeMillis()));
             orderService.update(order);
         }

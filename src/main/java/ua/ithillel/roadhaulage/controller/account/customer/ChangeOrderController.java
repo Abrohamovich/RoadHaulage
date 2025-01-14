@@ -7,13 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.ithillel.roadhaulage.entity.Address;
-import ua.ithillel.roadhaulage.entity.OrderCategory;
-import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
@@ -54,9 +51,9 @@ public class ChangeOrderController {
                               @RequestParam(required = false) String additionalInfo,
                               @RequestParam(required = false) String weight,
                               @RequestParam(required = false) String dimensions,
-                              @RequestParam(required = true, name = "weight-unit") String weightUnit,
-                              @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
-                              @RequestParam(required = true, name = "currency") String currency) {
+                              @RequestParam(name = "weight-unit") String weightUnit,
+                              @RequestParam(name = "dimensions-unit") String dimensionsUnit,
+                              @RequestParam(name = "currency") String currency) {
         Optional<Order> orderOptional = orderService.findById(id);
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
@@ -82,7 +79,7 @@ public class ChangeOrderController {
             order.setDimensions(dimensions);
             order.setDimensionsUnit(dimensionsUnit);
             order.setAmendmentDate(new Date(System.currentTimeMillis()));
-            order.setStatus("CHANGED");
+            order.setStatus(OrderStatus.CHANGED);
             orderService.save(order);
         }
         return "redirect:/account/my-orders/created";

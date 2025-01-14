@@ -3,6 +3,7 @@ package ua.ithillel.roadhaulage.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.Order;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.repository.OrderRepository;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
@@ -59,7 +60,7 @@ public class OrderServiceImp implements OrderService {
         List<Order> orders = allOrders.stream()
                 .filter(order -> customerOrders.stream()
                         .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
-                .filter(order -> order.getStatus().equals("PUBLISHED"))
+                .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
                 .toList();
         orders.forEach(Order::defineAllTransactional);
         return orders;

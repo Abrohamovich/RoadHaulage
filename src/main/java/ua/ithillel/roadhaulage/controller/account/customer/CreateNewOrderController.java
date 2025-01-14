@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.ithillel.roadhaulage.entity.Address;
-import ua.ithillel.roadhaulage.entity.Order;
-import ua.ithillel.roadhaulage.entity.OrderCategory;
-import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -69,7 +66,7 @@ public class CreateNewOrderController {
 
             Order order = new Order();
             order.setCustomer(user);
-            order.setStatus("CREATED");
+            order.setStatus(OrderStatus.CREATED);
             order.setDeliveryAddress(deliveryAddress);
             order.setDepartureAddress(departureAddress);
             order.setAdditionalInfo(additionalInfo);

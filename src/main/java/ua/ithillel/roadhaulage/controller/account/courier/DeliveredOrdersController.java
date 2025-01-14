@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ua.ithillel.roadhaulage.entity.Order;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
@@ -22,7 +23,7 @@ public class DeliveredOrdersController {
     public String acceptedOrdersPage(@AuthenticationPrincipal User user,
                                      Model model) {
         List<Order> orders = orderService.findOrdersByCourierId(user.getId());
-        orders = orders.stream().filter(order -> order.getStatus().equals("COMPLETED")).toList();
+        orders = orders.stream().filter(order -> order.getStatus().equals(OrderStatus.COMPLETED)).toList();
         orders.forEach(Order::defineAllTransactional);
         model.addAttribute("orders", orders);
         return "account/courier-orders/delivered";
