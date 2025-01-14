@@ -39,20 +39,23 @@
       </div>
       <div class="form-group">
         <label for="categoryNames">Category</label>
-        <input type="text" id="categoryNames" name="categoryNames" placeholder="Goods, Food, Toys, Grocery"
-               required>
+        <input type="text" id="categoryNames" name="categoryNames" placeholder="Goods, Food, Toys, Grocery" required
+               oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');">
       </div>
       <div class="form-group">
         <label for="departureAddressString">Departure address</label>
-        <input type="text" id="departureAddressString" name="departureAddressString" required>
+        <input type="text" id="departureAddressString" name="departureAddressString" placeholder="Street, City, State, zip, Country" required
+               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
       </div>
       <div class="form-group">
         <label for="deliveryAddressString">Delivery address</label>
-        <input type="text" id="deliveryAddressString" name="deliveryAddressString" required>
+        <input type="text" id="deliveryAddressString" name="deliveryAddressString" placeholder="Street, City, State, zip, Country" required
+               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
       </div>
       <div class="form-group selector">
         <label for="weight">Weight</label>
-        <input type="text" id="weight" name="weight" placeholder="2.5" required>
+        <input type="text" id="weight" name="weight" placeholder="2.5" required
+               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
         <select id="weight-unit" name="weight-unit" required>
           <option value="kg">kg</option>
           <option value="lbs">lbs</option>
@@ -60,7 +63,8 @@
       </div>
       <div class="form-group selector">
         <label for="dimensions">Dimensions</label>
-        <input type="text" id="dimensions" name="dimensions" placeholder="20-40-50" required>
+        <input type="text" id="dimensions" name="dimensions" placeholder="20x40x50" required
+               oninput="this.value = this.value.replace(/[^0-9x]/g, '');">
         <select id="dimensions-unit" name="dimensions-unit" required>
           <option value="cm">cm</option>
           <option value="inch">inch</option>
@@ -70,7 +74,8 @@
       </div>
       <div class="form-group selector">
         <label for="cost">Cost</label>
-        <input type="text" id="cost" name="cost" placeholder="70.5" required>
+        <input type="text" id="cost" name="cost" placeholder="70.5" required
+               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
         <select id="currency" name="currency" required>
           <option value="EUR">EUR</option>
           <option value="USD">USD</option>
@@ -82,7 +87,7 @@
       </div>
       <div class="form-group">
         <label for="additionalInfo">Additional info</label>
-        <input type="text" id="additionalInfo" name="additionalInfo" required>
+        <input type="text" id="additionalInfo" name="additionalInfo" required maxlength="256">
       </div>
       <div class="form-group">
         <label for="acceptDate">Date of creation</label>

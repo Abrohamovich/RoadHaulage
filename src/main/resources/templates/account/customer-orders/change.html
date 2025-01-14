@@ -32,19 +32,23 @@
       <input type="hidden" name="id" th:value="${order.id}" />
       <div class="form-group">
         <label for="categoriesString">Category</label>
-        <input type="text" id="categoriesString" name="categoriesString" th:value="${order.categoriesString}">
+        <input type="text" id="categoriesString" name="categoriesString" th:value="${order.categoriesString}"
+               oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');">
       </div>
       <div class="form-group">
         <label for="departureAddressString">Departure address</label>
-        <input type="text" id="departureAddressString" name="departureAddressString" th:value="${order.departureAddressString}">
+        <input type="text" id="departureAddressString" name="departureAddressString" th:value="${order.departureAddressString}"
+               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
       </div>
       <div class="form-group">
         <label for="deliveryAddressString">Delivery address</label>
-        <input type="text" id="deliveryAddressString" name="deliveryAddressString" th:value="${order.deliveryAddressString}">
+        <input type="text" id="deliveryAddressString" name="deliveryAddressString" th:value="${order.deliveryAddressString}"
+               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
       </div>
       <div class="form-group">
         <label for="weight">Weight</label>
-        <input type="text" id="weight" name="weight" th:value="${order.weight}">
+        <input type="text" id="weight" name="weight" th:value="${order.weight}"
+               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
         <div>
           <label for="weight-unit"></label>
           <select id="weight-unit" name="weight-unit" th:value="${order.weightUnit}">
@@ -55,7 +59,8 @@
       </div>
       <div class="form-group">
         <label for="dimensions">Dimensions</label>
-        <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensions}">
+        <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensions}" required
+               oninput="this.value = this.value.replace(/[^0-9x]/g, '');">
         <div>
           <label for="dimensions-unit"></label>
           <select id="dimensions-unit" name="dimensions-unit" th:value="${order.dimensionsUnit}">
@@ -68,7 +73,8 @@
       </div>
       <div class="form-group">
         <label for="cost">Cost</label>
-        <input type="text" id="cost" name="cost" th:value="${order.cost}">
+        <input type="text" id="cost" name="cost" th:value="${order.cost}"
+               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
         <div>
           <label for="currency"></label>
           <select id="currency" name="currency" th:value="${order.currency}">
@@ -81,7 +87,7 @@
       </div>
       <div class="form-group">
         <label for="additionalInfo">Additional info</label>
-        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${order.additionalInfo}">
+        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${order.additionalInfo}" required maxlength="256">
       </div>
       <button type="submit">Edit</button>
     </form>

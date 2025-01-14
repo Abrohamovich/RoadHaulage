@@ -28,11 +28,13 @@ public class RegistrationController {
                            @ModelAttribute("invalidNameContent") String invalidNameContent,
                            @ModelAttribute("passwordContain") String passwordContain,
                            @ModelAttribute("phoneError") String phoneError,
+                           @ModelAttribute("phoneExists") String phoneExists,
                            Model model) {
         model.addAttribute("emailExists", emailExists);
         model.addAttribute("invalidNameContent", invalidNameContent);
         model.addAttribute("passwordContain", passwordContain);
         model.addAttribute("phoneError", phoneError);
+        model.addAttribute("phoneExists", phoneExists);
         return "register";
     }
 
@@ -61,6 +63,10 @@ public class RegistrationController {
             redirectAttributes.addFlashAttribute("phoneError", "Write full phone number");
             i++;
         }
+        if (userService.findByPhone(phone).isPresent()) {
+            redirectAttributes.addFlashAttribute("phoneExists", "Phone already exists");
+        }
+
         if(i>0) return "redirect:/register";
 
         User user = new User();
@@ -79,6 +85,7 @@ public class RegistrationController {
         verificationTokenService.save(verificationToken);
 
         emailService.sendEmailConfirmation(email, token, user);
+
         redirectAttributes.addFlashAttribute(
                 "attentionMessage",
                 "Please check your email to confirm registration. The link is valid for 20 minutes");

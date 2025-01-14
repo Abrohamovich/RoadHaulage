@@ -27,10 +27,11 @@ public class PrivacyController {
     @GetMapping
     public String privacyPage(@AuthenticationPrincipal User user,
                               @ModelAttribute("passwordError") String passwordError,
+                              @ModelAttribute("emailError") String emailError,
                               Model model) {
-        model.addAttribute("password", user.getPassword());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("passwordError", passwordError);
+        model.addAttribute("emailError", emailError);
         return "account/settings/privacy";
     }
 
@@ -45,15 +46,22 @@ public class PrivacyController {
             return "redirect:/account/settings/privacy";
         }
 
-        boolean hasErrors = false;
+        short i = 0;
 
-        if (!password.isEmpty() && !isValidPassword(password)) {
-            redirectAttributes.addFlashAttribute("passwordError",
-                    "Password must contain at least one digit and one uppercase letter.");
-            hasErrors = true;
+        if (userService.findByEmail(email).isPresent() && !userService.findByEmail(email).get().getEmail().equals(user.getEmail())) {
+            redirectAttributes.addFlashAttribute("emailError", "User with this email already exists");
+            i++;
         }
 
-        if (!password.isEmpty() && !password.equals(user.getPassword())) {
+        if (!isValidPassword(password)) {
+            redirectAttributes.addFlashAttribute("passwordError",
+                    "Password must contain at least one digit and one uppercase letter.");
+            i++;
+        }
+
+        if (i > 0) return "redirect:/account/settings/privacy";
+
+        if (!password.isEmpty()) {
             user.setPassword(password);
             userService.update(user);
         }

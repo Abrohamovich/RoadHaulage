@@ -24,36 +24,30 @@ public class PersonalInfoController {
             model.addAttribute("firstName", user.getFirstName());
             model.addAttribute("lastName", user.getLastName());
             model.addAttribute("phone", user.getPhone());
-            model.addAttribute("iban", user.getIban());
         return "account/settings/personal-information";
     }
 
     @PostMapping("/update")
     public String update(@AuthenticationPrincipal User user,
-                         @RequestParam String firstName,
-                         @RequestParam String lastName,
-                         @RequestParam(name = "countryCode") String phoneCode,
-                         @RequestParam String phone,
-                         @RequestParam String iban,
+                         @RequestParam(required = false) String firstName,
+                         @RequestParam(required = false) String lastName,
+                         @RequestParam(name = "countryCode", required = false) String phoneCode,
+                         @RequestParam(required = false) String phone,
+                         @RequestParam(required = false) String iban,
                          RedirectAttributes redirectAttributes) {
         byte i=0;
-        if(!firstName.chars().allMatch(Character::isAlphabetic)){
-            redirectAttributes.addFlashAttribute("firstNameError", "First name must contain only alphanumeric and can`t be empty");
-            i++;
-        } else if (firstName.isEmpty()) {
+        if (firstName.isEmpty()) {
             firstName = user.getFirstName();
         }
-        if(!lastName.chars().allMatch(Character::isAlphabetic)){
-            redirectAttributes.addFlashAttribute("lastNameError", "Last name must contain only alphanumeric and can`t be empty");
-            i++;
-        } else if (lastName.isEmpty()) {
+        if (lastName.isEmpty()) {
             lastName = user.getLastName();
         }
-        if(!phone.chars().allMatch(Character::isDigit)){
-            redirectAttributes.addFlashAttribute("phoneError", "Write full phone number");
+        if (userService.findByPhone(phoneCode + phone).isPresent()) {
+            redirectAttributes.addFlashAttribute("phoneError", "Phone number already exists");
             i++;
         } else if (phone.isEmpty()) {
-           phone = user.getPhone();
+            phone = user.getPhone();
+            phoneCode="";
         }
 
         if (i>0) return "redirect:/account/settings/personal-information";

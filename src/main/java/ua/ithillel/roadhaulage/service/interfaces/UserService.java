@@ -10,6 +10,7 @@ public interface UserService{
     void update(User user);
     Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
+    Optional<User> findByPhone(String phone);
     short verifyEmail(String token);
     short verifyPassword(String token, String password);
 }

@@ -53,6 +53,11 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
+    public Optional<User> findByPhone(String phone) {
+        return userRepository.findByPhone(phone);
+    }
+
+    @Override
     public short verifyEmail(String token) {
         short st = verifyToken(token);
         if (st != 0) {
