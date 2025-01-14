@@ -43,12 +43,13 @@
     background-color: #fff;
     z-index: 10;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-evenly;
 }
 .button-container button {
+    margin-left: 0;
     padding: 8px 15px;
-    width: 150px;
     font-size: 14px;
     color: #fff;
     background-color: #007bff;
@@ -57,7 +58,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: block;
-    margin-top: 10px;
+    margin-top: 0;
 }
 
 .order a {
@@ -75,8 +76,8 @@
 }
 
 .order ion-icon {
-    font-size: 20px;
-    color: #007bff;
+    font-size: 18px;
+    color:white;
     display: block;
-    margin: 10px auto;
+    margin: 5px 0;
 }

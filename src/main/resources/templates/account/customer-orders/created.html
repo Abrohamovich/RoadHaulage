@@ -44,19 +44,19 @@
         <form th:action="@{/account/my-orders/created/publish}"
               th:if="${order.status.name()} == 'CREATED' or ${order.status.name()} == 'CHANGED'" method="post">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit">Publish</button>
+          <button type="submit" title="Publish order"><ion-icon name="paper-plane-outline"></ion-icon></button>
         </form>
         <form th:action="@{/account/my-orders/change}" th:if="${order.status.name()} != 'ACCEPTED'" method="post">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit">Change</button>
+          <button type="submit" title="Change order"><ion-icon name="arrow-undo-outline"></ion-icon></button>
         </form>
         <form th:action="@{/account/my-orders/created/close}" th:if="${order.status.name()} == 'ACCEPTED'" method="post">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit">Close order</button>
+          <button type="submit" title="Close order"><ion-icon name="close-circle-outline"></ion-icon></button>
         </form>
         <form th:action="@{/account/my-orders/created/delete}" method="get">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit">Delete</button>
+          <button type="submit" title="Delete order"><ion-icon name="trash-outline"></ion-icon></button>
         </form>
       </div>
     </div>
