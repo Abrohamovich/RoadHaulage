@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
@@ -68,10 +69,8 @@ public class RegistrationController {
         user.setPhone(phoneCode + phone);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        //todo
-        // All registered users are auto-verified for ease of use
-        user.setEnabled(true);
-        user.setRole("ROLE_USER");
+        user.setEnabled(false);
+        user.setRole(UserRole.USER);
         userService.save(user);
 
         String token = UUID.randomUUID().toString();

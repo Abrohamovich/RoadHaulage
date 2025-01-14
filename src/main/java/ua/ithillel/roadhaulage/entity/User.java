@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,8 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String phone;
     private boolean enabled;
-    private String role; // USER, ADMIN
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
     @Column(unique = true)
     private String iban;
     @Column(nullable = false)
@@ -36,8 +38,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);
-        return List.of(grantedAuthority);
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

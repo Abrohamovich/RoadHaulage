@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,19 +9,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.entity.Order;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/change")
 @AllArgsConstructor
 public class ChangeOrderController {
+    private final UserService userService;
     private OrderService orderService;
     private OrderCategoryService orderCategoryService;
     private AddressService addressService;
@@ -38,7 +45,8 @@ public class ChangeOrderController {
     }
 
     @PostMapping("/edit")
-    public String changeOrder(@RequestParam long id,
+    public String changeOrder(@AuthenticationPrincipal User user,
+                              @RequestParam long id,
                               @RequestParam(required = false) String categoriesString,
                               @RequestParam(required = false) String cost,
                               @RequestParam(required = false) String deliveryAddressString,
@@ -52,18 +60,22 @@ public class ChangeOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
-        Optional<Address> deliveryAddress = addressService.createAddress(deliveryAddressString);
-        Optional<Address> departureAddress = addressService.createAddress(departureAddressString);
+        Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
+        Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
 
-        if (orderOptional.isPresent() && deliveryAddress.isPresent() && departureAddress.isPresent()) {
-            addressService.save(departureAddress.get());
-            addressService.save(deliveryAddress.get());
+        if (orderOptional.isPresent() && deliveryAddressOptional.isPresent() && departureAddressOptional.isPresent()) {
+            Address deliveryAddress = deliveryAddressOptional.get();
+            Address departureAddress = departureAddressOptional.get();
+
+            addressService.save(departureAddress);
+            addressService.save(deliveryAddress);
+
             Order order = orderOptional.get();
             order.setCategories(orderCategories);
             order.setCost(cost);
             order.setCurrency(currency);
-            order.setDepartureAddress(departureAddress.get());
-            order.setDeliveryAddress(deliveryAddress.get());
+            order.setDepartureAddress(departureAddress);
+            order.setDeliveryAddress(deliveryAddress);
             order.setAdditionalInfo(additionalInfo);
             order.setWeight(weight);
             order.setWeightUnit(weightUnit);

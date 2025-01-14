@@ -15,6 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String status;
+
     @ManyToMany
     @JoinTable(
             name = "t_order_category",
@@ -24,11 +25,13 @@ public class Order {
     private Set<OrderCategory> categories;
     @Transient
     private String categoriesString;
+
     @ManyToOne
     @JoinColumn(name = "departure_address_id")
     private Address departureAddress;
     @Transient
     private String departureAddressString;
+
     @ManyToOne
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;

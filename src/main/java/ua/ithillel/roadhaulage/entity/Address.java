@@ -3,6 +3,8 @@ package ua.ithillel.roadhaulage.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 @Entity
 @Data
 @Table(name = "t_address")

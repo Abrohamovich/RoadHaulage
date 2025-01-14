@@ -3,12 +3,13 @@ package ua.ithillel.roadhaulage.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.Address;
+import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -18,6 +19,7 @@ public class AddressServiceImp implements AddressService {
     @Override
     public void save(Address address) {
         addressRepository.save(address);
+
     }
 
     @Override

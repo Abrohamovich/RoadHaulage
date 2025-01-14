@@ -1,5 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,11 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
@@ -26,10 +29,11 @@ public class CreateNewOrderController {
     private OrderService orderService;
     private OrderCategoryService orderCategoryService;
     private AddressService addressService;
+    private UserService userService;
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User user,
-                             Model model){
+                             Model model) {
         Date creationDate = new Date(System.currentTimeMillis());
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
@@ -38,32 +42,36 @@ public class CreateNewOrderController {
     }
 
     @PostMapping("/create")
-    public String createEstimate(@AuthenticationPrincipal User user,
-                                 @RequestParam(required = true) String categoryNames,
-                                 @RequestParam(required = true) String deliveryAddressString,
-                                 @RequestParam(required = true) String departureAddressString,
-                                 @RequestParam(required = true) String additionalInfo,
-                                 @RequestParam(required = true) String weight,
-                                 @RequestParam(required = true) String dimensions,
-                                 @RequestParam(required = true) String cost,
-                                 @RequestParam(required = true, name = "weight-unit") String weightUnit,
-                                 @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
-                                 @RequestParam(required = true, name = "currency") String currency){
+    public String createOrder(@AuthenticationPrincipal User user,
+                              @RequestParam(required = true) String categoryNames,
+                              @RequestParam(required = true) String deliveryAddressString,
+                              @RequestParam(required = true) String departureAddressString,
+                              @RequestParam(required = true) String additionalInfo,
+                              @RequestParam(required = true) String weight,
+                              @RequestParam(required = true) String dimensions,
+                              @RequestParam(required = true) String cost,
+                              @RequestParam(required = true, name = "weight-unit") String weightUnit,
+                              @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
+                              @RequestParam(required = true, name = "currency") String currency) {
 
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories.forEach(o -> orderCategoryService.save(o));
 
-        Optional<Address> deliveryAddress = addressService.createAddress(deliveryAddressString);
-        Optional<Address> departureAddress = addressService.createAddress(departureAddressString);
+        Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
+        Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
 
-        if(deliveryAddress.isPresent() && departureAddress.isPresent()){
-            addressService.save(deliveryAddress.get());
-            addressService.save(departureAddress.get());
+        if (deliveryAddressOptional.isPresent() && departureAddressOptional.isPresent()) {
+            Address deliveryAddress = deliveryAddressOptional.get();
+            Address departureAddress = departureAddressOptional.get();
+
+            addressService.save(departureAddress);
+            addressService.save(deliveryAddress);
+
             Order order = new Order();
             order.setCustomer(user);
             order.setStatus("CREATED");
-            order.setDeliveryAddress(deliveryAddress.get());
-            order.setDepartureAddress(departureAddress.get());
+            order.setDeliveryAddress(deliveryAddress);
+            order.setDepartureAddress(departureAddress);
             order.setAdditionalInfo(additionalInfo);
             order.setWeight(weight);
             order.setWeightUnit(weightUnit);

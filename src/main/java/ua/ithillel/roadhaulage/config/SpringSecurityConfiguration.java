@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 
 @Configuration
@@ -43,7 +44,7 @@ public class SpringSecurityConfiguration {
                                 "/orders/**",
                                 "/verify-email",
                                 "/password-recovery/**").permitAll()
-                        .requestMatchers("/account/**").hasRole("USER")
+                        .requestMatchers("/account/**").hasAuthority(UserRole.USER.name())
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
