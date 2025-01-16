@@ -89,10 +89,14 @@
         <label for="additionalInfo">Additional info</label>
         <input type="text" id="additionalInfo" name="additionalInfo" th:value="${order.additionalInfo}" required maxlength="256">
       </div>
-      <button type="submit">Edit</button>
+      <div class="button-container">
+        <button type="submit" title="Update order"><ion-icon name="arrow-undo-outline"></ion-icon></button>
+      </div>
     </form>
-    <a class="cancel-button" th:href="@{/account/my-orders/created}">Cancel</a>
+    <button style="background-color: red" type="reset" onclick="window.location.href='/orders'">Cancel</button>
   </main>
 </div>
 </body>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </html>

@@ -5,16 +5,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ua.ithillel.roadhaulage.entity.Order;
-import ua.ithillel.roadhaulage.entity.OrderCategory;
-import ua.ithillel.roadhaulage.entity.OrderStatus;
-import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/created")

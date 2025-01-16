@@ -1,6 +1,5 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,11 +12,9 @@ import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
@@ -26,7 +23,6 @@ public class CreateNewOrderController {
     private OrderService orderService;
     private OrderCategoryService orderCategoryService;
     private AddressService addressService;
-    private UserService userService;
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User user,

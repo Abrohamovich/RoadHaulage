@@ -48,7 +48,7 @@
         </form>
         <form th:action="@{/account/my-orders/change}" th:if="${order.status.name()} != 'ACCEPTED'" method="post">
           <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit" title="Change order"><ion-icon name="arrow-undo-outline"></ion-icon></button>
+          <button type="submit" title="Change order"><ion-icon name="arrow-redo-outline"></ion-icon></button>
         </form>
         <form th:action="@{/account/my-orders/created/close}" th:if="${order.status.name()} == 'ACCEPTED'" method="post">
           <input type="hidden" name="id" th:value="${order.id}" />
