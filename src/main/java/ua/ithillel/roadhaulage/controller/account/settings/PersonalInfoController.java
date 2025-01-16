@@ -59,4 +59,5 @@ public class PersonalInfoController {
         userService.update(user);
         return "redirect:/account/settings/personal-information";
     }
+
 }

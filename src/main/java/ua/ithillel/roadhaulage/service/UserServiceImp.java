@@ -7,13 +7,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
+import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -55,6 +60,36 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByPhone(String phone) {
         return userRepository.findByPhone(phone);
+    }
+
+    @Override
+    public User createUser(String email, String password, String firstName,
+                           String lastName, String phoneCode, String phone,
+                           boolean enabled, UserRole userRole){
+        List<String> errors = new ArrayList<>();
+
+        if (findByEmail(email).isPresent()) {
+            errors.add("A user with email " + email + " already exists");
+        }
+
+        if (findByPhone(phoneCode + phone).isPresent()) {
+            errors.add("A user with phone " + phoneCode + phone + " already exists");
+        }
+
+        if (!isValidPassword(password)){
+            errors.add("Password must contain at least one digit and one uppercase");
+        }
+        if(!errors.isEmpty()) throw new UserCreateException(String.join(". ", errors));
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setPhone(phoneCode + phone);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEnabled(enabled);
+        user.setRole(userRole);
+        return user;
     }
 
     @Override
@@ -104,5 +139,10 @@ public class UserServiceImp implements UserService, UserDetailsService {
             return 3;
         }
         return 0;
+    }
+
+    private boolean isValidPassword(String password) {
+        return Pattern.compile("\\d").matcher(password).find()
+                && Pattern.compile("[A-Z]").matcher(password).find();
     }
 }

@@ -40,7 +40,7 @@ public class SpringSecurityConfiguration {
                                 "/css/**",
                                 "/home",
                                 "/logout",
-                                "/register",
+                                "/register/**",
                                 "/orders/**",
                                 "/verify-email",
                                 "/password-recovery/**").permitAll()
