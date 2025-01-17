@@ -12,6 +12,7 @@ import ua.ithillel.roadhaulage.entity.User;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,8 @@ import java.util.stream.Collectors;
 public class ReportGenerator {
 
     private final static String templatePath = "C:\\Users\\geras\\IdeaProjects\\RoadHaulage\\document\\reportTemplate.docx";
-    private final static String outputPath = "C:\\Users\\geras\\IdeaProjects\\RoadHaulage\\document\\report.docx";
 
-    public void generateReport(User user, List<Order> customerOrderList, List<Order> courierOrderList) {
+    public void generateReport(User user, List<Order> customerOrderList, List<Order> courierOrderList,  OutputStream outputStream) {
         try (FileInputStream fis = new FileInputStream(templatePath);
         ) {
             XWPFDocument document = new XWPFDocument(fis);
@@ -44,10 +44,7 @@ public class ReportGenerator {
             generateOrderTables(document, customerOrderList, statusCustomerArray, 0, 3);
             generateOrderTables(document, courierOrderList, statusCourierArray, 4, 5);
 
-            try (FileOutputStream out = new FileOutputStream(outputPath)) {
-                document.write(out);
-                System.out.println("Document generated successfully" + outputPath);
-            }
+            document.write(outputStream);
 
         } catch (IOException e) {
             System.err.println("Error while generating" + e.getMessage());
