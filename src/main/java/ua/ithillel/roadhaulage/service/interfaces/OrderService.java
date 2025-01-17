@@ -1,5 +1,7 @@
 package ua.ithillel.roadhaulage.service.interfaces;
 
+import org.apache.catalina.authenticator.SavedRequest;
+import org.apache.commons.math3.analysis.function.Add;
 import ua.ithillel.roadhaulage.entity.*;
 
 import java.sql.Date;
@@ -16,5 +18,9 @@ public interface OrderService {
     void update(Order order);
     Optional<Order> findById(long id);
     List<Order> returnOtherPublishedOrders(long id);
+    Order createOrder(User user, OrderStatus orderStatus, Address deliveryAddress,
+                      Address departureAddress, String additionalInfo, String weight,
+                      String weightUnit, String dimensions, String dimensionsUnit,
+                      String cost, String currency, Date createdAt, Set<OrderCategory> orderCategories);
 
 }

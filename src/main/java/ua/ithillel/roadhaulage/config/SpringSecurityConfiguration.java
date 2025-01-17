@@ -44,7 +44,7 @@ public class SpringSecurityConfiguration {
                                 "/orders/**",
                                 "/verify-email",
                                 "/password-recovery/**").permitAll()
-                        .requestMatchers("/account/**").hasAuthority(UserRole.USER.name())
+                        .requestMatchers("/account/**", "/generate-report").hasAuthority(UserRole.USER.name())
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout

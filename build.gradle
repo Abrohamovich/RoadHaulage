@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.4.0'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
 //    runtimeOnly 'org.postgresql:postgresql'
