@@ -9,10 +9,9 @@ import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class ReportGenerator {
 
     private final static String templatePath = "C:\\Users\\geras\\IdeaProjects\\RoadHaulage\\document\\reportTemplate.docx";
 
-    public void generateReport(User user, List<Order> customerOrderList, List<Order> courierOrderList,  OutputStream outputStream) {
+    public void generateReport(User user, List<Order> customerOrderList, List<Order> courierOrderList,  ByteArrayOutputStream outputStream) {
         try (FileInputStream fis = new FileInputStream(templatePath);
         ) {
             XWPFDocument document = new XWPFDocument(fis);

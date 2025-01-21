@@ -44,14 +44,15 @@ public class OrderCategoryServiceImp implements OrderCategoryService {
                 .toArray(String[]::new);
 
         Set<OrderCategory> orderCategoriesSet = new HashSet<>();
-        Arrays.stream(categoryNames).forEach(name -> {
+        for(String name : categoryNames) {
             Optional<OrderCategory> orderCategory = findByName(name);
-            if (orderCategory.isEmpty()) {
-                orderCategory = Optional.of(new OrderCategory());
-                orderCategory.get().setName(name);
+            if(orderCategory.isEmpty()) {
+                OrderCategory category = new OrderCategory();
+                category.setName(name);
+                orderCategory = Optional.of(category);
             }
             orderCategoriesSet.add(orderCategory.get());
-        });
+        }
         return orderCategoriesSet;
     }
 

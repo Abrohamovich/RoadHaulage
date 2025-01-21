@@ -6,6 +6,5 @@ import ua.ithillel.roadhaulage.entity.VerificationToken;
 import java.util.Optional;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
-
     Optional<VerificationToken> findByToken(String token);
 }

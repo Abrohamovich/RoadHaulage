@@ -56,8 +56,8 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public List<Order> returnOtherPublishedOrders(long id) {
-        List<Order> allOrders = findAll();
-        List<Order> customerOrders = findOrdersByCustomerId(id);
+        List<Order> allOrders = orderRepository.findAll();
+        List<Order> customerOrders = orderRepository.findOrdersByCustomerId(id);
         List<Order> orders = allOrders.stream()
                 .filter(order -> customerOrders.stream()
                         .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
@@ -68,7 +68,10 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public Order createOrder(User user, OrderStatus orderStatus, Address deliveryAddress, Address departureAddress, String additionalInfo, String weight, String weightUnit, String dimensions, String dimensionsUnit, String cost, String currency, Date createdAt, Set<OrderCategory> orderCategories) {
+    public Order createOrder(User user, OrderStatus orderStatus, Address deliveryAddress,
+                             Address departureAddress, String additionalInfo, String weight,
+                             String weightUnit, String dimensions, String dimensionsUnit,
+                             String cost, String currency, Date createdAt, Set<OrderCategory> orderCategories) {
         Order order = new Order();
         order.setCustomer(user);
         order.setStatus(OrderStatus.CREATED);

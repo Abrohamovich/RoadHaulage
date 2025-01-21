@@ -37,9 +37,12 @@ public class RegistrationController {
                            @RequestParam(required = true) String phone,
                            @RequestParam(required = true) String firstName,
                            @RequestParam(required = true) String lastName, RedirectAttributes redirectAttributes) {
+        //todo
         try{
             User user = userService.createUser(email, password, firstName,
-                    lastName, phoneCode, phone, false, UserRole.USER);
+                    lastName, phoneCode, phone, true, UserRole.USER);
+
+            userService.save(user);
 
             String token = UUID.randomUUID().toString();
 

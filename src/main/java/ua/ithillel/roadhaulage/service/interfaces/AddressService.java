@@ -8,7 +8,6 @@ import java.util.Set;
 
 public interface AddressService {
     void save(Address address);
-    void delete(Address address);
     List<Address> findAll();
     Optional<Address> createAddress(String addressString);
 }

@@ -3,7 +3,7 @@ package ua.ithillel.roadhaulage.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Data

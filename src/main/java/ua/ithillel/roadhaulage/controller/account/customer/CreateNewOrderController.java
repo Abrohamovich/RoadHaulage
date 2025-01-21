@@ -12,6 +12,7 @@ import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.*;
 @RequestMapping("/account/my-orders/create")
 @AllArgsConstructor
 public class CreateNewOrderController {
+    private UserService userService;
     private OrderService orderService;
     private OrderCategoryService orderCategoryService;
     private AddressService addressService;
@@ -48,7 +50,7 @@ public class CreateNewOrderController {
                               @RequestParam(required = true, name = "currency") String currency) {
 
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
-        orderCategories.forEach(o -> orderCategoryService.save(o));
+        orderCategories.forEach(orderCategoryService::save);
 
         Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
         Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);

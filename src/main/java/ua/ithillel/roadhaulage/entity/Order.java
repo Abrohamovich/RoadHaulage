@@ -1,9 +1,12 @@
 package ua.ithillel.roadhaulage.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,6 +79,19 @@ public class Order {
         this.weightString = this.getWeight() + " " + this.getWeightUnit();
         this.dimensionsString = this.getDimensions() + " " + this.getDimensionsUnit();
         this.costString = this.getCost() + " " + this.getCurrency();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Order order = (Order) obj;
+        return Objects.equals(id, order.id);
     }
 }
 

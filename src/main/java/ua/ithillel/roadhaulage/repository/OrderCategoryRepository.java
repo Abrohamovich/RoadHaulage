@@ -10,5 +10,4 @@ import java.util.Set;
 
 public interface OrderCategoryRepository extends JpaRepository<OrderCategory, Long> {
     Optional<OrderCategory> findByName(String name);
-    List<OrderCategory> findAll();
 }

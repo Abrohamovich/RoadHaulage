@@ -19,12 +19,6 @@ public class AddressServiceImp implements AddressService {
     @Override
     public void save(Address address) {
         addressRepository.save(address);
-
-    }
-
-    @Override
-    public void delete(Address address) {
-        addressRepository.delete(address);
     }
 
     @Override
