@@ -34,11 +34,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    @Override
     public void update(User user) {
         Optional<User> userFromDB = userRepository.findById(user.getId());
         if (userFromDB.isPresent() && !userFromDB.get().getPassword().equals(user.getPassword())) {
@@ -48,7 +43,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(long id) {
         return userRepository.findById(id);
     }
 
@@ -67,20 +62,13 @@ public class UserServiceImp implements UserService, UserDetailsService {
                            String lastName, String phoneCode, String phone,
                            boolean enabled, UserRole userRole){
         List<String> errors = new ArrayList<>();
-
-        if (findByEmail(email).isPresent()) {
-            errors.add("A user with email " + email + " already exists");
-        }
-
-        if (findByPhone(phoneCode + phone).isPresent()) {
-            errors.add("A user with phone " + phoneCode + phone + " already exists");
-        }
-
+        if (userRepository.findByEmail(email).isPresent()) {
+            errors.add("A user with email " + email + " already exists");}
+        if (userRepository.findByPhone(phoneCode + phone).isPresent()) {
+            errors.add("A user with phone " + phoneCode + phone + " already exists");}
         if (!isValidPassword(password)){
-            errors.add("Password must contain at least one digit and one uppercase");
-        }
+            errors.add("Password must contain at least one digit and one uppercase");}
         if(!errors.isEmpty()) throw new UserCreateException(String.join(". ", errors));
-
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -118,9 +106,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
-
         if(user.isEmpty()) {
             throw new UsernameNotFoundException("Cant find user with username: " + email);
         }
