@@ -129,7 +129,6 @@ public class OrderServiceTests {
 
         List<Order> result =  orderService.findAll();
 
-        assertNotNull(result);
         assertEquals(0, result.size());
         verify(orderRepository, times(1)).findAll();
     }
