@@ -8,7 +8,6 @@ import java.util.Set;
 
 public interface OrderCategoryService {
     void save(OrderCategory orderCategory);
-    void delete(OrderCategory orderCategory);
     Optional<OrderCategory> findByName(String name);
     List<OrderCategory> findAll();
     Set<OrderCategory> createOrderCategorySet(String categoryNames);

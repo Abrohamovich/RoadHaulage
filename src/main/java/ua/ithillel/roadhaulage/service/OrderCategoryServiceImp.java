@@ -20,11 +20,6 @@ public class OrderCategoryServiceImp implements OrderCategoryService {
     }
 
     @Override
-    public void delete(OrderCategory orderCategory) {
-        orderCategoryRepository.delete(orderCategory);
-    }
-
-    @Override
     public Optional<OrderCategory> findByName(String name) {
         return orderCategoryRepository.findByName(name);
     }
@@ -45,7 +40,7 @@ public class OrderCategoryServiceImp implements OrderCategoryService {
 
         Set<OrderCategory> orderCategoriesSet = new HashSet<>();
         for(String name : categoryNames) {
-            Optional<OrderCategory> orderCategory = findByName(name);
+            Optional<OrderCategory> orderCategory = orderCategoryRepository.findByName(name);
             if(orderCategory.isEmpty()) {
                 OrderCategory category = new OrderCategory();
                 category.setName(name);

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 
@@ -18,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class AddressServiceImpTests {
     @Mock
     private AddressRepository addressRepository;

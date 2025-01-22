@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class OrderServiceTests {
     @Mock
     private OrderRepository orderRepository;
