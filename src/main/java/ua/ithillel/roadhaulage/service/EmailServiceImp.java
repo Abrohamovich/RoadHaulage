@@ -27,12 +27,12 @@ public class EmailServiceImp implements EmailService {
         String emailBody = """
         Hello, %s!
         
-        You have provided this email address to register or update your details on our website. 
+        You have provided this email address to register or update your details on our website.
         To complete the registration process and confirm your address, please click on the link below:
         
         %s
         
-        If you have not requested a confirmation email, simply PASS this message. 
+        If you have not requested a confirmation email, simply PASS this message.
         Your account will remain secure and no changes will be made.
         
         If you have any questions or concerns, please contact our support team.
