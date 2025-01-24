@@ -130,23 +130,23 @@ public class UserServiceImpTests {
     }
 
     @Test
-    public void findByPhoneTest_returnsUserOptional(){
-        when(userRepository.findByPhone(anyString())).thenReturn(Optional.of(mock(User.class)));
+    public void findByPhoneCodeAndPhoneTest_returnsUserOptional(){
+        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.of(mock(User.class)));
 
-        Optional<User> result = userService.findByPhone(anyString());
+        Optional<User> result = userService.findByPhoneCodeAndPhone(anyString(), anyString());
 
         assertTrue(result.isPresent());
-        verify(userRepository, times(1)).findByPhone(anyString());
+        verify(userRepository, times(1)).findByPhoneCodeAndPhone(anyString(), anyString());
     }
 
     @Test
-    public void findByPhoneTest_returnsEmptyOptional(){
-        when(userRepository.findByPhone(anyString())).thenReturn(Optional.empty());
+    public void findByPhoneCodeAndPhoneTest_returnsEmptyOptional(){
+        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.empty());
 
-        Optional<User> result = userService.findByPhone(anyString());
+        Optional<User> result = userService.findByPhoneCodeAndPhone(anyString(), anyString());
 
         assertTrue(result.isEmpty());
-        verify(userRepository, times(1)).findByPhone(anyString());
+        verify(userRepository, times(1)).findByPhoneCodeAndPhone(anyString(), anyString());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class UserServiceImpTests {
         UserRole userRole = UserRole.USER;
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-        when(userRepository.findByPhone(phoneCode + phone)).thenReturn(Optional.empty());
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.empty());
 
         User result = userService.createUser(email, password, firstName, lastName,
                 phoneCode, phone, enabled, userRole);
@@ -170,12 +170,13 @@ public class UserServiceImpTests {
         assertEquals(password, result.getPassword());
         assertEquals(firstName, result.getFirstName());
         assertEquals(lastName, result.getLastName());
-        assertEquals(phoneCode + phone, result.getPhone());
+        assertEquals(phone, result.getPhone());
+        assertEquals(phoneCode, result.getPhoneCode());
         assertEquals(enabled, result.isEnabled());
         assertEquals(userRole, result.getRole());
 
         verify(userRepository, times(1)).findByEmail(email);
-        verify(userRepository, times(1)).findByPhone(phoneCode + phone);
+        verify(userRepository, times(1)).findByPhoneCodeAndPhone(phoneCode, phone);
     }
 
     @Test
@@ -195,9 +196,8 @@ public class UserServiceImpTests {
     public void createUserTest_throwsException_PhoneAlreadyExists(){
         String phoneCode = "380";
         String phone = "991373605";
-        String fullNumber = phoneCode + phone;
 
-        when(userRepository.findByPhone(fullNumber)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 userService.createUser("test@example.com", "Password1", "John", "Doe",
@@ -223,10 +223,9 @@ public class UserServiceImpTests {
         String email = "test@example.com";
         String phoneCode = "380";
         String phone = "991373605";
-        String fullNumber = phoneCode + phone;
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-        when(userRepository.findByPhone(fullNumber)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 userService.createUser(email, "Password1", "John", "Doe",
@@ -256,10 +255,9 @@ public class UserServiceImpTests {
     public void createUserTest_throwsException_PhoneAlreadyExistsAndInvalidPassword(){
         String phoneCode = "380";
         String phone = "991373605";
-        String fullNumber = phoneCode + phone;
         String password = "invalidpassword";
 
-        when(userRepository.findByPhone(fullNumber)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 userService.createUser("test@example.com", password, "John", "Doe",
@@ -275,11 +273,10 @@ public class UserServiceImpTests {
         String email = "test@example.com";
         String phoneCode = "380";
         String phone = "991373605";
-        String fullNumber = phoneCode + phone;
         String password = "invalidpassword";
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-        when(userRepository.findByPhone(fullNumber)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 userService.createUser(email, password, "John", "Doe",

@@ -10,7 +10,7 @@ public interface UserService{
     void update(User user);
     Optional<User> findById(long id);
     Optional<User> findByEmail(String email);
-    Optional<User> findByPhone(String phone);
+    Optional<User> findByPhoneCodeAndPhone(String phoneCode, String phone);
     User createUser(String email, String password, String firstName,
                     String lastName, String phoneCode, String phone,
                     boolean enabled, UserRole userRole);

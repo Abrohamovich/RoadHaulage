@@ -19,7 +19,9 @@ public class User implements UserDetails {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(unique = true)
+    @Column(nullable = false)
+    private String phoneCode;
+    @Column(nullable = false)
     private String phone;
     private boolean enabled;
     @Enumerated(EnumType.STRING)

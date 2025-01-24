@@ -13,7 +13,8 @@ public class EmailVerificationController {
     private UserService userService;
 
     @GetMapping("/verify-email")
-    public String verifyEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+    public String verifyEmail(@RequestParam("token") String token,
+                              RedirectAttributes redirectAttributes) {
         short successId = userService.verifyEmail(token);
         String successMessage = switch (successId) {
             case 1 -> "This token does not exist, or this token is not yours";

@@ -30,7 +30,7 @@ public class UserProfileController {
             map.put("firstName", user.getFirstName());
             map.put("lastName", user.getLastName());
             map.put("email", user.getEmail());
-            map.put("phone", user.getPhone());
+            map.put("phone", "+" + user.getPhoneCode() + user.getPhone());
             model.addAllAttributes(map);
             return "profile/info";
         }

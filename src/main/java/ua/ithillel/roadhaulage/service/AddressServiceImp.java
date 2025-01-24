@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.entity.User;
