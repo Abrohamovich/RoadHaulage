@@ -25,20 +25,12 @@ public class PersonalInfoController {
                                    @ModelAttribute("phoneError") String phoneError,
                                    @AuthenticationPrincipal User user,
                                    Model model) {
-        List<String> codes = new ArrayList<>(List.of(
-                "376", "355", "374", "43", "994", "375", "32", "387", "359",
-                "385", "357", "420", "45", "372", "358", "33", "995", "49",
-                "30", "36", "354", "353", "39", "7", "371", "423", "370",
-                "352", "356", "373", "377", "382", "31", "389", "47", "48",
-                "351", "40", "378", "381", "421", "386", "34", "46",
-                "41", "90", "380", "44", "379", "383"
-        ));
-        codes.remove(user.getPhoneCode());
-        codes.addFirst(user.getPhoneCode());
+        List<String> codes = getCodes(user.getPhoneCode());
         model.addAttribute("codes", codes);
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("phone", user.getPhone());
+        model.addAttribute("iban", user.getIban());
         return "account/settings/personal-information";
     }
 
@@ -57,6 +49,9 @@ public class PersonalInfoController {
         if (lastName.isEmpty()) {
             lastName = user.getLastName();
         }
+        if (iban.isEmpty()) {
+            iban = user.getIban();
+        }
         if (userService.findByPhoneCodeAndPhone(phoneCode, phone).isPresent()) {
             redirectAttributes.addFlashAttribute("phoneError", "Phone number already exists");
             i++;
@@ -73,6 +68,20 @@ public class PersonalInfoController {
         user.setIban(iban);
         userService.update(user);
         return "redirect:/account/settings/personal-information";
+    }
+
+    private static List<String> getCodes(String userPhoneCode) {
+        List<String> codes = new ArrayList<>(List.of(
+                "376", "355", "374", "43", "994", "375", "32", "387", "359",
+                "385", "357", "420", "45", "372", "358", "33", "995", "49",
+                "30", "36", "354", "353", "39", "7", "371", "423", "370",
+                "352", "356", "373", "377", "382", "31", "389", "47", "48",
+                "351", "40", "378", "381", "421", "386", "34", "46",
+                "41", "90", "380", "44", "379", "383"
+        ));
+        codes.remove(userPhoneCode);
+        codes.addFirst(userPhoneCode);
+        return codes;
     }
 
 }
