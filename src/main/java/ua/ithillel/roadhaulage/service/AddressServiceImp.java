@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.Address;
@@ -12,6 +13,7 @@ import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class AddressServiceImp implements AddressService {
@@ -19,6 +21,7 @@ public class AddressServiceImp implements AddressService {
 
     @Override
     public void save(Address address) {
+        log.info("Saved address: {}", address.toString());
         addressRepository.save(address);
     }
 

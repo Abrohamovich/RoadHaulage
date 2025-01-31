@@ -34,7 +34,7 @@
 <div th:replace="~{header.html}"></div>
 <div class="container">
   <div th:replace="~{account/sidebar.html}"></div>
-  <main>
+  <main style="flex-direction: column">
     <form th:action="@{/account/settings/personal-information/update}" method="post">
       <div class="form-group">
         <label for="firstName">First name</label>

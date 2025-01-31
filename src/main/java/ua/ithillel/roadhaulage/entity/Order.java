@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.entity;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class Order {
 
     private OrderStatus status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "t_order_category",
             joinColumns = @JoinColumn(name = "order_id"),

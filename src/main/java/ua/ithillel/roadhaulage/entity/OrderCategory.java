@@ -30,6 +30,4 @@ public class OrderCategory {
         OrderCategory orderCategory = (OrderCategory) obj;
         return Objects.equals(id, orderCategory.id) &&  Objects.equals(name, orderCategory.name);
     }
-
-
 }
