@@ -71,7 +71,7 @@ public class Order {
     @JoinColumn(name = "courier_id")
     private User courier;
 
-    public void defineAllTransactional(){
+    public void defineTransient(){
         this.categoriesString = this.getCategories().stream()
                 .map(OrderCategory::getName)
                 .collect(Collectors.joining(", "));

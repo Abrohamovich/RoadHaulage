@@ -20,16 +20,15 @@ import java.util.List;
 @RequestMapping("/generate-report")
 public class ReportGeneratorController {
     private OrderService orderService;
+    private ReportGenerator reportGenerator;
 
     @GetMapping
     public void generateReport(@AuthenticationPrincipal User user, HttpServletResponse response) {
         try {
-            ReportGenerator reportGenerator = new ReportGenerator();
-
             List<Order> customerOrderList = orderService.findOrdersByCustomerId(user.getId());
             List<Order> courierOrderList = orderService.findOrdersByCourierId(user.getId());
-            customerOrderList.forEach(Order::defineAllTransactional);
-            courierOrderList.forEach(Order::defineAllTransactional);
+            customerOrderList.forEach(Order::defineTransient);
+            courierOrderList.forEach(Order::defineTransient);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             reportGenerator.generateReport(user, customerOrderList, courierOrderList, outputStream);
@@ -38,8 +37,8 @@ public class ReportGeneratorController {
             response.setHeader("Content-Disposition", "attachment; filename=\"report.docx\"");
             response.getOutputStream().write(outputStream.toByteArray());
             response.flushBuffer();
-        } catch (IOException e) {
-            System.err.println("Error generating report: " + e.getMessage());
+        } catch (IOException _) {
+
         }
     }
 }

@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
@@ -38,16 +35,16 @@ public class CreateNewOrderController {
 
     @PostMapping("/create")
     public String createOrder(@AuthenticationPrincipal User user,
-                              @RequestParam(required = true) String categoryNames,
-                              @RequestParam(required = true) String deliveryAddressString,
-                              @RequestParam(required = true) String departureAddressString,
-                              @RequestParam(required = true) String additionalInfo,
-                              @RequestParam(required = true) String weight,
-                              @RequestParam(required = true) String dimensions,
-                              @RequestParam(required = true) String cost,
-                              @RequestParam(required = true, name = "weight-unit") String weightUnit,
-                              @RequestParam(required = true, name = "dimensions-unit") String dimensionsUnit,
-                              @RequestParam(required = true, name = "currency") String currency) {
+                              @RequestParam String categoryNames,
+                              @RequestParam String deliveryAddressString,
+                              @RequestParam String departureAddressString,
+                              @RequestParam String additionalInfo,
+                              @RequestParam String weight,
+                              @RequestParam String dimensions,
+                              @RequestParam String cost,
+                              @RequestParam(name = "weight-unit") String weightUnit,
+                              @RequestParam(name = "dimensions-unit") String dimensionsUnit,
+                              @RequestParam(name = "currency") String currency) {
 
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories.forEach(orderCategoryService::save);
@@ -62,10 +59,10 @@ public class CreateNewOrderController {
             addressService.save(departureAddress);
             addressService.save(deliveryAddress);
 
-            Order order = orderService.createOrder(user, OrderStatus.CREATED, deliveryAddress,
+            Order orderr = orderService.createOrder(user, OrderStatus.CREATED, deliveryAddress,
                     departureAddress, additionalInfo, weight, weightUnit, dimensions, dimensionsUnit,
                     cost, currency, new Date(System.currentTimeMillis()), orderCategories);
-            orderService.save(order);
+            orderService.save(orderr);
         }
 
         return "redirect:/account/my-orders/create";

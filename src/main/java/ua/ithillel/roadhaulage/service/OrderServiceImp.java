@@ -63,7 +63,7 @@ public class OrderServiceImp implements OrderService {
                         .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
                 .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
                 .toList();
-        orders.forEach(Order::defineAllTransactional);
+        orders.forEach(Order::defineTransient);
         return orders;
     }
 

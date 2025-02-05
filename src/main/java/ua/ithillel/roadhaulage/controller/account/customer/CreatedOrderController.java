@@ -23,7 +23,7 @@ public class CreatedOrderController {
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
-        orders.forEach(Order::defineAllTransactional);
+        orders.forEach(Order::defineTransient);
         model.addAttribute("orders", orders);
         return "account/customer-orders/created";
     }

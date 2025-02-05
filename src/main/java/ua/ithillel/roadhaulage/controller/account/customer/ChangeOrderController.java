@@ -34,7 +34,7 @@ public class ChangeOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.defineAllTransactional();
+            order.defineTransient();
             model.addAttribute("order", order);
             return "account/customer-orders/change";
         }
@@ -80,7 +80,7 @@ public class ChangeOrderController {
             order.setDimensionsUnit(dimensionsUnit);
             order.setAmendmentDate(new Date(System.currentTimeMillis()));
             order.setStatus(OrderStatus.CHANGED);
-            orderService.save(order);
+            orderService.update(order);
         }
         return "redirect:/account/my-orders/created";
     }

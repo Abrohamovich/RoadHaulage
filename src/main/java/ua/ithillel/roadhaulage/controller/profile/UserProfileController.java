@@ -47,7 +47,7 @@ public class UserProfileController {
             orders = orders.stream()
                     .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
                     .toList();
-            orders.forEach(Order::defineAllTransactional);
+            orders.forEach(Order::defineTransient);
             model.addAttribute("orders", orders);
             return "profile/orders";
         }
@@ -60,7 +60,7 @@ public class UserProfileController {
         Optional<Order> orderDB = orderService.findById(id);
         if(orderDB.isPresent()) {
             Order order = orderDB.get();
-            order.defineAllTransactional();
+            order.defineTransient();
             model.addAttribute("order", order);
             return "profile/order";
         }
