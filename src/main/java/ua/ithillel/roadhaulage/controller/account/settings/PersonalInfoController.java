@@ -11,7 +11,9 @@ import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/account/settings/personal-information")
@@ -26,11 +28,13 @@ public class PersonalInfoController {
                                    @AuthenticationPrincipal User user,
                                    Model model) {
         List<String> codes = getCodes(user.getPhoneCode());
+        Map<String, String> map = new HashMap<>();
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("phone", user.getPhone());
+        map.put("iban", user.getIban());
         model.addAttribute("codes", codes);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("phone", user.getPhone());
-        model.addAttribute("iban", user.getIban());
+        model.addAllAttributes(map);
         return "account/settings/personal-information";
     }
 

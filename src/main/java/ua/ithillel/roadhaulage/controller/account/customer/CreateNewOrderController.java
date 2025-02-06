@@ -27,9 +27,11 @@ public class CreateNewOrderController {
     public String createPage(@AuthenticationPrincipal User user,
                              Model model) {
         Date creationDate = new Date(System.currentTimeMillis());
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("acceptDate", creationDate);
+        Map<String, String> map = new HashMap<>();
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("acceptDate", creationDate.toString());
+        model.addAllAttributes(map);
         return "account/customer-orders/create";
     }
 

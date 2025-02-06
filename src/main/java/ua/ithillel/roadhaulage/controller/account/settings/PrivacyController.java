@@ -12,6 +12,8 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -28,9 +30,11 @@ public class PrivacyController {
                               @ModelAttribute("passwordError") String passwordError,
                               @ModelAttribute("emailError") String emailError,
                               Model model) {
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("passwordError", passwordError);
-        model.addAttribute("emailError", emailError);
+        Map<String, String> map = new HashMap<>();
+        map.put("passwordError", passwordError);
+        map.put("emailError", emailError);
+        map.put("email", user.getEmail());
+        model.addAllAttributes(map);
         return "account/settings/privacy";
     }
 
