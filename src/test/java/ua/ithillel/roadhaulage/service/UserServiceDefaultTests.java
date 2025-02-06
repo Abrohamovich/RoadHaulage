@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.repository.UserRepository;
@@ -32,22 +31,176 @@ public class UserServiceDefaultTests {
     private UserServiceDefault userService;
 
     @Test
-    public void saveTest(){
+    void saveTest_success() {
         User user = new User();
-        user.setPassword("plainPassword");
+        user.setPassword("plain1Password");
         String encodedPassword = "encodedPassword";
 
-        when(bCryptPasswordEncoder.encode("plainPassword")).thenReturn(encodedPassword);
+        when(bCryptPasswordEncoder.encode("plain1Password")).thenReturn(encodedPassword);
 
         userService.save(user);
 
         assertEquals(encodedPassword, user.getPassword());
-        verify(bCryptPasswordEncoder, times(1)).encode("plainPassword");
+        verify(bCryptPasswordEncoder, times(1)).encode("plain1Password");
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    public void updateTest_withPasswordChanges(){
+    void saveTest_throwsException_EmailAlreadyExists() {
+        String email = "test@example.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword("plain1Password");
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode("+1");
+        user.setPhone("995251532");
+
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists"));
+    }
+
+    @Test
+    void saveTest_throwsException_PhoneAlreadyExists() {
+        String phoneCode = "380";
+        String phone = "991373605";
+        User user = new User();
+        user.setEmail("email");
+        user.setPassword("plain1Password");
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode(phoneCode);
+        user.setPhone(phone);
+
+
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage().contains("A user with phone " + phoneCode + phone + " already exists"));
+    }
+
+    @Test
+    void saveTest_throwsException_InvalidPassword() {
+        User user = new User();
+        user.setEmail("email");
+        user.setPassword("password");
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode("380");
+        user.setPhone("995251532");
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage()
+                .contains("Password must contain at least one digit and one uppercase"));
+    }
+
+    @Test
+    void saveTest_throwsException_PhoneAndEmailAlreadyExist() {
+        String email = "test@example.com";
+        String phoneCode = "380";
+        String phone = "991373605";
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword("plain1Password");
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode(phoneCode);
+        user.setPhone(phone);
+
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists." +
+                " A user with phone " + phoneCode + phone + " already exists"));
+    }
+
+    @Test
+    void saveTest_throwsException_EmailAlreadyExistsAndInvalidPassword() {
+        String email = "test@example.com";
+        String password = "invalidpassword";
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode("+1");
+        user.setPhone("995251532");
+
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage()
+                .contains("A user with email " + email + " already exists." +
+                        " Password must contain at least one digit and one uppercase"));
+    }
+
+    @Test
+    void saveTest_throwsException_PhoneAlreadyExistsAndInvalidPassword() {
+        String phoneCode = "380";
+        String phone = "991373605";
+        String password = "invalidpassword";
+        User user = new User();
+        user.setEmail("email");
+        user.setPassword(password);
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode(phoneCode);
+        user.setPhone(phone);
+
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage()
+                .contains("A user with phone " + phoneCode + phone + " already exists." +
+                        " Password must contain at least one digit and one uppercase"));
+    }
+
+    @Test
+    public void saveTest_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword() {
+        String email = "test@example.com";
+        String phoneCode = "380";
+        String phone = "991373605";
+        String password = "invalidpassword";
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setPhoneCode(phoneCode);
+        user.setPhone(phone);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+
+        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+                userService.save(user));
+
+        assertTrue(exception.getMessage()
+                .contains("A user with email " + email + " already exists." +
+                        " A user with phone " + phoneCode + phone + " already exists." +
+                        " Password must contain at least one digit and one uppercase"));
+    }
+
+    @Test
+    void updateTest_withPasswordChanges() {
         User user = new User();
         user.setId(1L);
         user.setPassword("newPassword");
@@ -67,7 +220,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void updateTest_withoutPasswordChanges(){
+    void updateTest_withoutPasswordChanges() {
         User user = new User();
         user.setId(1L);
         user.setPassword("oldPassword");
@@ -86,7 +239,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByIdTest_returnsUserOptional(){
+    void findByIdTest_returnsUserOptional() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(mock(User.class)));
 
         Optional<User> result = userService.findById(anyLong());
@@ -97,7 +250,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByIdTest_returnsEmptyOptional(){
+    void findByIdTest_returnsEmptyOptional() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Optional<User> result = userService.findById(anyLong());
@@ -107,7 +260,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByEmailTest_returnsUserOptional(){
+    void findByEmailTest_returnsUserOptional() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mock(User.class)));
 
         Optional<User> result = userService.findByEmail(anyString());
@@ -118,7 +271,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByEmailTest_returnsEmptyOptional(){
+    void findByEmailTest_returnsEmptyOptional() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         Optional<User> result = userService.findByEmail(anyString());
@@ -128,7 +281,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByPhoneCodeAndPhoneTest_returnsUserOptional(){
+    void findByPhoneCodeAndPhoneTest_returnsUserOptional() {
         when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.of(mock(User.class)));
 
         Optional<User> result = userService.findByPhoneCodeAndPhone(anyString(), anyString());
@@ -138,7 +291,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void findByPhoneCodeAndPhoneTest_returnsEmptyOptional(){
+    void findByPhoneCodeAndPhoneTest_returnsEmptyOptional() {
         when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.empty());
 
         Optional<User> result = userService.findByPhoneCodeAndPhone(anyString(), anyString());
@@ -147,117 +300,8 @@ public class UserServiceDefaultTests {
         verify(userRepository, times(1)).findByPhoneCodeAndPhone(anyString(), anyString());
     }
 
-//    @Test
-//    public void createUserTest_throwsException_EmailAlreadyExists(){
-//        String email = "test@example.com";
-//
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser(email, "Password1", "John", "Doe",
-//                        "+1", "1234567890", true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_PhoneAlreadyExists(){
-//        String phoneCode = "380";
-//        String phone = "991373605";
-//
-//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser("test@example.com", "Password1", "John", "Doe",
-//                        phoneCode, phone, true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage().contains("A user with phone " + phoneCode + phone + " already exists"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_InvalidPassword(){
-//        String password = "invalidpassword";
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser("test@example.com", password, "John", "Doe",
-//                        "380", "993732564", true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage()
-//                .contains("Password must contain at least one digit and one uppercase"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_PhoneAndEmailAlreadyExist(){
-//        String email = "test@example.com";
-//        String phoneCode = "380";
-//        String phone = "991373605";
-//
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser(email, "Password1", "John", "Doe",
-//                        phoneCode, phone, true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists." +
-//                " A user with phone " + phoneCode + phone + " already exists"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_EmailAlreadyExistsAndInvalidPassword(){
-//        String email = "test@example.com";
-//        String password = "invalidpassword";
-//
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser(email, password, "John", "Doe",
-//                        "+1", "1234567890", true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage()
-//                .contains("A user with email " + email + " already exists." +
-//                        " Password must contain at least one digit and one uppercase"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_PhoneAlreadyExistsAndInvalidPassword(){
-//        String phoneCode = "380";
-//        String phone = "991373605";
-//        String password = "invalidpassword";
-//
-//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser("test@example.com", password, "John", "Doe",
-//                        phoneCode, phone, true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage()
-//                .contains("A user with phone " + phoneCode + phone + " already exists." +
-//                        " Password must contain at least one digit and one uppercase"));
-//    }
-//
-//    @Test
-//    public void createUserTest_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword(){
-//        String email = "test@example.com";
-//        String phoneCode = "380";
-//        String phone = "991373605";
-//        String password = "invalidpassword";
-//
-//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-//
-//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-//                userService.createUser(email, password, "John", "Doe",
-//                        phoneCode, phone, true, UserRole.USER));
-//
-//        assertTrue(exception.getMessage()
-//                .contains("A user with email " + email + " already exists." +
-//                        " A user with phone " + phoneCode + phone + " already exists." +
-//                        " Password must contain at least one digit and one uppercase"));
-//    }
-
     @Test
-    public void verifyEmailTest_returnsZero_success(){
+    void verifyEmailTest_returnsZero_success() {
         String token = UUID.randomUUID().toString();
 
         User user = new User();
@@ -279,7 +323,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyEmailTest_returnsOne_verificationTokenIsEmpty_failure(){
+    void verifyEmailTest_returnsOne_verificationTokenIsEmpty_failure() {
         String token = UUID.randomUUID().toString();
 
         when(verificationTokenService.getToken(token)).thenReturn(Optional.empty());
@@ -290,7 +334,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyEmailTest_returnsOne_verificationTokenDoesNotBelongsToUser_failure(){
+    void verifyEmailTest_returnsOne_verificationTokenDoesNotBelongsToUser_failure() {
         String token = UUID.randomUUID().toString();
         String anotherToken = UUID.randomUUID().toString();
 
@@ -312,7 +356,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyEmailTest_returnsTwo_verificationTokenUserIsNull_failure(){
+    void verifyEmailTest_returnsTwo_verificationTokenUserIsNull_failure() {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
@@ -329,7 +373,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyEmailTest_returnsTwo_verificationTokenIsExpired_failure(){
+    void verifyEmailTest_returnsTwo_verificationTokenIsExpired_failure() {
         String token = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
@@ -346,7 +390,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyPasswordTest_returnsZero_success(){
+    void verifyPasswordTest_returnsZero_success() {
         String token = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
 
@@ -368,7 +412,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyPasswordTest_returnsOne_verificationTokenIsEmpty_failure(){
+    void verifyPasswordTest_returnsOne_verificationTokenIsEmpty_failure() {
         String token = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
 
@@ -380,7 +424,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyPasswordTest_returnsOne_verificationTokenDoesNotBelongsToUser_failure(){
+    void verifyPasswordTest_returnsOne_verificationTokenDoesNotBelongsToUser_failure() {
         String token = UUID.randomUUID().toString();
         String anotherToken = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
@@ -401,7 +445,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyPasswordTest_returnsTwo_verificationTokenUserIsNull_failure(){
+    void verifyPasswordTest_returnsTwo_verificationTokenUserIsNull_failure() {
         String token = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
 
@@ -419,7 +463,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void verifyPasswordTest_returnsTwo_verificationTokenIsExpired_failure(){
+    void verifyPasswordTest_returnsTwo_verificationTokenIsExpired_failure() {
         String token = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
 
@@ -437,7 +481,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void loadUserByUsernameTest_returnsUser(){
+    void loadUserByUsernameTest_returnsUser() {
         User user = new User();
         user.setEmail("test@gmail.com");
         when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
@@ -449,7 +493,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    public void loadUserByUsernameTest_throwsUsernameNotFoundException(){
+    void loadUserByUsernameTest_throwsUsernameNotFoundException() {
         String email = "test@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
