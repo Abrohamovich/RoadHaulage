@@ -66,26 +66,4 @@ public class OrderServiceDefault implements OrderService {
         orders.forEach(Order::defineTransient);
         return orders;
     }
-
-    @Override
-    public Order createOrder(User user, OrderStatus orderStatus, Address deliveryAddress,
-                             Address departureAddress, String additionalInfo, String weight,
-                             String weightUnit, String dimensions, String dimensionsUnit,
-                             String cost, String currency, Date createdAt, Set<OrderCategory> orderCategories) {
-        Order order = new Order();
-        order.setCustomer(user);
-        order.setStatus(OrderStatus.CREATED);
-        order.setDeliveryAddress(deliveryAddress);
-        order.setDepartureAddress(departureAddress);
-        order.setAdditionalInfo(additionalInfo);
-        order.setWeight(weight);
-        order.setWeightUnit(weightUnit);
-        order.setDimensions(dimensions);
-        order.setDimensionsUnit(dimensionsUnit);
-        order.setCost(cost);
-        order.setCurrency(currency);
-        order.setCreationDate(createdAt);
-        order.setCategories(orderCategories);
-        return order;
-    }
 }

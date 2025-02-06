@@ -22,29 +22,12 @@ public class OrderServiceTests {
     private OrderServiceDefault orderService;
 
     @Test
-    public void createOrderTest_returnsOrder() {
-
+    public void saveTest(){
         Order mockOrder = mock(Order.class);
 
-        Order result = orderService.createOrder(mockOrder.getCustomer(), OrderStatus.CREATED, mockOrder.getDeliveryAddress(),
-                mockOrder.getDepartureAddress(), mockOrder.getAdditionalInfo(), mockOrder.getWeight(),
-                mockOrder.getWeightUnit(), mockOrder.getDimensions(), mockOrder.getDimensionsUnit(),
-                mockOrder.getCost(), mockOrder.getCurrency(), mockOrder.getCreationDate(), mockOrder.getCategories());
+        orderService.save(mockOrder);
 
-        assertNotNull(result);
-        assertEquals(mockOrder.getCustomer(), result.getCustomer());
-        assertEquals(OrderStatus.CREATED, result.getStatus());
-        assertEquals(mockOrder.getDeliveryAddress(), result.getDeliveryAddress());
-        assertEquals(mockOrder.getDepartureAddress(), result.getDepartureAddress());
-        assertEquals(mockOrder.getAdditionalInfo(), result.getAdditionalInfo());
-        assertEquals(mockOrder.getWeight(), result.getWeight());
-        assertEquals(mockOrder.getWeightUnit(), result.getWeightUnit());
-        assertEquals(mockOrder.getDimensions(), result.getDimensions());
-        assertEquals(mockOrder.getDimensionsUnit(), result.getDimensionsUnit());
-        assertEquals(mockOrder.getCost(), result.getCost());
-        assertEquals(mockOrder.getCurrency(), result.getCurrency());
-        assertEquals(mockOrder.getCreationDate(), result.getCreationDate());
-        assertEquals(mockOrder.getCategories(), result.getCategories());
+        verify(orderRepository, times(1)).save(mockOrder);
     }
 
     @Test
@@ -184,15 +167,6 @@ public class OrderServiceTests {
 
         verify(orderRepository, times(1)).deleteById(mockOrder.getId());
 
-    }
-
-    @Test
-    public void saveTest(){
-        Order mockOrder = mock(Order.class);
-
-        orderService.save(mockOrder);
-
-        verify(orderRepository, times(1)).save(mockOrder);
     }
 
     @Test

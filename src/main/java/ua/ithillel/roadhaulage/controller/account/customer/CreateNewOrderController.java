@@ -61,10 +61,22 @@ public class CreateNewOrderController {
             addressService.save(departureAddress);
             addressService.save(deliveryAddress);
 
-            Order orderr = orderService.createOrder(user, OrderStatus.CREATED, deliveryAddress,
-                    departureAddress, additionalInfo, weight, weightUnit, dimensions, dimensionsUnit,
-                    cost, currency, new Date(System.currentTimeMillis()), orderCategories);
-            orderService.save(orderr);
+            Order order = new Order();
+            order.setCustomer(user);
+            order.setStatus(OrderStatus.CREATED);
+            order.setDeliveryAddress(deliveryAddress);
+            order.setDepartureAddress(departureAddress);
+            order.setAdditionalInfo(additionalInfo);
+            order.setWeight(weight);
+            order.setWeightUnit(weightUnit);
+            order.setDimensions(dimensions);
+            order.setDimensionsUnit(dimensionsUnit);
+            order.setCost(cost);
+            order.setCurrency(currency);
+            order.setCreationDate(new Date(System.currentTimeMillis()));
+            order.setCategories(orderCategories);
+
+            orderService.save(order);
         }
 
         return "redirect:/account/my-orders/create";

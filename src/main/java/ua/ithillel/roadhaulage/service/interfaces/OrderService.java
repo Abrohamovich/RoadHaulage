@@ -16,9 +16,5 @@ public interface OrderService {
     void update(Order order);
     Optional<Order> findById(long id);
     List<Order> returnOtherPublishedOrders(long id);
-    Order createOrder(User user, OrderStatus orderStatus, Address deliveryAddress,
-                      Address departureAddress, String additionalInfo, String weight,
-                      String weightUnit, String dimensions, String dimensionsUnit,
-                      String cost, String currency, Date createdAt, Set<OrderCategory> orderCategories);
 
 }
