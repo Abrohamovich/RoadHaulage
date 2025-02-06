@@ -34,16 +34,22 @@ public class RegistrationController {
     }
 
     @PostMapping("/reg")
-    public String register(@RequestParam(required = true) String email,
-                           @RequestParam(required = true) String password,
-                           @RequestParam(required = true, name = "countryCode") String phoneCode,
-                           @RequestParam(required = true) String phone,
-                           @RequestParam(required = true) String firstName,
-                           @RequestParam(required = true) String lastName, RedirectAttributes redirectAttributes) {
-        //todo
+    public String register(@RequestParam String email,
+                           @RequestParam String password,
+                           @RequestParam(name = "countryCode") String phoneCode,
+                           @RequestParam String phone,
+                           @RequestParam String firstName,
+                           @RequestParam String lastName, RedirectAttributes redirectAttributes) {
         try{
-            User user = userService.createUser(email, password, firstName,
-                    lastName, phoneCode, phone, true, UserRole.USER);
+            User user = new User();
+            user.setEmail(email);
+            user.setRole(UserRole.USER);
+            user.setEnabled(false);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPhoneCode(phoneCode);
+            user.setPhone(phone);
+            user.setPassword(password);
 
             userService.save(user);
 

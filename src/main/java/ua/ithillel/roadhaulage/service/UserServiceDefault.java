@@ -28,7 +28,18 @@ public class UserServiceDefault implements UserService, UserDetailsService {
 
     @Override
     public void save(User user) {
+        List<String> errors = new ArrayList<>();
+
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            errors.add("A user with email " + user.getEmail() + " already exists");}
+        if (userRepository.findByPhoneCodeAndPhone(user.getPhoneCode(), user.getPhone()).isPresent()) {
+            errors.add("A user with phone " + user.getPhoneCode() + user.getPhone() + " already exists");}
+        if (!isValidPassword(user.getPassword())){
+            errors.add("Password must contain at least one digit and one uppercase");}
+        if(!errors.isEmpty()) throw new UserCreateException(String.join(". ", errors));
+
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
         userRepository.save(user);
     }
 
@@ -54,30 +65,6 @@ public class UserServiceDefault implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByPhoneCodeAndPhone(String phoneCode, String phone) {
         return userRepository.findByPhoneCodeAndPhone(phoneCode, phone);
-    }
-
-    @Override
-    public User createUser(String email, String password, String firstName,
-                           String lastName, String phoneCode, String phone,
-                           boolean enabled, UserRole userRole){
-        List<String> errors = new ArrayList<>();
-        if (userRepository.findByEmail(email).isPresent()) {
-            errors.add("A user with email " + email + " already exists");}
-        if (userRepository.findByPhoneCodeAndPhone(phoneCode, phone).isPresent()) {
-            errors.add("A user with phone " + phoneCode + phone + " already exists");}
-        if (!isValidPassword(password)){
-            errors.add("Password must contain at least one digit and one uppercase");}
-        if(!errors.isEmpty()) throw new UserCreateException(String.join(". ", errors));
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setPhoneCode(phoneCode);
-        user.setPhone(phone);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEnabled(enabled);
-        user.setRole(userRole);
-        return user;
     }
 
     @Override

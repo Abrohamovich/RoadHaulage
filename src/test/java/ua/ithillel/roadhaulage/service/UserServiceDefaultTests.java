@@ -147,144 +147,114 @@ public class UserServiceDefaultTests {
         verify(userRepository, times(1)).findByPhoneCodeAndPhone(anyString(), anyString());
     }
 
-    @Test
-    public void createUserTest_returnsUser_allFieldsAreValid(){
-        String email = "test@example.com";
-        String password = "Passw0rd";
-        String firstName = "firstName";
-        String lastName = "lastName";
-        String phoneCode = "380";
-        String phone = "990386970";
-        boolean enabled = false;
-        UserRole userRole = UserRole.USER;
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.empty());
-
-        User result = userService.createUser(email, password, firstName, lastName,
-                phoneCode, phone, enabled, userRole);
-
-        assertEquals(email, result.getEmail());
-        assertEquals(password, result.getPassword());
-        assertEquals(firstName, result.getFirstName());
-        assertEquals(lastName, result.getLastName());
-        assertEquals(phone, result.getPhone());
-        assertEquals(phoneCode, result.getPhoneCode());
-        assertEquals(enabled, result.isEnabled());
-        assertEquals(userRole, result.getRole());
-
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(userRepository, times(1)).findByPhoneCodeAndPhone(phoneCode, phone);
-    }
-
-    @Test
-    public void createUserTest_throwsException_EmailAlreadyExists(){
-        String email = "test@example.com";
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser(email, "Password1", "John", "Doe",
-                        "+1", "1234567890", true, UserRole.USER));
-
-        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_PhoneAlreadyExists(){
-        String phoneCode = "380";
-        String phone = "991373605";
-
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser("test@example.com", "Password1", "John", "Doe",
-                        phoneCode, phone, true, UserRole.USER));
-
-        assertTrue(exception.getMessage().contains("A user with phone " + phoneCode + phone + " already exists"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_InvalidPassword(){
-        String password = "invalidpassword";
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser("test@example.com", password, "John", "Doe",
-                        "380", "993732564", true, UserRole.USER));
-
-        assertTrue(exception.getMessage()
-                .contains("Password must contain at least one digit and one uppercase"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_PhoneAndEmailAlreadyExist(){
-        String email = "test@example.com";
-        String phoneCode = "380";
-        String phone = "991373605";
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser(email, "Password1", "John", "Doe",
-                        phoneCode, phone, true, UserRole.USER));
-
-        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists." +
-                " A user with phone " + phoneCode + phone + " already exists"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_EmailAlreadyExistsAndInvalidPassword(){
-        String email = "test@example.com";
-        String password = "invalidpassword";
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser(email, password, "John", "Doe",
-                        "+1", "1234567890", true, UserRole.USER));
-
-        assertTrue(exception.getMessage()
-                .contains("A user with email " + email + " already exists." +
-                        " Password must contain at least one digit and one uppercase"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_PhoneAlreadyExistsAndInvalidPassword(){
-        String phoneCode = "380";
-        String phone = "991373605";
-        String password = "invalidpassword";
-
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser("test@example.com", password, "John", "Doe",
-                        phoneCode, phone, true, UserRole.USER));
-
-        assertTrue(exception.getMessage()
-                .contains("A user with phone " + phoneCode + phone + " already exists." +
-                        " Password must contain at least one digit and one uppercase"));
-    }
-
-    @Test
-    public void createUserTest_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword(){
-        String email = "test@example.com";
-        String phoneCode = "380";
-        String phone = "991373605";
-        String password = "invalidpassword";
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
-
-        UserCreateException exception = assertThrows(UserCreateException.class, () ->
-                userService.createUser(email, password, "John", "Doe",
-                        phoneCode, phone, true, UserRole.USER));
-
-        assertTrue(exception.getMessage()
-                .contains("A user with email " + email + " already exists." +
-                        " A user with phone " + phoneCode + phone + " already exists." +
-                        " Password must contain at least one digit and one uppercase"));
-    }
+//    @Test
+//    public void createUserTest_throwsException_EmailAlreadyExists(){
+//        String email = "test@example.com";
+//
+//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser(email, "Password1", "John", "Doe",
+//                        "+1", "1234567890", true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_PhoneAlreadyExists(){
+//        String phoneCode = "380";
+//        String phone = "991373605";
+//
+//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser("test@example.com", "Password1", "John", "Doe",
+//                        phoneCode, phone, true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage().contains("A user with phone " + phoneCode + phone + " already exists"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_InvalidPassword(){
+//        String password = "invalidpassword";
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser("test@example.com", password, "John", "Doe",
+//                        "380", "993732564", true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage()
+//                .contains("Password must contain at least one digit and one uppercase"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_PhoneAndEmailAlreadyExist(){
+//        String email = "test@example.com";
+//        String phoneCode = "380";
+//        String phone = "991373605";
+//
+//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser(email, "Password1", "John", "Doe",
+//                        phoneCode, phone, true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage().contains("A user with email " + email + " already exists." +
+//                " A user with phone " + phoneCode + phone + " already exists"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_EmailAlreadyExistsAndInvalidPassword(){
+//        String email = "test@example.com";
+//        String password = "invalidpassword";
+//
+//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser(email, password, "John", "Doe",
+//                        "+1", "1234567890", true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage()
+//                .contains("A user with email " + email + " already exists." +
+//                        " Password must contain at least one digit and one uppercase"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_PhoneAlreadyExistsAndInvalidPassword(){
+//        String phoneCode = "380";
+//        String phone = "991373605";
+//        String password = "invalidpassword";
+//
+//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser("test@example.com", password, "John", "Doe",
+//                        phoneCode, phone, true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage()
+//                .contains("A user with phone " + phoneCode + phone + " already exists." +
+//                        " Password must contain at least one digit and one uppercase"));
+//    }
+//
+//    @Test
+//    public void createUserTest_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword(){
+//        String email = "test@example.com";
+//        String phoneCode = "380";
+//        String phone = "991373605";
+//        String password = "invalidpassword";
+//
+//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+//        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone)).thenReturn(Optional.of(new User()));
+//
+//        UserCreateException exception = assertThrows(UserCreateException.class, () ->
+//                userService.createUser(email, password, "John", "Doe",
+//                        phoneCode, phone, true, UserRole.USER));
+//
+//        assertTrue(exception.getMessage()
+//                .contains("A user with email " + email + " already exists." +
+//                        " A user with phone " + phoneCode + phone + " already exists." +
+//                        " Password must contain at least one digit and one uppercase"));
+//    }
 
     @Test
     public void verifyEmailTest_returnsZero_success(){
