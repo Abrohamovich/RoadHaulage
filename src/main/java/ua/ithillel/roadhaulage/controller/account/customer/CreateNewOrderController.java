@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +16,12 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CreateNewOrderController {
-    private UserService userService;
-    private OrderService orderService;
-    private OrderCategoryService orderCategoryService;
-    private AddressService addressService;
+    private final UserService userService;
+    private final OrderService orderService;
+    private final OrderCategoryService orderCategoryService;
+    private final AddressService addressService;
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User user,

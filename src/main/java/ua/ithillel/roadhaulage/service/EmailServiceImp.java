@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -8,9 +8,9 @@ import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailServiceImp implements EmailService {
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Override
     public void sendEmail(String to, String subject, String body) {

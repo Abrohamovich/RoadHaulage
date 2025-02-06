@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -16,10 +15,10 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/my-orders/created")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CreatedOrderController {
-    private OrderService orderService;
-    private UserRatingService userRatingService;
+    private final OrderService orderService;
+    private final UserRatingService userRatingService;
 
     @GetMapping
     public String createdOrdersPage(@AuthenticationPrincipal User user,

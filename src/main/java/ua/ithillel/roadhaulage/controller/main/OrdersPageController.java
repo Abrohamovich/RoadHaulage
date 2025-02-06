@@ -2,6 +2,7 @@ package ua.ithillel.roadhaulage.controller.main;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +18,11 @@ import java.util.Set;
 
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrdersPageController {
-    private OrderService orderService;
-    private OrderCategoryService orderCategoryService;
+    private final OrderService orderService;
+    private final OrderCategoryService orderCategoryService;
 
     private List<OrderCategory> allOrderCategories;
 

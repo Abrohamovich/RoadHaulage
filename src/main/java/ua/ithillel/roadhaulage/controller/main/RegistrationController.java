@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.main;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +19,12 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/register")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RegistrationController {
-    private UserService userService;
-    private VerificationTokenService verificationTokenService;
-    private EmailService emailService;
-    private UserRatingService userRatingService;
+    private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
+    private final EmailService emailService;
+    private final UserRatingService userRatingService;
 
     @GetMapping
     public String register(@ModelAttribute("errorMessage") String errorMessage,

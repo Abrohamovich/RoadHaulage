@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.courier;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +19,9 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/delivered-orders/accepted")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AcceptedOrdersController {
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @GetMapping
     public String acceptedOrdersPage(@AuthenticationPrincipal User user,

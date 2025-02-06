@@ -2,6 +2,7 @@ package ua.ithillel.roadhaulage.controller.account;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +17,11 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/generate-report")
 public class ReportGeneratorController {
-    private OrderService orderService;
-    private ReportGenerator reportGenerator;
+    private final OrderService orderService;
+    private final ReportGenerator reportGenerator;
 
     @GetMapping
     public void generateReport(@AuthenticationPrincipal User user, HttpServletResponse response) {

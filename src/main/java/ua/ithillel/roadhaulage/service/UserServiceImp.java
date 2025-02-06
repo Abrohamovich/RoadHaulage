@@ -1,7 +1,6 @@
 package ua.ithillel.roadhaulage.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,11 +20,11 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImp implements UserService, UserDetailsService {
-    private UserRepository userRepository;
-    private VerificationTokenService verificationTokenService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final VerificationTokenService verificationTokenService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void save(User user) {

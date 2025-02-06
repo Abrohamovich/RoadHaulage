@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,20 +14,16 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/change")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ChangeOrderController {
-    private final UserService userService;
-    private OrderService orderService;
-    private OrderCategoryService orderCategoryService;
-    private AddressService addressService;
+    private final OrderService orderService;
+    private final OrderCategoryService orderCategoryService;
+    private final AddressService addressService;
 
     @PostMapping()
     public String changePage(@RequestParam("id") long id, Model model) {

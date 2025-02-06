@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.settings;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +15,9 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/account/settings/personal-information")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PersonalInfoController {
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,

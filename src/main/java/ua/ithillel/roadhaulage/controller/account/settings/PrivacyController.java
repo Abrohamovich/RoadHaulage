@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.account.settings;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,17 +12,16 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/account/settings/privacy")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PrivacyController {
-    private UserService userService;
-    private VerificationTokenService verificationTokenService;
-    private EmailService emailService;
+    private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
+    private final EmailService emailService;
 
     @GetMapping
     public String privacyPage(@AuthenticationPrincipal User user,

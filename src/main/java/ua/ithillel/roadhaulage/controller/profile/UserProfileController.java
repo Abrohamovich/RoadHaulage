@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.profile;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +18,11 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserProfileController {
-    private UserService userService;
-    private UserRatingService userRatingService;
-    private OrderService orderService;
+    private final UserService userService;
+    private final UserRatingService userRatingService;
+    private final OrderService orderService;
 
     @GetMapping("/{email}/info")
     public String getUserProfileInfo(@PathVariable String email, Model model) {

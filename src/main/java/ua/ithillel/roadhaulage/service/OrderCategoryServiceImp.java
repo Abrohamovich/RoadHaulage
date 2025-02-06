@@ -1,8 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.repository.OrderCategoryRepository;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
@@ -10,9 +9,9 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderCategoryServiceImp implements OrderCategoryService {
-    private OrderCategoryRepository orderCategoryRepository;
+    private final OrderCategoryRepository orderCategoryRepository;
 
     @Override
     public void save(OrderCategory orderCategory) {

@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.main;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,11 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/password-recovery")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PasswordRecoveryController {
-    private UserService userService;
-    private VerificationTokenService verificationTokenService;
-    private EmailService emailService;
+    private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
+    private final EmailService emailService;
 
     private static final String password = PasswordGenerator.generatePassword(10);
 

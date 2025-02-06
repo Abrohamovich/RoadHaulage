@@ -1,6 +1,6 @@
 package ua.ithillel.roadhaulage.controller.main;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,9 +8,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailVerificationController {
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/verify-email")
     public String verifyEmail(@RequestParam("token") String token,
