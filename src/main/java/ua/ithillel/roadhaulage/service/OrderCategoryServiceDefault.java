@@ -10,7 +10,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class OrderCategoryServiceImp implements OrderCategoryService {
+public class OrderCategoryServiceDefault implements OrderCategoryService {
     private final OrderCategoryRepository orderCategoryRepository;
 
     @Override

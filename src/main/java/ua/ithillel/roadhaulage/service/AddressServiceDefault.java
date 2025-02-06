@@ -10,7 +10,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class AddressServiceImp implements AddressService {
+public class AddressServiceDefault implements AddressService {
     private final AddressRepository addressRepository;
 
     @Override

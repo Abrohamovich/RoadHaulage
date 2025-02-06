@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceImpTests {
+public class AddressServiceDefaultTests {
     @Mock
     private AddressRepository addressRepository;
     @InjectMocks
-    private AddressServiceImp addressService;
+    private AddressServiceDefault addressService;
 
     @Test
     public void saveTest(){

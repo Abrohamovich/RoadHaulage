@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class VerificationTokenServiceImp implements VerificationTokenService {
+public class VerificationTokenServiceDefault implements VerificationTokenService {
     private final VerificationTokenRepository verificationTokenRepository;
 
     @Override

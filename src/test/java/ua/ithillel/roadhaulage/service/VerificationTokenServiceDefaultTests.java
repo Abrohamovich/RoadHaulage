@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class VerificationTokenServiceImpTests {
+public class VerificationTokenServiceDefaultTests {
     @Mock
     private VerificationTokenRepository repository;
     @InjectMocks
-    private VerificationTokenServiceImp service;
+    private VerificationTokenServiceDefault service;
 
     @Test
     public void saveTest(){

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserRatingServiceImp implements UserRatingService {
+public class UserRatingServiceDefault implements UserRatingService {
     private final UserRatingRepository repository;
 
     @Override

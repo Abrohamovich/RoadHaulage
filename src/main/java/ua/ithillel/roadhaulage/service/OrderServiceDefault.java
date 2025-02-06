@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImp implements OrderService {
+public class OrderServiceDefault implements OrderService {
     private final OrderRepository orderRepository;
 
     @Override

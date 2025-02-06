@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.repository.OrderRepository;
 
@@ -21,7 +19,7 @@ public class OrderServiceTests {
     @Mock
     private OrderRepository orderRepository;
     @InjectMocks
-    private OrderServiceImp orderService;
+    private OrderServiceDefault orderService;
 
     @Test
     public void createOrderTest_returnsOrder() {

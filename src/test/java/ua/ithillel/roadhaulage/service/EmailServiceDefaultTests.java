@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EmailServiceImpTests {
+public class EmailServiceDefaultTests {
     @Mock
     private JavaMailSender mailSender;
     @InjectMocks
-    private EmailServiceImp service;
+    private EmailServiceDefault service;
 
     @Test
     public void sendEmailTest(){

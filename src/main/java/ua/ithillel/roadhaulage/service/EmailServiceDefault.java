@@ -9,7 +9,7 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImp implements EmailService {
+public class EmailServiceDefault implements EmailService {
     private final JavaMailSender mailSender;
 
     @Override

@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService, UserDetailsService {
+public class UserServiceDefault implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final VerificationTokenService verificationTokenService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

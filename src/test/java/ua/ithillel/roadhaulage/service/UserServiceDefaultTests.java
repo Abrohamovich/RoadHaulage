@@ -12,8 +12,6 @@ import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.repository.UserRepository;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
-import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -23,15 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImpTests {
+public class UserServiceDefaultTests {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private VerificationTokenServiceImp verificationTokenService;
+    private VerificationTokenServiceDefault verificationTokenService;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @InjectMocks
-    private UserServiceImp userService;
+    private UserServiceDefault userService;
 
     @Test
     public void saveTest(){
