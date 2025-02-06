@@ -34,6 +34,8 @@ public class User implements UserDetails {
     private List<Order> customerOrders; // List of orders you have created
     @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
     private List<Order> courierOrders; // List of orders you have fulfilled for other users
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserRating rating;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -50,19 +50,38 @@
           <input type="hidden" name="id" th:value="${order.id}" />
           <button type="submit" title="Change order"><ion-icon name="arrow-redo-outline"></ion-icon></button>
         </form>
-        <form th:action="@{/account/my-orders/created/close}" th:if="${order.status.name()} == 'ACCEPTED'" method="post">
-          <input type="hidden" name="id" th:value="${order.id}" />
-          <button type="submit" title="Close order"><ion-icon name="close-circle-outline"></ion-icon></button>
-        </form>
+        <button type="button" title="Close order" onclick="openRatingModal(this)" th:if="${order.status.name()} == 'ACCEPTED'">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </button>
         <form th:action="@{/account/my-orders/created/delete}" method="get">
           <input type="hidden" name="id" th:value="${order.id}" />
           <button style="background-color: red" type="submit" title="Delete order"><ion-icon name="trash-outline"></ion-icon></button>
         </form>
       </div>
     </div>
+    <div id="ratingModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);">
+      <form id="ratingForm" th:action="@{/account/my-orders/created/close}" method="post">
+        <input type="hidden" name="id" id="orderId" />
+        <label for="rating">Rating:</label>
+        <input type="number" name="rating" id="rating" min="1" max="10" step="0.1" required/>
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeRatingModal()">Cancel</button>
+      </form>
+    </div>
   </main>
 </div>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+  function openRatingModal(button) {
+    document.getElementById('ratingModal').style.display = 'block';
+    const orderId = button.closest('.order').querySelector('input[name="id"]').value;
+    document.getElementById('orderId').value = orderId;
+  }
+
+  function closeRatingModal() {
+    document.getElementById('ratingModal').style.display = 'none';
+  }
+</script>
 </body>
 </html>

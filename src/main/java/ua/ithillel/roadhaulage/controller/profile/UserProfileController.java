@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.UserRating;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.*;
@@ -19,6 +21,7 @@ import java.util.*;
 @AllArgsConstructor
 public class UserProfileController {
     private UserService userService;
+    private UserRatingService userRatingService;
     private OrderService orderService;
 
     @GetMapping("/{email}/info")
@@ -26,11 +29,14 @@ public class UserProfileController {
         Optional<User> userDB = userService.findByEmail(email);
         if(userDB.isPresent()) {
             User user = userDB.get();
+            Optional<UserRating> userRating = userRatingService.findById(user.getId());
             Map<String, String> map = new HashMap<>();
             map.put("firstName", user.getFirstName());
             map.put("lastName", user.getLastName());
             map.put("email", user.getEmail());
             map.put("phone", "+" + user.getPhoneCode() + user.getPhone());
+            map.put("rating", String.valueOf(userRating.get().getAverage()));
+            map.put("count", String.valueOf(userRating.get().getCount()));
             model.addAllAttributes(map);
             return "profile/info";
         }

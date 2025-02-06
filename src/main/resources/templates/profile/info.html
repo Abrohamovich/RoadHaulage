@@ -49,6 +49,10 @@
             <label>Contact phone</label>
             <input type="text" name="phone" th:value="${phone}" readonly>
         </div>
+        <div class="form-group">
+            <label>Rating</label>
+            <input type="text" name="rating" th:value="${rating} + ' (' + ${count} + ')'" readonly>
+        </div>
     </main>
 </div>
 </body>

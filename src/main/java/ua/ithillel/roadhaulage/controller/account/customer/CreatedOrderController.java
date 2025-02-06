@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CreatedOrderController {
     private OrderService orderService;
+    private UserRatingService userRatingService;
 
     @GetMapping
     public String createdOrdersPage(@AuthenticationPrincipal User user,
@@ -38,12 +41,14 @@ public class CreatedOrderController {
         return "redirect:/account/my-orders/created";
     }
     @PostMapping("/close")
-    public String closeOrder(@RequestParam long id){
+    public String closeOrder(@RequestParam long id, @RequestParam double rating){
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             Order order = orderOptional.get();
             order.setStatus(OrderStatus.COMPLETED);
             order.setCompletionDate(new Date(System.currentTimeMillis()));
+            Optional<UserRating> userRatingOptional = userRatingService.findById(order.getCourier().getId());
+            userRatingOptional.ifPresent(userRating -> userRatingService.update(userRating, rating));
             orderService.update(order);
         }
         return "redirect:/account/my-orders/completed";
