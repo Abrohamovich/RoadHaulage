@@ -46,7 +46,6 @@ public class UserProfileController {
     @GetMapping("/{email}/orders")
     public String getUserProfileOrders(@PathVariable String email, Model model) {
         Optional<User> userDB = userService.findByEmail(email);
-        model.addAttribute("email", email);
         if(userDB.isPresent()) {
             User user = userDB.get();
             List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
@@ -54,6 +53,7 @@ public class UserProfileController {
                     .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
                     .toList();
             orders.forEach(Order::defineTransient);
+            model.addAttribute("email", email);
             model.addAttribute("orders", orders);
             return "profile/orders";
         }
@@ -61,11 +61,12 @@ public class UserProfileController {
     }
 
     @GetMapping("/{email}/order/{id}")
-    public String getUserProfileOrder(@PathVariable String email, @PathVariable long id,  Model model) {
-        model.addAttribute("email", email);
+    public String getUserProfileOrder(@PathVariable String email,
+                                      @PathVariable long id,  Model model) {
         Optional<Order> orderDB = orderService.findById(id);
         if(orderDB.isPresent()) {
             Order order = orderDB.get();
+            model.addAttribute("email", email);
             order.defineTransient();
             model.addAttribute("order", order);
             return "profile/order";

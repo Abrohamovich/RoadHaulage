@@ -10,7 +10,7 @@ import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
-import ua.ithillel.roadhaulage.util.PasswordGenerator;
+import static ua.ithillel.roadhaulage.util.PasswordGenerator.generatePassword;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class PasswordRecoveryController {
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
 
-    private static final String password = PasswordGenerator.generatePassword(10);
+    private static final String password = generatePassword(10);
 
     @GetMapping
     public String getPasswordRecoveryPage(@ModelAttribute("attentionMessage") String attentionMessage, Model model) {
