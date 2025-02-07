@@ -46,7 +46,6 @@ public class PersonalInfoController {
                          @RequestParam(required = false) String phone,
                          @RequestParam(required = false) String iban,
                          RedirectAttributes redirectAttributes) {
-        byte i = 0;
         if (firstName.isEmpty()) {
             firstName = user.getFirstName();
         }
@@ -56,14 +55,14 @@ public class PersonalInfoController {
         if (iban.isEmpty()) {
             iban = user.getIban();
         }
-        if (userService.findByPhoneCodeAndPhone(phoneCode, phone).isPresent()) {
-            redirectAttributes.addFlashAttribute("phoneError", "Phone number already exists");
-            i++;
+        if (userService.findByPhoneCodeAndPhone(phoneCode, phone).isPresent() &&
+                !user.getPhone().equals(phone)) {
+            redirectAttributes.addFlashAttribute("phoneError",
+                    "Phone number already exists");
+            return "redirect:/account/settings/personal-information";
         } else if (phone.isEmpty()) {
             phone = user.getPhone();
         }
-
-        if (i > 0) return "redirect:/account/settings/personal-information";
 
         user.setFirstName(firstName);
         user.setLastName(lastName);

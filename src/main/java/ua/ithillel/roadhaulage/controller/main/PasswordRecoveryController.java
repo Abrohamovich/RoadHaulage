@@ -26,13 +26,15 @@ public class PasswordRecoveryController {
     private static final String password = generatePassword(10);
 
     @GetMapping
-    public String getPasswordRecoveryPage(@ModelAttribute("attentionMessage") String attentionMessage, Model model) {
+    public String getPasswordRecoveryPage(@ModelAttribute("attentionMessage") String attentionMessage,
+                                          Model model) {
         model.addAttribute("attentionMessage", attentionMessage);
         return "password-recovery";
     }
 
     @PostMapping("/confirm")
-    public String recoverPasswordQues(@RequestParam(required = true) String email, RedirectAttributes redirectAttributes){
+    public String recoverPasswordQues(@RequestParam String email,
+                                      RedirectAttributes redirectAttributes){
         Optional<User> user = userService.findByEmail(email);
         if(user.isEmpty()){
             redirectAttributes.addFlashAttribute(

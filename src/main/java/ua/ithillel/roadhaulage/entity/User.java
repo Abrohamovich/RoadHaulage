@@ -79,17 +79,4 @@ public class User implements UserDetails {
         User user = (User) obj;
         return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "iban='" + iban + '\'' +
-                ", role=" + role +
-                ", enabled=" + enabled +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                '}';
-    }
 }
