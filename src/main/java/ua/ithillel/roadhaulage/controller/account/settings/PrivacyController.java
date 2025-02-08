@@ -39,7 +39,7 @@ public class PrivacyController {
     }
 
     @PostMapping("/update")
-    public String updateAccount(
+    public String updatePrivacySettings(
             @AuthenticationPrincipal User user,
             @RequestParam String password,
             @RequestParam String email,
@@ -51,14 +51,16 @@ public class PrivacyController {
 
         short i = 0;
 
-        if (userService.findByEmail(email).isPresent() && !userService.findByEmail(email).get().getEmail().equals(user.getEmail())) {
-            redirectAttributes.addFlashAttribute("emailError", "User with this email already exists");
+        if (userService.findByEmail(email).isPresent() &&
+                !userService.findByEmail(email).get().getEmail().equals(user.getEmail())) {
+            redirectAttributes.addFlashAttribute("emailError",
+                    "User with this email already exists.");
             i++;
         }
 
-        if (!isValidPassword(password)) {
+        if (!isValidPassword(password) && !password.isEmpty()) {
             redirectAttributes.addFlashAttribute("passwordError",
-                    "Password must contain at least one digit and one uppercase letter.");
+                    "Password must contain at least one digit and one uppercase.");
             i++;
         }
 

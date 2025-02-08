@@ -1,7 +1,5 @@
 package ua.ithillel.roadhaulage.controller.main;
 
-import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,19 +22,12 @@ public class OrdersPageController {
     private final OrderService orderService;
     private final OrderCategoryService orderCategoryService;
 
-    private List<OrderCategory> allOrderCategories;
-
-    @PostConstruct
-    public void init(){
-        this.allOrderCategories  = orderCategoryService.findAll();
-    }
-
     @GetMapping
     public String ordersPage(@AuthenticationPrincipal User user,
                              Model model) {
         List<Order> orders = orderService.returnOtherPublishedOrders(user.getId());
         if(!orders.isEmpty()) addModels(model, orders);
-        model.addAttribute("categories", allOrderCategories);
+        model.addAttribute("categories", orderCategoryService.findAll());
         return "orders";
     }
 
@@ -64,10 +55,11 @@ public class OrdersPageController {
                 .filter(order -> Double.parseDouble(order.getCost()) >= Double.parseDouble(minCost))
                 .toList();
         if(!orders.isEmpty()) addModels(model, orders);
-        model.addAttribute("categories", allOrderCategories);
+        model.addAttribute("categories", orderCategoryService.findAll());
         model.addAttribute("categoriesString", categoriesString);
         return "orders";
     }
+
 
     private void addModels(Model model, List<Order> orders) {
         double maxCost = orders.stream()

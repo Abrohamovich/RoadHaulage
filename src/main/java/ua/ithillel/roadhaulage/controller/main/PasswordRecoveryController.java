@@ -10,6 +10,7 @@ import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
+
 import static ua.ithillel.roadhaulage.util.PasswordGenerator.generatePassword;
 
 import java.util.Optional;
@@ -35,8 +36,8 @@ public class PasswordRecoveryController {
     @PostMapping("/confirm")
     public String recoverPasswordQues(@RequestParam String email,
                                       RedirectAttributes redirectAttributes){
-        Optional<User> user = userService.findByEmail(email);
-        if(user.isEmpty()){
+        Optional<User> userDB = userService.findByEmail(email);
+        if(userDB.isEmpty()){
             redirectAttributes.addFlashAttribute(
                     "attentionMessage",
                     "User with email " + email + " not found");
@@ -44,9 +45,9 @@ public class PasswordRecoveryController {
         }
 
         String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = verificationTokenService.create(user.get(), token);
+        VerificationToken verificationToken = verificationTokenService.create(userDB.get(), token);
         verificationTokenService.save(verificationToken);
-        emailService.sendPasswordResetEmail(email, token, user.get(), password);
+        emailService.sendPasswordResetEmail(email, token, userDB.get(), password);
 
         redirectAttributes.addFlashAttribute(
                 "attentionMessage",
@@ -55,7 +56,8 @@ public class PasswordRecoveryController {
     }
 
     @GetMapping("recover")
-    public String recoverPassword(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+    public String recoverPassword(@RequestParam("token") String token,
+                                  RedirectAttributes redirectAttributes) {
         short successId = userService.verifyPassword(token, password);
         String successMessage = switch (successId) {
             case 1 -> "This token does not exist, or this token is not yours";

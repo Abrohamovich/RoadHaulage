@@ -10,7 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(controllers = MainPagesController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -21,62 +22,62 @@ public class MainPagesControllerTests {
 
     @Test
     public void homeTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/home"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("index"));
+        mockMvc.perform(get("/home"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
     }
 
     @Test
     public void aboutUsTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/about-us"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("about-us"));
+        mockMvc.perform(get("/about-us"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("about-us"));
     }
 
     @Test
     public void contactTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/contact"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("contact"));
+        mockMvc.perform(get("/contact"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("contact"));
     }
 
     @Test
     public void loginTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/login"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("login"));
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
     }
 
     @Test
     public void loginTest_withAttentionMessage() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/login")
+        mockMvc.perform(get("/login")
                         .param("attentionMessage", "Attention!"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("login"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("attentionMessage"))
-                .andExpect(MockMvcResultMatchers.model().attribute("attentionMessage", "Attention!"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("attentionMessage"))
+                .andExpect(model().attribute("attentionMessage", "Attention!"));
     }
 
     @Test
     public void loginTest_withSuccessMessage() throws Exception  {
-        mockMvc.perform(MockMvcRequestBuilders.get("/login")
+        mockMvc.perform(get("/login")
                         .param("successMessage", "Success!"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("login"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("successMessage"))
-                .andExpect(MockMvcResultMatchers.model().attribute("successMessage", "Success!"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("successMessage"))
+                .andExpect(model().attribute("successMessage", "Success!"));
     }
 
     @Test
     public void loginTest_withSuccessAndAttentionMessages() throws Exception  {
-        mockMvc.perform(MockMvcRequestBuilders.get("/login")
+        mockMvc.perform(get("/login")
                         .param("successMessage", "Success!")
                         .param("attentionMessage", "Attention!"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("login"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("successMessage"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("attentionMessage"))
-                .andExpect(MockMvcResultMatchers.model().attribute("successMessage", "Success!"))
-                .andExpect(MockMvcResultMatchers.model().attribute("attentionMessage", "Attention!"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("successMessage"))
+                .andExpect(model().attributeExists("attentionMessage"))
+                .andExpect(model().attribute("successMessage", "Success!"))
+                .andExpect(model().attribute("attentionMessage", "Attention!"));
     }
 }
