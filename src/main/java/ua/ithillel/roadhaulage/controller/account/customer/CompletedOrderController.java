@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.List;
@@ -19,10 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompletedOrderController {
     private final OrderService orderService;
-    private final OrderCategoryService orderCategoryService;
 
     @GetMapping
-    public String completedEstimatesPage(@AuthenticationPrincipal User user,
+    public String completedOrdersPage(@AuthenticationPrincipal User user,
                                          Model model) {
         List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> order.getStatus().equals(OrderStatus.COMPLETED)).toList();

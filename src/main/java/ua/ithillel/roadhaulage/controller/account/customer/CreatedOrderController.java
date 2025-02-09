@@ -39,6 +39,7 @@ public class CreatedOrderController {
         }
         return "redirect:/account/my-orders/created";
     }
+
     @PostMapping("/close")
     public String closeOrder(@RequestParam long id, @RequestParam double rating){
         Optional<Order> orderOptional = orderService.findById(id);
@@ -52,6 +53,7 @@ public class CreatedOrderController {
         }
         return "redirect:/account/my-orders/completed";
     }
+
     @GetMapping("/delete")
     public String deleteOrder(@RequestParam long id){
         orderService.delete(id);

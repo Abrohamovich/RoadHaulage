@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,8 +26,8 @@ public class ChangeOrderController {
     private final OrderCategoryService orderCategoryService;
     private final AddressService addressService;
 
-    @PostMapping()
-    public String changePage(@RequestParam("id") long id, Model model) {
+    @GetMapping
+    public String changePage(@RequestParam long id, Model model) {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
@@ -49,14 +50,17 @@ public class ChangeOrderController {
                               @RequestParam(required = false) String dimensions,
                               @RequestParam(name = "weight-unit") String weightUnit,
                               @RequestParam(name = "dimensions-unit") String dimensionsUnit,
-                              @RequestParam(name = "currency") String currency) {
+                              @RequestParam String currency) {
         Optional<Order> orderOptional = orderService.findById(id);
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
         Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
         Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
 
-        if (orderOptional.isPresent() && deliveryAddressOptional.isPresent() && departureAddressOptional.isPresent()) {
+        if (orderOptional.isEmpty() || deliveryAddressOptional.isEmpty()
+                || departureAddressOptional.isEmpty()) {
+            return "redirect:/error";
+        }
             Address deliveryAddress = deliveryAddressOptional.get();
             Address departureAddress = departureAddressOptional.get();
 
@@ -77,7 +81,7 @@ public class ChangeOrderController {
             order.setAmendmentDate(new Date(System.currentTimeMillis()));
             order.setStatus(OrderStatus.CHANGED);
             orderService.update(order);
-        }
+
         return "redirect:/account/my-orders/created";
     }
 }

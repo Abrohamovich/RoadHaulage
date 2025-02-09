@@ -9,7 +9,6 @@ import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.*;
@@ -18,7 +17,6 @@ import java.util.*;
 @RequestMapping("/account/my-orders/create")
 @RequiredArgsConstructor
 public class CreateNewOrderController {
-    private final UserService userService;
     private final OrderService orderService;
     private final OrderCategoryService orderCategoryService;
     private final AddressService addressService;
@@ -46,7 +44,7 @@ public class CreateNewOrderController {
                               @RequestParam String cost,
                               @RequestParam(name = "weight-unit") String weightUnit,
                               @RequestParam(name = "dimensions-unit") String dimensionsUnit,
-                              @RequestParam(name = "currency") String currency) {
+                              @RequestParam String currency) {
 
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories.forEach(orderCategoryService::save);
@@ -54,30 +52,33 @@ public class CreateNewOrderController {
         Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
         Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
 
-        if (deliveryAddressOptional.isPresent() && departureAddressOptional.isPresent()) {
-            Address deliveryAddress = deliveryAddressOptional.get();
-            Address departureAddress = departureAddressOptional.get();
-
-            addressService.save(departureAddress);
-            addressService.save(deliveryAddress);
-
-            Order order = new Order();
-            order.setCustomer(user);
-            order.setStatus(OrderStatus.CREATED);
-            order.setDeliveryAddress(deliveryAddress);
-            order.setDepartureAddress(departureAddress);
-            order.setAdditionalInfo(additionalInfo);
-            order.setWeight(weight);
-            order.setWeightUnit(weightUnit);
-            order.setDimensions(dimensions);
-            order.setDimensionsUnit(dimensionsUnit);
-            order.setCost(cost);
-            order.setCurrency(currency);
-            order.setCreationDate(new Date(System.currentTimeMillis()));
-            order.setCategories(orderCategories);
-
-            orderService.save(order);
+        if (deliveryAddressOptional.isEmpty() &&
+                departureAddressOptional.isEmpty()) {
+            return "redirect:/error";
         }
+
+        Address deliveryAddress = deliveryAddressOptional.get();
+        Address departureAddress = departureAddressOptional.get();
+
+        addressService.save(departureAddress);
+        addressService.save(deliveryAddress);
+
+        Order order = new Order();
+        order.setCustomer(user);
+        order.setStatus(OrderStatus.CREATED);
+        order.setDeliveryAddress(deliveryAddress);
+        order.setDepartureAddress(departureAddress);
+        order.setAdditionalInfo(additionalInfo);
+        order.setWeight(weight);
+        order.setWeightUnit(weightUnit);
+        order.setDimensions(dimensions);
+        order.setDimensionsUnit(dimensionsUnit);
+        order.setCost(cost);
+        order.setCurrency(currency);
+        order.setCreationDate(new Date(System.currentTimeMillis()));
+        order.setCategories(orderCategories);
+
+        orderService.save(order);
 
         return "redirect:/account/my-orders/create";
     }
