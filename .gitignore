@@ -18,6 +18,7 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
+src/main/resources/application-test.yaml
 logs/
 *.iws
 *.iml
