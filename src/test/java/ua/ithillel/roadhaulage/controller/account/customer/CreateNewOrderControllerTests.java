@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -69,7 +70,7 @@ public class CreateNewOrderControllerTests {
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategory.class)));
         when(addressService.createAddress(anyString()))
-                .thenReturn(Optional.of(mock(Address.class)));
+                .thenReturn((mock(Address.class)));
 
         mockMvc.perform(post("/account/my-orders/create/create")
                         .param("categoryNames", "Grocery")
@@ -98,11 +99,12 @@ public class CreateNewOrderControllerTests {
     }
 
     @Test
-    void createOrderTest_redirectError() throws Exception {
+    void createOrderTest_throwsAddressCreateException() throws Exception {
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategory.class)));
-        when(addressService.createAddress(anyString()))
-                .thenReturn(Optional.empty());
+
+        doThrow(new AddressCreateException("You didn't enter the address information correctly"))
+                .when(addressService).createAddress(anyString());
 
         mockMvc.perform(post("/account/my-orders/create/create")
                         .param("categoryNames", "Grocery")
@@ -116,13 +118,14 @@ public class CreateNewOrderControllerTests {
                         .param("dimensions-unit", "cm")
                         .param("currency", "EUR"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/error"));
+                .andExpect(redirectedUrl("/account/my-orders/create"))
+                .andExpect(flash().attribute("errorMessage", "You didn't enter the address information correctly"));
 
         verify(orderCategoryService, times(1))
                 .createOrderCategorySet(anyString());
         verify(orderCategoryService, times(1))
                 .save(any(OrderCategory.class));
-        verify(addressService, times(2))
+        verify(addressService, times(1))
                 .createAddress(anyString());
     }
 

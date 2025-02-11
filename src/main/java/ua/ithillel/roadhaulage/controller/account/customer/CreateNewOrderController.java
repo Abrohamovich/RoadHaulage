@@ -5,7 +5,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -23,18 +25,21 @@ public class CreateNewOrderController {
 
     @GetMapping
     public String createPage(@AuthenticationPrincipal User user,
+                             @ModelAttribute("errorMessage") String errorMessage,
                              Model model) {
         Date creationDate = new Date(System.currentTimeMillis());
         Map<String, String> map = new HashMap<>();
         map.put("firstName", user.getFirstName());
         map.put("lastName", user.getLastName());
         map.put("acceptDate", creationDate.toString());
+        map.put("errorMessage", errorMessage);
         model.addAllAttributes(map);
         return "account/customer-orders/create";
     }
 
     @PostMapping("/create")
     public String createOrder(@AuthenticationPrincipal User user,
+                              RedirectAttributes redirectAttributes,
                               @RequestParam String categoryNames,
                               @RequestParam String deliveryAddressString,
                               @RequestParam String departureAddressString,
@@ -48,17 +53,15 @@ public class CreateNewOrderController {
 
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories.forEach(orderCategoryService::save);
-
-        Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
-        Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
-
-        if (deliveryAddressOptional.isEmpty() &&
-                departureAddressOptional.isEmpty()) {
-            return "redirect:/error";
+        Address deliveryAddress;
+        Address departureAddress;
+        try {
+            deliveryAddress = addressService.createAddress(deliveryAddressString);
+            departureAddress = addressService.createAddress(departureAddressString);
+        } catch (AddressCreateException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/account/my-orders/create";
         }
-
-        Address deliveryAddress = deliveryAddressOptional.get();
-        Address departureAddress = departureAddressOptional.get();
 
         addressService.save(departureAddress);
         addressService.save(deliveryAddress);

@@ -9,5 +9,5 @@ import java.util.Set;
 public interface AddressService {
     void save(Address address);
     List<Address> findAll();
-    Optional<Address> createAddress(String addressString);
+    Address createAddress(String addressString);
 }

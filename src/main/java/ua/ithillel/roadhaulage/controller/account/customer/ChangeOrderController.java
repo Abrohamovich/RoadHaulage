@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -27,11 +26,14 @@ public class ChangeOrderController {
     private final AddressService addressService;
 
     @GetMapping
-    public String changePage(@RequestParam long id, Model model) {
+    public String changePage(@RequestParam long id,
+                             @ModelAttribute("errorMessage") String errorMessage,
+                             Model model) {
         Optional<Order> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
             order.defineTransient();
+            model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("order", order);
             return "account/customer-orders/change";
         }
@@ -41,6 +43,7 @@ public class ChangeOrderController {
     @PostMapping("/edit")
     public String changeOrder(@AuthenticationPrincipal User user,
                               @RequestParam long id,
+                              RedirectAttributes redirectAttributes,
                               @RequestParam(required = false) String categoriesString,
                               @RequestParam(required = false) String cost,
                               @RequestParam(required = false) String deliveryAddressString,
@@ -54,33 +57,34 @@ public class ChangeOrderController {
         Optional<Order> orderOptional = orderService.findById(id);
         Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
 
-        Optional<Address> deliveryAddressOptional = addressService.createAddress(deliveryAddressString);
-        Optional<Address> departureAddressOptional = addressService.createAddress(departureAddressString);
+        Address deliveryAddress;
+        Address departureAddress;
 
-        if (orderOptional.isEmpty() || deliveryAddressOptional.isEmpty()
-                || departureAddressOptional.isEmpty()) {
-            return "redirect:/error";
+        try {
+            deliveryAddress = addressService.createAddress(deliveryAddressString);
+            departureAddress = addressService.createAddress(departureAddressString);
+        } catch (AddressCreateException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/account/my-orders/create";
         }
-            Address deliveryAddress = deliveryAddressOptional.get();
-            Address departureAddress = departureAddressOptional.get();
 
-            addressService.save(departureAddress);
-            addressService.save(deliveryAddress);
+        addressService.save(departureAddress);
+        addressService.save(deliveryAddress);
 
-            Order order = orderOptional.get();
-            order.setCategories(orderCategories);
-            order.setCost(cost);
-            order.setCurrency(currency);
-            order.setDepartureAddress(departureAddress);
-            order.setDeliveryAddress(deliveryAddress);
-            order.setAdditionalInfo(additionalInfo);
-            order.setWeight(weight);
-            order.setWeightUnit(weightUnit);
-            order.setDimensions(dimensions);
-            order.setDimensionsUnit(dimensionsUnit);
-            order.setAmendmentDate(new Date(System.currentTimeMillis()));
-            order.setStatus(OrderStatus.CHANGED);
-            orderService.update(order);
+        Order order = orderOptional.get();
+        order.setCategories(orderCategories);
+        order.setCost(cost);
+        order.setCurrency(currency);
+        order.setDepartureAddress(departureAddress);
+        order.setDeliveryAddress(deliveryAddress);
+        order.setAdditionalInfo(additionalInfo);
+        order.setWeight(weight);
+        order.setWeightUnit(weightUnit);
+        order.setDimensions(dimensions);
+        order.setDimensionsUnit(dimensionsUnit);
+        order.setAmendmentDate(new Date(System.currentTimeMillis()));
+        order.setStatus(OrderStatus.CHANGED);
+        orderService.update(order);
 
         return "redirect:/account/my-orders/created";
     }

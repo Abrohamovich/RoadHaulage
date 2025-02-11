@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -82,13 +83,24 @@ public class ChangeOrderControllerTests {
     }
 
     @Test
+    void changePageTest_redirectErrorPage() throws Exception {
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/account/my-orders/change")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
     void changeOrderTest() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(mock(Order.class)));
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategory.class)));
         when(addressService.createAddress(anyString()))
-                .thenReturn(Optional.of(mock(Address.class)));
+                .thenReturn(mock(Address.class));
 
         mockMvc.perform(post("/account/my-orders/change/edit")
                 .param("id", "1")
@@ -116,13 +128,13 @@ public class ChangeOrderControllerTests {
     }
 
     @Test
-    void changeOrderTest_redirectError() throws Exception {
+    void changeOrderTest_throwsAddressCreateException() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategory.class)));
-        when(addressService.createAddress(anyString()))
-                .thenReturn(Optional.empty());
+        doThrow(new AddressCreateException("You didn't enter the address information correctly"))
+                .when(addressService).createAddress(anyString());
 
         mockMvc.perform(post("/account/my-orders/change/edit")
                         .param("id", "1")
@@ -137,6 +149,7 @@ public class ChangeOrderControllerTests {
                         .param("dimensions-unit", "smth")
                         .param("currency", "smth"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/error"));
+                .andExpect(redirectedUrl("/account/my-orders/create"))
+                .andExpect(flash().attribute("errorMessage", "You didn't enter the address information correctly"));
     }
 }

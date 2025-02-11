@@ -3,6 +3,7 @@ package ua.ithillel.roadhaulage.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.entity.Address;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
@@ -24,13 +25,17 @@ public class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public Optional<Address> createAddress(String addressString) {
+    public Address createAddress(String addressString) {
         String[] addressFields = Arrays.stream(addressString.split(","))
                 .map(String::trim)
-                .map(category -> Arrays.stream(category.split(" "))
-                        .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                .map(str -> Arrays.stream(str.split(" "))
+                        .map(word -> word.substring(0, 1).toUpperCase()
+                                + word.substring(1).toLowerCase())
                         .reduce((a, b) -> a + " " + b).orElse(""))
                 .toArray(String[]::new);
+        if(addressFields.length != 5) {
+            throw new AddressCreateException("You didn't enter the address information correctly");
+        }
         Optional<Address> address = addressRepository.findByStreetAndCityAndStateAndZipAndCountry(
                 addressFields[0], addressFields[1], addressFields[2], addressFields[3], addressFields[4]
         );
@@ -43,6 +48,6 @@ public class AddressServiceDefault implements AddressService {
             newAddress.setCountry(addressFields[4]);
             address = Optional.of(newAddress);
         }
-        return address;
+        return address.get();
     }
 }

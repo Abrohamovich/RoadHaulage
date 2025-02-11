@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.ithillel.roadhaulage.entity.Address;
+import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class AddressServiceDefaultTests {
     private AddressServiceDefault addressService;
 
     @Test
-    public void saveTest(){
+    void saveTest(){
         Address address = mock(Address.class);
 
         addressService.save(address);
@@ -32,7 +33,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    public void findAllTest_returnsFullList(){
+    void findAllTest_returnsFullList(){
         List<Address> mockAddresses = Arrays.asList(mock(Address.class), mock(Address.class));
         when(addressRepository.findAll()).thenReturn(mockAddresses);
 
@@ -44,7 +45,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    public void findAllTest_returnsEmptyList(){
+    void findAllTest_returnsEmptyList(){
         when(addressRepository.findAll()).thenReturn(List.of());
 
         List<Address> result = addressService.findAll();
@@ -54,7 +55,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    public void createAddressTest_returnsNewAddress(){
+    void createAddressTest_returnsNewAddress(){
         String addressString = "42 Pastera street, Odesa, Odesa oblast, 6500, Ukraine";
         String street = "42 Pastera Street";
         String city = "Odesa";
@@ -65,13 +66,17 @@ public class AddressServiceDefaultTests {
                 street, city, state, zip, country
         )).thenReturn(Optional.empty());
 
-        Optional<Address> result = addressService.createAddress(addressString);
+        Address result = addressService.createAddress(addressString);
 
-        assertTrue(result.isPresent());
+        assertEquals(street, result.getStreet());
+        assertEquals(city, result.getCity());
+        assertEquals(state, result.getState());
+        assertEquals(zip, result.getZip());
+        assertEquals(country, result.getCountry());
     }
 
     @Test
-    public void createAddressTest_returnsExistedAddress(){
+    void createAddressTest_returnsExistedAddress(){
         String addressString = "42 Pastera street, Odesa, Odesa oblast, 6500, Ukraine";
         String street = "42 Pastera Street";
         String city = "Odesa";
@@ -90,13 +95,23 @@ public class AddressServiceDefaultTests {
                 street, city, state, zip, country
         )).thenReturn(Optional.of(address));
 
-        Optional<Address> result = addressService.createAddress(addressString);
+        Address result = addressService.createAddress(addressString);
 
-        assertTrue(result.isPresent());
-        assertEquals(street, result.get().getStreet());
-        assertEquals(city, result.get().getCity());
-        assertEquals(state, result.get().getState());
-        assertEquals(zip, result.get().getZip());
-        assertEquals(country, result.get().getCountry());
+        assertEquals(street, result.getStreet());
+        assertEquals(city, result.getCity());
+        assertEquals(state, result.getState());
+        assertEquals(zip, result.getZip());
+        assertEquals(country, result.getCountry());
+    }
+
+    @Test
+    void createAddressTest_throwsAddressCreateException(){
+        String addressString = "42 Pastera street";
+
+        AddressCreateException exception = assertThrows(AddressCreateException.class, () ->
+                addressService.createAddress(addressString));
+
+        assertTrue(exception.getMessage()
+                .contains("You didn't enter the address information correctly"));
     }
 }

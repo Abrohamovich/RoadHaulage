@@ -93,6 +93,9 @@
         <label for="acceptDate">Date of creation</label>
         <input type="text" id="acceptDate" name="acceptDate" th:value="${acceptDate}" readonly>
       </div>
+      <div th:if="errorMessage">
+        <p th:text="${errorMessage}"></p>
+      </div>
       <button type="submit">Create</button>
     </form>
   </main>
