@@ -1,7 +1,8 @@
 package ua.ithillel.roadhaulage.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name="t_user")
 public class User implements UserDetails {
     @Id
@@ -30,9 +32,9 @@ public class User implements UserDetails {
     private String iban;
     @Column(nullable = false)
     private String password;
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> customerOrders; // List of orders you have created
-    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> courierOrders; // List of orders you have fulfilled for other users
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserRating rating;
@@ -78,5 +80,20 @@ public class User implements UserDetails {
         if (obj == null || getClass() != obj.getClass()) return false;
         User user = (User) obj;
         return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phoneCode + phone + '\'' +
+                ", enabled=" + enabled +
+                ", role=" + role +
+                ", iban='" + iban + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
