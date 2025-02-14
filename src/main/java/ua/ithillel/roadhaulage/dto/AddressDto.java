@@ -16,4 +16,9 @@ public class AddressDto {
     private String state;
     private String zip;
     private String country;
+
+    @Override
+    public String toString() {
+        return street + ", " + city + ", " + state + ", " + zip + ", " + country;
+    }
 }

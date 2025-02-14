@@ -2,8 +2,11 @@ package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
+import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -14,29 +17,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VerificationTokenServiceDefault implements VerificationTokenService {
     private final VerificationTokenRepository verificationTokenRepository;
+    private final VerificationTokenMapper verificationTokenMapper;
 
     @Override
-    public VerificationToken create(User user, String token) {
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setExpiresAt(LocalDateTime.now().plusMinutes(20));
-        verificationToken.setUser(user);
-        return verificationToken;
+    public VerificationTokenDto create(UserDto userDto, String token) {
+        VerificationTokenDto verificationTokenDto = new VerificationTokenDto();
+        verificationTokenDto.setToken(token);
+        verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
+        verificationTokenDto.setUser(userDto);
+        return verificationTokenDto;
     }
 
     @Override
-    public void save(VerificationToken token) {
-        verificationTokenRepository.save(token);
+    public void save(VerificationTokenDto token) {
+        verificationTokenRepository.save(verificationTokenMapper.toEntity(token));
     }
 
     @Override
-    public Optional<VerificationToken> getToken(String token) {
-        return verificationTokenRepository.findByToken(token);
+    public Optional<VerificationTokenDto> getToken(String token) {
+        return verificationTokenRepository.findByToken(token)
+                .map(verificationTokenMapper::toDto);
     }
 
     @Override
-    public void delete(VerificationToken token) {
-        verificationTokenRepository.delete(token);
+    public void delete(VerificationTokenDto token) {
+        verificationTokenRepository.delete(verificationTokenMapper.toEntity(token));
     }
 
 }

@@ -38,7 +38,7 @@
       <span class="order-content" th:text="${order.departureAddressString}"></span>
       <ion-icon name="arrow-down-outline"></ion-icon>
       <span class="order-content" th:text="${order.deliveryAddressString}"></span>
-      <span class="order-content" th:text="${order.costString}"></span>
+      <span class="order-content" th:text="${order.cost} + ' ' + ${order.currency}"></span>
       <div class="button-container">
         <form th:action="@{/user/{email}/info(email=${order.customer.email})}" method="get">
           <button type="submit" title="See customer info"><ion-icon name="person-outline"></ion-icon></button>

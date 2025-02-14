@@ -6,6 +6,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.springframework.stereotype.Component;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.User;
@@ -23,7 +25,7 @@ public class ReportGenerator {
 
     private final static String templatePath = "C:\\Users\\geras\\IdeaProjects\\RoadHaulage\\document\\reportTemplate.docx";
 
-    public void generateReport(User user, List<Order> customerOrderList, List<Order> courierOrderList,  ByteArrayOutputStream outputStream) {
+    public void generateReport(UserDto userDto, List<OrderDto> customerOrderList, List<OrderDto> courierOrderList, ByteArrayOutputStream outputStream) {
         try (FileInputStream fis = new FileInputStream(templatePath);
         ) {
             XWPFDocument document = new XWPFDocument(fis);
@@ -36,7 +38,7 @@ public class ReportGenerator {
             data[3] = generateFullPriceString(courierOrderList);
 
             for (XWPFParagraph paragraph : document.getParagraphs()) {
-                replacePlaceholdersInParagraph(paragraph, user, data);
+                replacePlaceholdersInParagraph(paragraph, userDto, data);
             }
 
             List<OrderStatus> statusCustomerArray = List.of(OrderStatus.CREATED, OrderStatus.PUBLISHED, OrderStatus.ACCEPTED, OrderStatus.COMPLETED);
@@ -52,7 +54,7 @@ public class ReportGenerator {
         }
     }
 
-    private static void replacePlaceholdersInParagraph(XWPFParagraph paragraph, User user, String[] data) {
+    private static void replacePlaceholdersInParagraph(XWPFParagraph paragraph, UserDto userDto, String[] data) {
         List<XWPFRun> runs = paragraph.getRuns();
         if (runs != null) {
             StringBuilder paragraphText = new StringBuilder();
@@ -62,10 +64,10 @@ public class ReportGenerator {
 
             String replacedText = paragraphText.toString()
                     .replace("{{date}}", new Date(System.currentTimeMillis()).toString())
-                    .replace("{{firstName}}", user.getFirstName())
-                    .replace("{{lastName}}", user.getLastName())
-                    .replace("{{email}}", user.getEmail())
-                    .replace("{{phone}}", user.getPhone())
+                    .replace("{{firstName}}", userDto.getFirstName())
+                    .replace("{{lastName}}", userDto.getLastName())
+                    .replace("{{email}}", userDto.getEmail())
+                    .replace("{{phone}}", userDto.getPhone())
                     .replace("{{createdOrderNum}}", data[0])
                     .replace("{{deliveredOrderNum}}", data[1])
                     .replace("{{moneyEarned}}", data[3])
@@ -81,7 +83,7 @@ public class ReportGenerator {
         }
     }
 
-    private static void generateOrderTables(XWPFDocument document, List<Order> orderList, List<OrderStatus> statusArray, int indexFirst, int indexLast) {
+    private static void generateOrderTables(XWPFDocument document, List<OrderDto> orderList, List<OrderStatus> statusArray, int indexFirst, int indexLast) {
         for (int tableIndex = indexFirst; tableIndex <= indexLast; tableIndex++) {
             XWPFTable table = document.getTables().get(tableIndex);
 
@@ -96,16 +98,16 @@ public class ReportGenerator {
             if (targetStatus == null) continue;
 
             int rowIndex = 1;
-            for (Order order : orderList) {
+            for (OrderDto order : orderList) {
                 if (order.getStatus().equals(targetStatus)) {
                     XWPFTableRow row = table.createRow();
 
-                    row.getCell(0).setText(order.getCategoriesString());
-                    row.getCell(1).setText(order.getDeliveryAddressString());
-                    row.getCell(2).setText(order.getDepartureAddressString());
-                    row.getCell(3).setText(order.getWeightString());
-                    row.getCell(4).setText(order.getDimensionsString());
-                    row.getCell(5).setText(order.getCostString());
+                    row.getCell(0).setText(order.getCategories().toString());
+                    row.getCell(1).setText(order.getDeliveryAddress().toString());
+                    row.getCell(2).setText(order.getDepartureAddress().toString());
+                    row.getCell(3).setText(order.getWeight() + " " + order.getWeightUnit());
+                    row.getCell(4).setText(order.getDimensions() + " " + order.getDimensionsUnit());
+                    row.getCell(5).setText(order.getCost() + " " + order.getCurrency());
                     row.getCell(6).setText(order.getCreationDate().toString());
                     if (targetStatus == OrderStatus.ACCEPTED) row.getCell(7).setText(order.getAcceptDate().toString());
                     if (targetStatus == OrderStatus.COMPLETED) row.getCell(7).setText(order.getCompletionDate().toString());
@@ -114,7 +116,8 @@ public class ReportGenerator {
                 }
             }
 
-            List<Order> orders = orderList.stream().filter(order -> order.getStatus().equals(targetStatus)).toList();
+            List<OrderDto> orders = orderList.stream()
+                    .filter(order -> order.getStatus().equals(targetStatus)).toList();
 
             String str = generateFullPriceString(orders);
 
@@ -157,10 +160,10 @@ public class ReportGenerator {
         return borders;
     }
 
-    private static String generateFullPriceString(List<Order> orderList) {
+    private static String generateFullPriceString(List<OrderDto> orderList) {
         Map<String, Double> courierOrderCostMap = orderList.stream()
                 .collect(Collectors.groupingBy(
-                        Order::getCurrency,
+                        OrderDto::getCurrency,
                         Collectors.summingDouble(order -> Double.parseDouble(order.getCost()))
                 ));
         StringBuilder sb = new StringBuilder();

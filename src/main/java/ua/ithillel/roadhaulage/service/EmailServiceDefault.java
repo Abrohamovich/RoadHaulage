@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 
 @Service
@@ -22,7 +22,7 @@ public class EmailServiceDefault implements EmailService {
     }
 
     @Override
-    public void sendEmailConfirmation(String email, String token, User user) {
+    public void sendEmailConfirmation(String email, String token, UserDto userDto) {
         String confirmUrl = "http://localhost:8080/verify-email?token=" + token;
         String emailBody = """
         Hello, %s!
@@ -43,11 +43,11 @@ public class EmailServiceDefault implements EmailService {
         RoadHaulage Team
         """;
         sendEmail(email, "Confirmation of email address",
-                String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl));
+                String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl));
     }
 
     @Override
-    public void sendPasswordResetEmail(String email, String token, User user, String password) {
+    public void sendPasswordResetEmail(String email, String token, UserDto userDto, String password) {
         String confirmUrl = "http://localhost:8080/password-recovery/recover?token=" + token;
         String emailBody = """
         Hello, %s!
@@ -69,6 +69,6 @@ public class EmailServiceDefault implements EmailService {
         
         """;
         sendEmail(email, "Confirmation of password recovery",
-                String.format(emailBody, user.getFirstName() + " " + user.getLastName(), confirmUrl, password));
+                String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl, password));
     }
 }

@@ -1,11 +1,11 @@
 package ua.ithillel.roadhaulage.service.interfaces;
 
-import ua.ithillel.roadhaulage.entity.UserRating;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 
 import java.util.Optional;
 
 public interface UserRatingService {
-    void save(UserRating userRating);
-    void update(UserRating userRating, double rating);
-    Optional<UserRating> findById(long id);
+    void save(UserRatingDto userRatingDto);
+    void update(UserRatingDto userRating, double rating);
+    Optional<UserRatingDto> findById(long id);
 }

@@ -5,8 +5,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ua.ithillel.roadhaulage.entity.Order;
-import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -23,55 +24,57 @@ public class OrdersPageController {
     private final OrderCategoryService orderCategoryService;
 
     @GetMapping
-    public String ordersPage(@AuthenticationPrincipal User user,
+    public String ordersPage(@AuthenticationPrincipal UserDto userDto,
                              Model model) {
-        List<Order> orders = orderService.returnOtherPublishedOrders(user.getId());
-        if(!orders.isEmpty()) addModels(model, orders);
+        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.getId());
+        ordersDto.forEach(OrderDto::defineView);
+        if(!ordersDto.isEmpty()) addModels(model, ordersDto);
         model.addAttribute("categories", orderCategoryService.findAll());
         return "orders";
     }
 
     @GetMapping("/filter")
-    public String filter(@AuthenticationPrincipal User user,
+    public String filter(@AuthenticationPrincipal UserDto userDto,
                          @RequestParam(name = "currency") String currency,
                          @RequestParam(name = "categoriesString") String categoriesString,
                          @RequestParam(name = "max-cost") String maxCost,
                          @RequestParam(name = "min-cost") String minCost,
                          Model model) {
-        List<Order> orders = orderService.returnOtherPublishedOrders(user.getId());
+        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.getId());
+        ordersDto.forEach(OrderDto::defineView);
         if(!currency.equals("ALL")) {
-            orders = orders.stream()
+            ordersDto = ordersDto.stream()
                     .filter(order -> order.getCurrency().equals(currency))
                     .toList();
         }
         if(!categoriesString.isEmpty()) {
-            Set<OrderCategory> setCategories = orderCategoryService.createOrderCategorySet(categoriesString);
-            orders = orders.stream()
+            Set<OrderCategoryDto> setCategories = orderCategoryService.createOrderCategorySet(categoriesString);
+            ordersDto = ordersDto.stream()
                     .filter(order -> order.getCategories().contains(setCategories.iterator().next()))
                     .toList();
         }
-        orders = orders.stream()
+        ordersDto = ordersDto.stream()
                 .filter(order ->Double.parseDouble(order.getCost()) <= Double.parseDouble(maxCost))
                 .filter(order -> Double.parseDouble(order.getCost()) >= Double.parseDouble(minCost))
                 .toList();
-        if(!orders.isEmpty()) addModels(model, orders);
+        if(!ordersDto.isEmpty()) addModels(model, ordersDto);
         model.addAttribute("categories", orderCategoryService.findAll());
         model.addAttribute("categoriesString", categoriesString);
         return "orders";
     }
 
 
-    private void addModels(Model model, List<Order> orders) {
-        double maxCost = orders.stream()
-                .map(Order::getCost)
+    private void addModels(Model model, List<OrderDto> ordersDto) {
+        double maxCost = ordersDto.stream()
+                .map(OrderDto::getCost)
                 .mapToDouble(Double::parseDouble)
                 .max().getAsDouble();
-        double minCost = orders.stream()
-                .map(Order::getCost)
+        double minCost = ordersDto.stream()
+                .map(OrderDto::getCost)
                 .mapToDouble(Double::parseDouble)
                 .min().getAsDouble();
         model.addAttribute("maxCost", maxCost);
         model.addAttribute("minCost", minCost);
-        model.addAttribute("orders", orders);
+        model.addAttribute("orders", ordersDto);
     }
 }

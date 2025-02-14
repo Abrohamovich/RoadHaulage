@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
@@ -36,7 +38,7 @@ public class PasswordRecoveryController {
     @PostMapping("/confirm")
     public String recoverPasswordQues(@RequestParam String email,
                                       RedirectAttributes redirectAttributes){
-        Optional<User> userDB = userService.findByEmail(email);
+        Optional<UserDto> userDB = userService.findByEmail(email);
         if(userDB.isEmpty()){
             redirectAttributes.addFlashAttribute(
                     "attentionMessage",
@@ -45,8 +47,8 @@ public class PasswordRecoveryController {
         }
 
         String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = verificationTokenService.create(userDB.get(), token);
-        verificationTokenService.save(verificationToken);
+        VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDB.get(), token);
+        verificationTokenService.save(verificationTokenDto);
         emailService.sendPasswordResetEmail(email, token, userDB.get(), password);
 
         redirectAttributes.addFlashAttribute(

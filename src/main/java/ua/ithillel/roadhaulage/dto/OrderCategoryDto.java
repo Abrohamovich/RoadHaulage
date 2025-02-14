@@ -15,5 +15,9 @@ import java.util.List;
 public class OrderCategoryDto {
     private Long id;
     private String name;
-    private List<OrderDto> orders;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

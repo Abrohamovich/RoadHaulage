@@ -5,6 +5,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
@@ -21,35 +24,35 @@ public class CreatedOrderController {
     private final UserRatingService userRatingService;
 
     @GetMapping
-    public String createdOrdersPage(@AuthenticationPrincipal User user,
+    public String createdOrdersPage(@AuthenticationPrincipal UserDto userDto,
                                          Model model) {
-        List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
+        List<OrderDto> orders = orderService.findOrdersByCustomerId(userDto.getId());
         orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
-        orders.forEach(Order::defineTransient);
+        orders.forEach(OrderDto::defineView);
         model.addAttribute("orders", orders);
         return "account/customer-orders/created";
     }
     @PostMapping("/publish")
     public String publishOrder(@RequestParam long id){
-        Optional<Order> orderOptional = orderService.findById(id);
+        Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
-            Order order = orderOptional.get();
-            order.setStatus(OrderStatus.PUBLISHED);
-            orderService.update(order);
+            OrderDto orderDto = orderOptional.get();
+            orderDto.setStatus(OrderStatus.PUBLISHED);
+            orderService.update(orderDto);
         }
         return "redirect:/account/my-orders/created";
     }
 
     @PostMapping("/close")
     public String closeOrder(@RequestParam long id, @RequestParam double rating){
-        Optional<Order> orderOptional = orderService.findById(id);
+        Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
-            Order order = orderOptional.get();
-            order.setStatus(OrderStatus.COMPLETED);
-            order.setCompletionDate(new Date(System.currentTimeMillis()));
-            Optional<UserRating> userRatingOptional = userRatingService.findById(order.getCourier().getId());
+            OrderDto orderDto = orderOptional.get();
+            orderDto.setStatus(OrderStatus.COMPLETED);
+            orderDto.setCompletionDate(new Date(System.currentTimeMillis()));
+            Optional<UserRatingDto> userRatingOptional = userRatingService.findById(orderDto.getCourier().getId());
             userRatingOptional.ifPresent(userRating -> userRatingService.update(userRating, rating));
-            orderService.update(order);
+            orderService.update(orderDto);
         }
         return "redirect:/account/my-orders/completed";
     }

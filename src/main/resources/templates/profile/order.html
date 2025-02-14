@@ -36,15 +36,15 @@
         </div>
         <div class="form-group">
             <label for="weight">Weight</label>
-            <input type="text" id="weight" name="weight" th:value="${order.weightString}" readonly>
+            <input type="text" id="weight" name="weight" th:value="${order.weight} + ' ' + ${order.weightUnit}" readonly>
         </div>
         <div class="form-group">
             <label for="dimensions">Dimensions</label>
-            <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensionsString}" readonly>
+            <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensions} + ' ' + ${order.dimensionsUnit}" readonly>
         </div>
         <div class="form-group">
             <label for="cost">Cost</label>
-            <input type="text" id="cost" name="cost" th:value="${order.costString}" readonly>
+            <input type="text" id="cost" name="cost" th:value="${order.cost} + ' ' + ${order.currency}" readonly>
         </div>
         <div class="form-group">
             <label>Additional info</label>

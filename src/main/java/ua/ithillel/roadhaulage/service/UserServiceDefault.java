@@ -6,10 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
+import ua.ithillel.roadhaulage.mapper.UserMapper;
+import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
@@ -26,10 +30,13 @@ public class UserServiceDefault implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final VerificationTokenService verificationTokenService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserMapper userMapper;
 
     @Override
-    public void save(User user) {
+    public UserDto save(UserDto userDto) {
         List<String> errors = new ArrayList<>();
+
+        User user = userMapper.toEntity(userDto);
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             errors.add("A user with email " + user.getEmail() + " already exists");}
@@ -41,31 +48,40 @@ public class UserServiceDefault implements UserService, UserDetailsService {
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return userMapper.toDto(savedUser);
     }
 
     @Override
-    public void update(User user) {
+    public UserDto update(UserDto userDto) {
+        User user = userMapper.toEntity(userDto);
+
         Optional<User> userFromDB = userRepository.findById(user.getId());
         if (userFromDB.isPresent() && !userFromDB.get().getPassword().equals(user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toDto(updatedUser);
     }
 
     @Override
-    public Optional<User> findById(long id) {
-        return userRepository.findById(id);
+    public Optional<UserDto> findById(long id) {
+        return userRepository.findById(id)
+                .map(userMapper::toDto);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-       return userRepository.findByEmail(email);
+    public Optional<UserDto> findByEmail(String email) {
+       return userRepository.findByEmail(email)
+               .map(userMapper::toDto);
     }
 
     @Override
-    public Optional<User> findByPhoneCodeAndPhone(String phoneCode, String phone) {
-        return userRepository.findByPhoneCodeAndPhone(phoneCode, phone);
+    public Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone) {
+        return userRepository.findByPhoneCodeAndPhone(phoneCode, phone)
+                .map(userMapper::toDto);
     }
 
     @Override
@@ -74,9 +90,9 @@ public class UserServiceDefault implements UserService, UserDetailsService {
         if (st != 0) {
             return st;
         }
-        User user = verificationTokenService.getToken(token).get().getUser();
-        user.setEnabled(true);
-        userRepository.save(user);
+        UserDto userDto = verificationTokenService.getToken(token).get().getUser();
+        userDto.setEnabled(true);
+        userRepository.save(userMapper.toEntity(userDto));
         verificationTokenService.delete(verificationTokenService.getToken(token).get());
         return 0;
     }
@@ -87,23 +103,25 @@ public class UserServiceDefault implements UserService, UserDetailsService {
         if (st != 0) {
             return st;
         }
-        User user = verificationTokenService.getToken(token).get().getUser();
-        user.setPassword(password);
-        save(user);
+        UserDto userDto = verificationTokenService.getToken(token).get().getUser();
+        userDto.setPassword(password);
+        userRepository.save(userMapper.toEntity(userDto));
+        verificationTokenService.delete(verificationTokenService.getToken(token).get());
         return 0;
     }
 
     @Override
-    public User loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
-        if(user.isEmpty()) {
+    public UserDto loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UserDto> userDto = userRepository.findByEmail(email)
+                .map(userMapper::toDto);
+        if(userDto.isEmpty()) {
             throw new UsernameNotFoundException("Cant find user with username: " + email);
         }
-        return user.get();
+        return userDto.get();
     }
 
     private short verifyToken(String token) {
-        Optional<VerificationToken> verificationToken = verificationTokenService.getToken(token);
+        Optional<VerificationTokenDto> verificationToken = verificationTokenService.getToken(token);
         if (verificationToken.isEmpty() || !verificationToken.get().getToken().equals(token)) {
             return 1;
         }

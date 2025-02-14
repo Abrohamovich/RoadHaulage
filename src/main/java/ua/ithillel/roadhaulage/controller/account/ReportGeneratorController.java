@@ -7,6 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -24,15 +26,13 @@ public class ReportGeneratorController {
     private final ReportGenerator reportGenerator;
 
     @GetMapping
-    public void generateReport(@AuthenticationPrincipal User user, HttpServletResponse response) {
+    public void generateReport(@AuthenticationPrincipal UserDto userDto, HttpServletResponse response) {
         try {
-            List<Order> customerOrderList = orderService.findOrdersByCustomerId(user.getId());
-            List<Order> courierOrderList = orderService.findOrdersByCourierId(user.getId());
-            customerOrderList.forEach(Order::defineTransient);
-            courierOrderList.forEach(Order::defineTransient);
+            List<OrderDto> customerOrderList = orderService.findOrdersByCustomerId(userDto.getId());
+            List<OrderDto> courierOrderList = orderService.findOrdersByCourierId(userDto.getId());
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            reportGenerator.generateReport(user, customerOrderList, courierOrderList, outputStream);
+            reportGenerator.generateReport(userDto, customerOrderList, courierOrderList, outputStream);
 
             response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             response.setHeader("Content-Disposition", "attachment; filename=\"report.docx\"");

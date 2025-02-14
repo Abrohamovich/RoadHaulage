@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
@@ -26,21 +28,21 @@ public class PrivacyController {
     private final EmailService emailService;
 
     @GetMapping
-    public String privacyPage(@AuthenticationPrincipal User user,
+    public String privacyPage(@AuthenticationPrincipal UserDto userDto,
                               @ModelAttribute("passwordError") String passwordError,
                               @ModelAttribute("emailError") String emailError,
                               Model model) {
         Map<String, String> map = new HashMap<>();
         map.put("passwordError", passwordError);
         map.put("emailError", emailError);
-        map.put("email", user.getEmail());
+        map.put("email", userDto.getEmail());
         model.addAllAttributes(map);
         return "account/settings/privacy";
     }
 
     @PostMapping("/update")
     public String updatePrivacySettings(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserDto userDto,
             @RequestParam String password,
             @RequestParam String email,
             RedirectAttributes redirectAttributes) {
@@ -52,7 +54,7 @@ public class PrivacyController {
         short i = 0;
 
         if (userService.findByEmail(email).isPresent() &&
-                !userService.findByEmail(email).get().getEmail().equals(user.getEmail())) {
+                !userService.findByEmail(email).get().getEmail().equals(userDto.getEmail())) {
             redirectAttributes.addFlashAttribute("emailError",
                     "User with this email already exists.");
             i++;
@@ -67,19 +69,19 @@ public class PrivacyController {
         if (i > 0) return "redirect:/account/settings/privacy";
 
         if (!password.isEmpty()) {
-            user.setPassword(password);
-            userService.update(user);
+            userDto.setPassword(password);
+            userService.update(userDto);
         }
 
-        if (!email.isEmpty() && !email.equals(user.getEmail())) {
-            user.setEmail(email);
-            user.setEnabled(false);
-            userService.update(user);
+        if (!email.isEmpty() && !email.equals(userDto.getEmail())) {
+            userDto.setEmail(email);
+            userDto.setEnabled(false);
+            userService.update(userDto);
 
             String token = UUID.randomUUID().toString();
-            VerificationToken verificationToken = verificationTokenService.create(user, token);
-            verificationTokenService.save(verificationToken);
-            emailService.sendEmailConfirmation(email, token, user);
+            VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDto, token);
+            verificationTokenService.save(verificationTokenDto);
+            emailService.sendEmailConfirmation(email, token, userDto);
             return "redirect:/logout";
         }
 

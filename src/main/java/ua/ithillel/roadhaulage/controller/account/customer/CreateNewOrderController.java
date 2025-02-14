@@ -6,6 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.AddressDto;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
@@ -14,6 +18,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.sql.Date;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/account/my-orders/create")
@@ -24,13 +29,13 @@ public class CreateNewOrderController {
     private final AddressService addressService;
 
     @GetMapping
-    public String createPage(@AuthenticationPrincipal User user,
+    public String createPage(@AuthenticationPrincipal UserDto userDto,
                              @ModelAttribute("errorMessage") String errorMessage,
                              Model model) {
         Date creationDate = new Date(System.currentTimeMillis());
         Map<String, String> map = new HashMap<>();
-        map.put("firstName", user.getFirstName());
-        map.put("lastName", user.getLastName());
+        map.put("firstName", userDto.getFirstName());
+        map.put("lastName", userDto.getLastName());
         map.put("acceptDate", creationDate.toString());
         map.put("errorMessage", errorMessage);
         model.addAllAttributes(map);
@@ -38,7 +43,7 @@ public class CreateNewOrderController {
     }
 
     @PostMapping("/create")
-    public String createOrder(@AuthenticationPrincipal User user,
+    public String createOrder(@AuthenticationPrincipal UserDto userDto,
                               RedirectAttributes redirectAttributes,
                               @RequestParam String categoryNames,
                               @RequestParam String deliveryAddressString,
@@ -51,37 +56,41 @@ public class CreateNewOrderController {
                               @RequestParam(name = "dimensions-unit") String dimensionsUnit,
                               @RequestParam String currency) {
 
-        Set<OrderCategory> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
-        orderCategories.forEach(orderCategoryService::save);
-        Address deliveryAddress;
-        Address departureAddress;
+        Set<OrderCategoryDto> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
+        orderCategories = orderCategories.stream()
+                .map(orderCategoryService::save)
+                .collect(Collectors.toSet());
+
+        AddressDto deliveryAddressDto;
+        AddressDto departureAddressDto;
+
         try {
-            deliveryAddress = addressService.createAddress(deliveryAddressString);
-            departureAddress = addressService.createAddress(departureAddressString);
+            deliveryAddressDto = addressService.createAddress(deliveryAddressString);
+            departureAddressDto = addressService.createAddress(departureAddressString);
         } catch (AddressCreateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/account/my-orders/create";
         }
 
-        addressService.save(departureAddress);
-        addressService.save(deliveryAddress);
+        departureAddressDto = addressService.save(departureAddressDto);
+        deliveryAddressDto = addressService.save(deliveryAddressDto);
 
-        Order order = new Order();
-        order.setCustomer(user);
-        order.setStatus(OrderStatus.CREATED);
-        order.setDeliveryAddress(deliveryAddress);
-        order.setDepartureAddress(departureAddress);
-        order.setAdditionalInfo(additionalInfo);
-        order.setWeight(weight);
-        order.setWeightUnit(weightUnit);
-        order.setDimensions(dimensions);
-        order.setDimensionsUnit(dimensionsUnit);
-        order.setCost(cost);
-        order.setCurrency(currency);
-        order.setCreationDate(new Date(System.currentTimeMillis()));
-        order.setCategories(orderCategories);
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCustomer(userDto);
+        orderDto.setStatus(OrderStatus.CREATED);
+        orderDto.setDeliveryAddress(deliveryAddressDto);
+        orderDto.setDepartureAddress(departureAddressDto);
+        orderDto.setAdditionalInfo(additionalInfo);
+        orderDto.setWeight(weight);
+        orderDto.setWeightUnit(weightUnit);
+        orderDto.setDimensions(dimensions);
+        orderDto.setDimensionsUnit(dimensionsUnit);
+        orderDto.setCost(cost);
+        orderDto.setCurrency(currency);
+        orderDto.setCreationDate(new Date(System.currentTimeMillis()));
+        orderDto.setCategories(orderCategories);
 
-        orderService.save(order);
+        orderService.save(orderDto);
 
         return "redirect:/account/my-orders/create";
     }

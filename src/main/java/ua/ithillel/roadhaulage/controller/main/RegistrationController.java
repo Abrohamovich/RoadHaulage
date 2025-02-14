@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
+import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRating;
 import ua.ithillel.roadhaulage.entity.UserRole;
@@ -41,30 +44,31 @@ public class RegistrationController {
                            @RequestParam String firstName,
                            @RequestParam String lastName, RedirectAttributes redirectAttributes) {
         try{
-            User user = new User();
-            user.setEmail(email);
-            user.setRole(UserRole.USER);
-            user.setEnabled(false);
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setPhoneCode(phoneCode);
-            user.setPhone(phone);
-            user.setPassword(password);
+            UserDto userDto = new UserDto();
+            userDto.setEmail(email);
+            userDto.setRole(UserRole.USER);
+            //todo Change to "false"
+            userDto.setEnabled(true);
+            userDto.setFirstName(firstName);
+            userDto.setLastName(lastName);
+            userDto.setPhoneCode(phoneCode);
+            userDto.setPhone(phone);
+            userDto.setPassword(password);
 
-            userService.save(user);
+            userDto = userService.save(userDto);
 
-            UserRating userRating = new UserRating();
-            userRating.setAverage(0.0);
-            userRating.setCount(0);
-            userRating.setUser(user);
-            userRatingService.save(userRating);
+            UserRatingDto userRatingDto = new UserRatingDto();
+            userRatingDto.setAverage(0.0);
+            userRatingDto.setCount(0);
+            userRatingDto.setUser(userDto);
+            userRatingService.save(userRatingDto);
 
             String token = UUID.randomUUID().toString();
 
-            VerificationToken verificationToken = verificationTokenService.create(user, token);
-            verificationTokenService.save(verificationToken);
+            VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDto, token);
+            verificationTokenService.save(verificationTokenDto);
 
-            emailService.sendEmailConfirmation(email, token, user);
+            emailService.sendEmailConfirmation(email, token, userDto);
 
             redirectAttributes.addFlashAttribute(
                     "attentionMessage",

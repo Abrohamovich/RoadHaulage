@@ -2,8 +2,11 @@ package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.mapper.OrderCategoryMapper;
 import ua.ithillel.roadhaulage.repository.OrderCategoryRepository;
+import ua.ithillel.roadhaulage.repository.OrderRepository;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 
 import java.util.*;
@@ -12,24 +15,30 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderCategoryServiceDefault implements OrderCategoryService {
     private final OrderCategoryRepository orderCategoryRepository;
+    private final OrderCategoryMapper orderCategoryMapper;
 
     @Override
-    public void save(OrderCategory orderCategory) {
-        orderCategoryRepository.save(orderCategory);
+    public OrderCategoryDto save(OrderCategoryDto orderCategoryDto) {
+        OrderCategory saved = orderCategoryRepository.save(orderCategoryMapper.toEntity(orderCategoryDto));
+        return orderCategoryMapper.toDto(saved);
     }
 
     @Override
-    public Optional<OrderCategory> findByName(String name) {
-        return orderCategoryRepository.findByName(name);
+    public Optional<OrderCategoryDto> findByName(String name) {
+        return orderCategoryRepository.findByName(name)
+                .map(orderCategoryMapper::toDto);
     }
 
     @Override
-    public List<OrderCategory> findAll() {
-        return orderCategoryRepository.findAll();
+    public List<OrderCategoryDto> findAll() {
+        return orderCategoryRepository.findAll()
+                .stream()
+                .map(orderCategoryMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Set<OrderCategory> createOrderCategorySet(String categoryNamesString) {
+    public Set<OrderCategoryDto> createOrderCategorySet(String categoryNamesString) {
         String[] categoryNames = Arrays.stream(categoryNamesString.split(","))
                 .map(String::trim)
                 .map(category -> Arrays.stream(category.split(" "))
@@ -37,17 +46,18 @@ public class OrderCategoryServiceDefault implements OrderCategoryService {
                         .reduce((a, b) -> a + " " + b).orElse(""))
                 .toArray(String[]::new);
 
-        Set<OrderCategory> orderCategoriesSet = new HashSet<>();
+        Set<OrderCategoryDto> categories = new HashSet<>();
         for(String name : categoryNames) {
             Optional<OrderCategory> orderCategory = orderCategoryRepository.findByName(name);
-            if(orderCategory.isEmpty()) {
-                OrderCategory category = new OrderCategory();
-                category.setName(name);
-                orderCategory = Optional.of(category);
+            if (orderCategory.isEmpty()){
+                OrderCategoryDto orderCategoryDto = new OrderCategoryDto();
+                orderCategoryDto.setName(name);
+                categories.add(orderCategoryDto);
+            } else {
+                categories.add(orderCategoryMapper.toDto(orderCategory.get()));
             }
-            orderCategoriesSet.add(orderCategory.get());
         }
-        return orderCategoriesSet;
+        return categories;
     }
 
 

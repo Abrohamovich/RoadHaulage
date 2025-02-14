@@ -2,8 +2,10 @@ package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
+import ua.ithillel.roadhaulage.mapper.AddressMapper;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
@@ -13,19 +15,24 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AddressServiceDefault implements AddressService {
     private final AddressRepository addressRepository;
+    private final AddressMapper addressMapper;
 
     @Override
-    public void save(Address address) {
-        addressRepository.save(address);
+    public AddressDto save(AddressDto addressDto) {
+        Address savedAddress = addressRepository.save(addressMapper.toEntity(addressDto));
+        return addressMapper.toDto(savedAddress);
     }
 
     @Override
-    public List<Address> findAll() {
-        return addressRepository.findAll();
+    public List<AddressDto> findAll() {
+        return addressRepository.findAll()
+                .stream()
+                .map(addressMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Address createAddress(String addressString) {
+    public AddressDto createAddress(String addressString) {
         String[] addressFields = Arrays.stream(addressString.split(","))
                 .map(String::trim)
                 .map(str -> Arrays.stream(str.split(" "))
@@ -46,8 +53,9 @@ public class AddressServiceDefault implements AddressService {
             newAddress.setState(addressFields[2]);
             newAddress.setZip(addressFields[3]);
             newAddress.setCountry(addressFields[4]);
-            address = Optional.of(newAddress);
+            return addressMapper.toDto(newAddress);
+        } else {
+            return addressMapper.toDto(address.get());
         }
-        return address.get();
     }
 }

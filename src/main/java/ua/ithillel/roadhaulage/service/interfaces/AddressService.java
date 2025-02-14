@@ -1,13 +1,11 @@
 package ua.ithillel.roadhaulage.service.interfaces;
 
-import ua.ithillel.roadhaulage.entity.Address;
+import ua.ithillel.roadhaulage.dto.AddressDto;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public interface AddressService {
-    void save(Address address);
-    List<Address> findAll();
-    Address createAddress(String addressString);
+    AddressDto save(AddressDto addressDto);
+    List<AddressDto> findAll();
+    AddressDto createAddress(String addressString);
 }

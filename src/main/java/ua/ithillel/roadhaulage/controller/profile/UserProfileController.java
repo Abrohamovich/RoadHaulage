@@ -6,10 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ua.ithillel.roadhaulage.entity.Order;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
-import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.entity.UserRating;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
@@ -26,17 +26,17 @@ public class UserProfileController {
 
     @GetMapping("/{email}/info")
     public String getUserProfileInfo(@PathVariable String email, Model model) {
-        Optional<User> userDB = userService.findByEmail(email);
+        Optional<UserDto> userDB = userService.findByEmail(email);
         if(userDB.isPresent()) {
-            User user = userDB.get();
-            Optional<UserRating> userRating = userRatingService.findById(user.getId());
+            UserDto userDto = userDB.get();
+            Optional<UserRatingDto> userRatingDto = userRatingService.findById(userDto.getId());
             Map<String, String> map = new HashMap<>();
-            map.put("firstName", user.getFirstName());
-            map.put("lastName", user.getLastName());
-            map.put("email", user.getEmail());
-            map.put("phone", "+" + user.getPhoneCode() + user.getPhone());
-            map.put("rating", String.valueOf(userRating.get().getAverage()));
-            map.put("count", String.valueOf(userRating.get().getCount()));
+            map.put("firstName", userDto.getFirstName());
+            map.put("lastName", userDto.getLastName());
+            map.put("email", userDto.getEmail());
+            map.put("phone", "+" + userDto.getPhoneCode() + userDto.getPhone());
+            map.put("rating", String.valueOf(userRatingDto.get().getAverage()));
+            map.put("count", String.valueOf(userRatingDto.get().getCount()));
             model.addAllAttributes(map);
             return "profile/info";
         }
@@ -45,16 +45,16 @@ public class UserProfileController {
 
     @GetMapping("/{email}/orders")
     public String getUserProfileOrders(@PathVariable String email, Model model) {
-        Optional<User> userDB = userService.findByEmail(email);
+        Optional<UserDto> userDB = userService.findByEmail(email);
         if(userDB.isPresent()) {
-            User user = userDB.get();
-            List<Order> orders = orderService.findOrdersByCustomerId(user.getId());
-            orders = orders.stream()
-                    .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
+            UserDto userDto = userDB.get();
+            List<OrderDto> ordersDto = orderService.findOrdersByCustomerId(userDto.getId());
+            ordersDto = ordersDto.stream()
+                    .filter(orderDto -> orderDto.getStatus().equals(OrderStatus.PUBLISHED))
                     .toList();
-            orders.forEach(Order::defineTransient);
+            ordersDto.forEach(OrderDto::defineView);
             model.addAttribute("email", email);
-            model.addAttribute("orders", orders);
+            model.addAttribute("orders", ordersDto);
             return "profile/orders";
         }
         return "redirect:/error";
@@ -63,12 +63,12 @@ public class UserProfileController {
     @GetMapping("/{email}/order/{id}")
     public String getUserProfileOrder(@PathVariable String email,
                                       @PathVariable long id,  Model model) {
-        Optional<Order> orderDB = orderService.findById(id);
+        Optional<OrderDto> orderDB = orderService.findById(id);
         if(orderDB.isPresent()) {
-            Order order = orderDB.get();
+            OrderDto orderDto = orderDB.get();
+            orderDto.defineView();
             model.addAttribute("email", email);
-            order.defineTransient();
-            model.addAttribute("order", order);
+            model.addAttribute("order", orderDto);
             return "profile/order";
         }
 

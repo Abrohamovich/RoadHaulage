@@ -19,6 +19,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -28,35 +29,23 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<OrderCategory> categories;
-    @Transient
-    private String categoriesString;
 
     @ManyToOne
     @JoinColumn(name = "departure_address_id")
     private Address departureAddress;
-    @Transient
-    private String departureAddressString;
 
     @ManyToOne
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;
-    @Transient
-    private String deliveryAddressString;
 
     private String weight;
     private String weightUnit;
-    @Transient
-    private String weightString;
 
     private String dimensions;
     private String dimensionsUnit;
-    @Transient
-    private String dimensionsString;
 
     private String cost;
     private String currency;
-    @Transient
-    private String costString;
 
     private String additionalInfo;
 
@@ -70,17 +59,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "courier_id")
     private User courier;
-
-    public void defineTransient(){
-        this.categoriesString = this.getCategories().stream()
-                .map(OrderCategory::getName)
-                .collect(Collectors.joining(", "));
-        this.departureAddressString = this.getDepartureAddress().toString();
-        this.deliveryAddressString = this.getDeliveryAddress().toString();
-        this.weightString = this.getWeight() + " " + this.getWeightUnit();
-        this.dimensionsString = this.getDimensions() + " " + this.getDimensionsUnit();
-        this.costString = this.getCost() + " " + this.getCurrency();
-    }
 
     @Override
     public int hashCode() {

@@ -1,11 +1,16 @@
 package ua.ithillel.roadhaulage.controller.account.settings;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
@@ -18,6 +23,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/account/settings/personal-information")
 @RequiredArgsConstructor
+@Slf4j
 public class PersonalInfoController {
     private final UserService userService;
 
@@ -25,21 +31,21 @@ public class PersonalInfoController {
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,
                                    @ModelAttribute("lastNameError") String lastNameError,
                                    @ModelAttribute("phoneError") String phoneError,
-                                   @AuthenticationPrincipal User user,
+                                   @AuthenticationPrincipal UserDto userDto,
                                    Model model) {
-        List<String> codes = getCodes(user.getPhoneCode());
+        List<String> codes = getCodes(userDto.getPhoneCode());
         Map<String, String> map = new HashMap<>();
-        map.put("firstName", user.getFirstName());
-        map.put("lastName", user.getLastName());
-        map.put("phone", user.getPhone());
-        map.put("iban", user.getIban());
+        map.put("firstName", userDto.getFirstName());
+        map.put("lastName", userDto.getLastName());
+        map.put("phone", userDto.getPhone());
+        map.put("iban", userDto.getIban());
         model.addAttribute("codes", codes);
         model.addAllAttributes(map);
         return "account/settings/personal-information";
     }
 
     @PostMapping("/update")
-    public String update(@AuthenticationPrincipal User user,
+    public String update(@AuthenticationPrincipal UserDto userDto,
                          @RequestParam(required = false) String firstName,
                          @RequestParam(required = false) String lastName,
                          @RequestParam(required = false) String phoneCode,
@@ -47,29 +53,31 @@ public class PersonalInfoController {
                          @RequestParam(required = false) String iban,
                          RedirectAttributes redirectAttributes) {
         if (firstName.isEmpty()) {
-            firstName = user.getFirstName();
+            firstName = userDto.getFirstName();
         }
         if (lastName.isEmpty()) {
-            lastName = user.getLastName();
+            lastName = userDto.getLastName();
         }
         if (iban.isEmpty()) {
-            iban = user.getIban();
+            iban = userDto.getIban();
         }
         if (userService.findByPhoneCodeAndPhone(phoneCode, phone).isPresent() &&
-                !user.getPhone().equals(phone)) {
+                !userDto.getPhone().equals(phone)) {
             redirectAttributes.addFlashAttribute("phoneError",
                     "Phone number already exists");
             return "redirect:/account/settings/personal-information";
         } else if (phone.isEmpty()) {
-            phone = user.getPhone();
+            phone = userDto.getPhone();
         }
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPhoneCode(phoneCode);
-        user.setPhone(phone);
-        user.setIban(iban);
-        userService.update(user);
+        userDto.setFirstName(firstName);
+        userDto.setLastName(lastName);
+        userDto.setPhoneCode(phoneCode);
+        userDto.setPhone(phone);
+        userDto.setIban(iban);
+        userDto = userService.update(userDto);
+
+
         return "redirect:/account/settings/personal-information";
     }
 
