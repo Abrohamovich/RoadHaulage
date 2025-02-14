@@ -17,18 +17,20 @@ public class UserRatingServiceDefault implements UserRatingService {
     private final UserRatingMapper userRatingMapper;
 
     @Override
-    public void save(UserRatingDto userRatingDto) {
-        repository.save(userRatingMapper.toEntity(userRatingDto));
+    public UserRatingDto save(UserRatingDto userRatingDto) {
+        UserRating saved = repository.save(userRatingMapper.toEntity(userRatingDto));
+        return userRatingMapper.toDto(saved);
     }
 
     @Override
-    public void update(UserRatingDto userRatingDto, double rating) {
+    public UserRatingDto update(UserRatingDto userRatingDto, double rating) {
         double average = userRatingDto.getAverage();
         long total = userRatingDto.getCount();
         average = Math.round(10.0 * (average * total + rating) / (total + 1)) / 10.0;
         userRatingDto.setAverage(average);
         userRatingDto.setCount(total + 1);
-        repository.save(userRatingMapper.toEntity(userRatingDto));
+        UserRating updated = repository.save(userRatingMapper.toEntity(userRatingDto));
+        return userRatingMapper.toDto(updated);
     }
 
     @Override

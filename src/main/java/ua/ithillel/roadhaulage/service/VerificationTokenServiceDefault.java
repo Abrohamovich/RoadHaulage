@@ -29,8 +29,10 @@ public class VerificationTokenServiceDefault implements VerificationTokenService
     }
 
     @Override
-    public void save(VerificationTokenDto token) {
-        verificationTokenRepository.save(verificationTokenMapper.toEntity(token));
+    public VerificationTokenDto save(VerificationTokenDto token) {
+        VerificationToken saved = verificationTokenRepository
+                .save(verificationTokenMapper.toEntity(token));
+        return verificationTokenMapper.toDto(saved);
     }
 
     @Override

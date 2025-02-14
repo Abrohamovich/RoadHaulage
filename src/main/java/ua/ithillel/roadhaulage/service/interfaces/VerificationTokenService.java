@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface VerificationTokenService {
 
     VerificationTokenDto create(UserDto userDto, String token);
-    void save(VerificationTokenDto token);
+    VerificationTokenDto save(VerificationTokenDto token);
     Optional<VerificationTokenDto> getToken(String token);
     void delete(VerificationTokenDto token);
 }

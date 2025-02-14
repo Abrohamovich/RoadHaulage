@@ -1,113 +1,120 @@
-//package ua.ithillel.roadhaulage.service;
-//
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import ua.ithillel.roadhaulage.entity.OrderCategory;
-//import ua.ithillel.roadhaulage.repository.OrderCategoryRepository;
-//
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.Set;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class OrderCategoryServiceDefaultTests {
-//    @Mock
-//    private OrderCategoryRepository repository;
-//    @InjectMocks
-//    private OrderCategoryServiceDefault service;
-//
-//    @Test
-//    public void saveTest(){
-//        OrderCategory orderCategory = mock(OrderCategory.class);
-//
-//        service.save(orderCategory);
-//
-//        verify(repository, times(1)).save(orderCategory);
-//    }
-//
-//    @Test
-//    public void findAllTest_returnsEmptyList(){
-//        when(repository.findAll()).thenReturn(List.of());
-//
-//        List<OrderCategory> result = service.findAll();
-//
-//        assertEquals(0, result.size());
-//        verify(repository, times(1)).findAll();
-//    }
-//
-//    @Test
-//    public void findAllTest_returnsFullList(){
-//        when(repository.findAll()).thenReturn(List.of(mock(OrderCategory.class),
-//                mock(OrderCategory.class), mock(OrderCategory.class)));
-//
-//        List<OrderCategory> result = service.findAll();
-//
-//        assertEquals(3, result.size());
-//        verify(repository, times(1)).findAll();
-//    }
-//
-//    @Test
-//    public void findByNameTest_returnsOptionalOfOrderCategory(){
-//        OrderCategory orderCategory = mock(OrderCategory.class);
-//
-//        when(repository.findByName(anyString())).thenReturn(Optional.of(orderCategory));
-//
-//        Optional<OrderCategory> result = service.findByName(anyString());
-//
-//        assertTrue(result.isPresent());
-//        verify(repository, times(1)).findByName(anyString());
-//    }
-//
-//    @Test
-//    public void findByNameTest_returnsOptionalOfNull(){
-//        when(repository.findByName(anyString())).thenReturn(Optional.empty());
-//
-//        Optional<OrderCategory> result = service.findByName(anyString());
-//
-//        assertFalse(result.isPresent());
-//        verify(repository, times(1)).findByName(anyString());
-//    }
-//
-//    @Test
-//    public void createOrderCategorySetTest_returnsSetOfNewOrderCategory(){
-//        String categoryNamesString = "Grocery, Food, Sport equipment";
-//
-//        when(repository.findByName(anyString())).thenReturn(Optional.empty());
-//
-//        Set<OrderCategory> result = service.createOrderCategorySet(categoryNamesString);
-//
-//        assertEquals(3, result.size());
-//    }
-//
-//    @Test
-//    public void createOrderCategorySetTest_returnsSetOfExistedOrderCategory(){
-//        String categoryNamesString = "Grocery, Food, Sport equipment";
-//        OrderCategory orderCategory1 = new OrderCategory();
-//        orderCategory1.setName("Grocery");
-//        orderCategory1.setId(1L);
-//        OrderCategory orderCategory2 = new OrderCategory();
-//        orderCategory2.setName("Food");
-//        orderCategory2.setId(2L);
-//        OrderCategory orderCategory3 = new OrderCategory();
-//        orderCategory3.setName("Sport Equipment");
-//        orderCategory3.setId(3L);
-//
-//        when(repository.findByName("Grocery")).thenReturn(Optional.of(orderCategory1));
-//        when(repository.findByName("Food")).thenReturn(Optional.of(orderCategory2));
-//        when(repository.findByName("Sport Equipment")).thenReturn(Optional.of(orderCategory3));
-//
-//        Set<OrderCategory> result = service.createOrderCategorySet(categoryNamesString);
-//
-//        assertEquals(3, result.size());
-//        assertTrue(result.contains(orderCategory1));
-//        assertTrue(result.contains(orderCategory2));
-//        assertTrue(result.contains(orderCategory3));
-//    }
-//
-//}
+package ua.ithillel.roadhaulage.service;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.entity.OrderCategory;
+import ua.ithillel.roadhaulage.mapper.OrderCategoryMapper;
+import ua.ithillel.roadhaulage.repository.OrderCategoryRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class OrderCategoryServiceDefaultTests {
+    @InjectMocks
+    private OrderCategoryServiceDefault orderCategoryService;
+    @Mock
+    private OrderCategoryRepository orderCategoryRepository;
+    @Mock
+    private OrderCategoryMapper orderCategoryMapper;
+    private OrderCategoryDto orderCategoryDto;
+    private OrderCategory orderCategory;
+
+    @BeforeEach
+    void init(){
+        orderCategoryDto = new OrderCategoryDto();
+        orderCategoryDto.setId(1L);
+        orderCategoryDto.setName("Test");
+        orderCategory = new OrderCategory();
+        orderCategory.setId(1L);
+        orderCategory.setName("Test");
+    }
+
+    @Test
+    void save(){
+        when(orderCategoryMapper.toEntity(orderCategoryDto)).thenReturn(orderCategory);
+        when(orderCategoryRepository.save(orderCategory)).thenReturn(orderCategory);
+        when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
+
+        OrderCategoryDto result = orderCategoryService.save(orderCategoryDto);
+
+        assertNotNull(result);
+        assertEquals(orderCategoryDto, result);
+    }
+
+    @Test
+    void findAll_returnsEmptyList(){
+        when(orderCategoryRepository.findAll()).thenReturn(List.of());
+
+        List<OrderCategoryDto> result = orderCategoryService.findAll();
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void findAll_returnsFullList(){
+        when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
+
+        when(orderCategoryRepository.findAll()).thenReturn(List.of(orderCategory));
+
+        List<OrderCategoryDto> result = orderCategoryService.findAll();
+
+        assertEquals(1, result.size());
+        assertEquals(orderCategoryDto, result.getFirst());
+    }
+
+    @Test
+    void findByName_returnsOptionalOfOrderCategory(){
+        when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
+        when(orderCategoryRepository.findByName(anyString()))
+                .thenReturn(Optional.of(orderCategory));
+
+        Optional<OrderCategoryDto> result = orderCategoryService.findByName(anyString());
+
+        assertTrue(result.isPresent());
+        assertEquals(orderCategoryDto, result.get());
+    }
+
+    @Test
+    void findByName_returnsOptionalOfNull(){
+        when(orderCategoryRepository.findByName(anyString()))
+                .thenReturn(Optional.empty());
+
+        Optional<OrderCategoryDto> result = orderCategoryService.findByName(anyString());
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void createOrderCategorySet_returnsSetOfNewOrderCategory(){
+        String categoryNamesString = " test ";
+
+        when(orderCategoryRepository.findByName(anyString())).thenReturn(Optional.empty());
+
+        Set<OrderCategoryDto> result = orderCategoryService.createOrderCategorySet(categoryNamesString);
+
+        assertEquals(1, result.size());
+        assertEquals(orderCategoryDto.getName(), result.iterator().next().getName());
+    }
+
+    @Test
+    void createOrderCategorySet_returnsSetOfExistedOrderCategory(){
+        String categoryNamesString = " test ";
+
+        when(orderCategoryRepository.findByName(anyString()))
+                .thenReturn(Optional.of(orderCategory));
+
+        Set<OrderCategoryDto> result = orderCategoryService.createOrderCategorySet(categoryNamesString);
+
+        assertEquals(1, result.size());
+    }
+}
