@@ -75,7 +75,7 @@ public class PersonalInfoController {
         userDto.setPhoneCode(phoneCode);
         userDto.setPhone(phone);
         userDto.setIban(iban);
-        userDto = userService.update(userDto);
+        userService.update(userDto);
 
 
         return "redirect:/account/settings/personal-information";
