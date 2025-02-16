@@ -8,5 +8,6 @@ import ua.ithillel.roadhaulage.entity.OrderCategory;
 @Mapper(componentModel = "spring")
 public interface OrderCategoryMapper {
     OrderCategoryDto toDto(OrderCategory orderCategory);
+    @Mapping(target = "orders", ignore = true)
     OrderCategory toEntity(OrderCategoryDto orderCategoryDto);
 }

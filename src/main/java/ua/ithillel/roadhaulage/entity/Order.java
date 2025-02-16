@@ -2,14 +2,15 @@ package ua.ithillel.roadhaulage.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.sql.Date;
-import java.util.Objects;
 import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "t_order")
+@EqualsAndHashCode(of = "id")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,19 +56,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "courier_id")
     private User courier;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Order order = (Order) obj;
-        return Objects.equals(id, order.id);
-    }
 }
 
 

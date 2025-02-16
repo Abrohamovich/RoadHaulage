@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.*;
 @Getter
 @Setter
 @Table(name="t_user")
+@EqualsAndHashCode(of = {"id", "email", "phone", "phoneCode"})
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,17 +37,4 @@ public class User{
     private List<Order> courierOrders; // List of orders you have fulfilled for other users
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserRating rating;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        User user = (User) obj;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
-    }
 }
