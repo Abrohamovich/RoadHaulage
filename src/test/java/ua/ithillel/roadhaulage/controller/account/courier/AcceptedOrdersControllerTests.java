@@ -34,10 +34,11 @@ public class AcceptedOrdersControllerTests {
     private MockMvc mockMvc;
     @MockitoBean
     private OrderService orderService;
+    private UserDto user;
 
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
@@ -79,7 +80,10 @@ public class AcceptedOrdersControllerTests {
 
     @Test
     void acceptOrder() throws Exception {
-        when(orderService.findById(anyLong())).thenReturn(Optional.of(mock(OrderDto.class)));
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(1L);
+
+        when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
 
         mockMvc.perform(post("/account/delivered-orders/accepted/accept")
                         .param("id", "1"))
@@ -90,8 +94,21 @@ public class AcceptedOrdersControllerTests {
     }
 
     @Test
+    void acceptOrder_orderIsNotPresent() throws Exception {
+        when(orderService.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/account/delivered-orders/accepted/accept")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
+    }
+
+    @Test
     void declineOrder() throws Exception {
-        when(orderService.findById(anyLong())).thenReturn(Optional.of(mock(OrderDto.class)));
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(1L);
+        orderDto.setCourier(user);
+        when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
 
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")
                         .param("id", "1"))
@@ -99,5 +116,31 @@ public class AcceptedOrdersControllerTests {
                 .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
 
         verify(orderService, times(1)).save(any(OrderDto.class));
+    }
+
+    @Test
+    void declineOrder_orderIsNotPresent() throws Exception {
+        when(orderService.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/account/delivered-orders/accepted/decline")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
+    }
+
+    @Test
+    void declineOrder_redirectError() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(5L);
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(1L);
+        orderDto.setCourier(userDto);
+        when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
+
+        mockMvc.perform(post("/account/delivered-orders/accepted/decline")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
     }
 }

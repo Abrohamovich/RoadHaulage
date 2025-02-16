@@ -34,10 +34,11 @@ public class CreatedOrderControllerTests {
     private OrderService orderService;
     @MockitoBean
     private UserRatingService userRatingService;
+    private UserDto user;
 
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
@@ -79,8 +80,9 @@ public class CreatedOrderControllerTests {
 
     @Test
     void publishOrder() throws Exception {
-        OrderDto order = mock(OrderDto.class);
+        OrderDto order = new OrderDto();
         order.setId(1L);
+        order.setCustomer(user);
 
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
@@ -91,6 +93,24 @@ public class CreatedOrderControllerTests {
                 .andExpect(redirectedUrl("/account/my-orders/created"));
 
         verify(orderService, times(1)).update(any());
+    }
+
+    @Test
+    void publishOrder_orderDoesNotBelongToCurrentUser() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(5L);
+
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(userDto);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/created/publish")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
     }
 
     @Test
@@ -108,15 +128,13 @@ public class CreatedOrderControllerTests {
 
     @Test
     void closeOrder() throws Exception {
-        UserDto mockUser = new UserDto();
-        mockUser.setId(2L);
-
-        OrderDto mockOrder = new OrderDto();
-        mockOrder.setId(1L);
-        mockOrder.setCourier(mockUser);
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(user);
+        order.setCourier(user);
 
         when(orderService.findById(anyLong()))
-                .thenReturn(Optional.of(mockOrder));
+                .thenReturn(Optional.of(order));
 
         when(userRatingService.findById(anyLong()))
                 .thenReturn(Optional.of(mock(UserRatingDto.class)));
@@ -129,6 +147,26 @@ public class CreatedOrderControllerTests {
 
         verify(orderService, times(1)).update(any());
         verify(userRatingService, times(1)).update(any(), anyDouble());
+    }
+
+    @Test
+    void closeOrder_orderDoesNotBelongToCurrentUser() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(5L);
+
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(userDto);
+        order.setCourier(user);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/created/close")
+                        .param("id", "1")
+                        .param("rating", "3.3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
     }
 
     @Test
@@ -148,11 +186,44 @@ public class CreatedOrderControllerTests {
 
     @Test
     void deleteOrder() throws Exception {
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(user);
+
+        when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
+
         mockMvc.perform(get("/account/my-orders/created/delete")
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/created"));
 
         verify(orderService, times(1)).delete(anyLong());
+    }
+
+    @Test
+    void deleteOrder_orderDoesNotBelongToCurrentUser() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(5L);
+
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(userDto);
+
+        when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
+
+        mockMvc.perform(get("/account/my-orders/created/delete")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
+    void deleteOrder_doNone() throws Exception {
+        when(orderService.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/account/my-orders/created/delete")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/account/my-orders/created"));
     }
 }

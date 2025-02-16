@@ -4,16 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.entity.*;
-import ua.ithillel.roadhaulage.mapper.AddressMapper;
 import ua.ithillel.roadhaulage.mapper.OrderMapper;
 import ua.ithillel.roadhaulage.repository.OrderRepository;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

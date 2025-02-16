@@ -10,12 +10,11 @@ import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
-import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.Optional;
@@ -31,12 +30,16 @@ public class ChangeOrderController {
     private final AddressService addressService;
 
     @GetMapping
-    public String changePage(@RequestParam long id,
+    public String changePage(@AuthenticationPrincipal UserDto user,
+                             @RequestParam long id,
                              @ModelAttribute("errorMessage") String errorMessage,
                              Model model) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
+            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+                return "redirect:/error";
+            }
             orderDto.defineView();
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("order", orderDto);
@@ -46,7 +49,8 @@ public class ChangeOrderController {
     }
 
     @PostMapping("/edit")
-    public String changeOrder(@RequestParam long id,
+    public String changeOrder(@AuthenticationPrincipal UserDto user,
+                              @RequestParam long id,
                               RedirectAttributes redirectAttributes,
                               @RequestParam(required = false) String categoriesString,
                               @RequestParam(required = false) String cost,
@@ -59,6 +63,12 @@ public class ChangeOrderController {
                               @RequestParam(name = "dimensions-unit") String dimensionsUnit,
                               @RequestParam String currency) {
         Optional<OrderDto> orderDtoOptional = orderService.findById(id);
+        OrderDto orderDto = orderDtoOptional.get();
+
+        if (!orderDto.getCustomer().getId().equals(user.getId())) {
+            return "redirect:/error";
+        }
+
         Set<OrderCategoryDto> orderCategories = orderCategoryService.createOrderCategorySet(categoriesString);
         orderCategories = orderCategories.stream()
                 .map(orderCategoryService::save)
@@ -78,7 +88,7 @@ public class ChangeOrderController {
         departureAddressDto = addressService.save(departureAddressDto);
         deliveryAddressDto = addressService.save(deliveryAddressDto);
 
-        OrderDto orderDto = orderDtoOptional.get();
+
         orderDto.setCategories(orderCategories);
         orderDto.setCost(cost);
         orderDto.setCurrency(currency);

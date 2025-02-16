@@ -40,10 +40,11 @@ public class ChangeOrderControllerTests {
     private OrderCategoryService orderCategoryService;
     @MockitoBean
     private AddressService addressService;
+    private UserDto user;
 
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
@@ -64,6 +65,7 @@ public class ChangeOrderControllerTests {
 
         OrderDto order = new OrderDto();
         order.setStatus(OrderStatus.COMPLETED);
+        order.setCustomer(user);
         order.setCategories(Set.of(category));
         order.setDepartureAddress(new AddressDto());
         order.setDeliveryAddress(new AddressDto());
@@ -97,8 +99,11 @@ public class ChangeOrderControllerTests {
 
     @Test
     void changeOrder() throws Exception {
+        OrderDto order = new OrderDto();
+        order.setCustomer(user);
+
         when(orderService.findById(anyLong()))
-                .thenReturn(Optional.of(mock(OrderDto.class)));
+                .thenReturn(Optional.of(order));
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategoryDto.class)));
         when(addressService.createAddress(anyString()))
@@ -130,14 +135,44 @@ public class ChangeOrderControllerTests {
     }
 
     @Test
-    void changeOrder_throwsAddressCreateException() throws Exception {
+    void changeOrder_orderDoesNotBelongToCurrentUser() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(4L);
+
+        OrderDto order = new OrderDto();
+        order.setCustomer(userDto);
+
         when(orderService.findById(anyLong()))
-                .thenReturn(Optional.empty());
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/change/edit")
+                        .param("id", "1")
+                        .param("categoriesString", "smth")
+                        .param("cost", "smth")
+                        .param("deliveryAddressString", "smth")
+                        .param("departureAddressString", "smth")
+                        .param("additionalInfo", "smth")
+                        .param("weight", "smth")
+                        .param("dimensions", "smth")
+                        .param("weight-unit", "smth")
+                        .param("dimensions-unit", "smth")
+                        .param("currency", "smth"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
+    void changeOrder_throwsAddressCreateException() throws Exception {
+        OrderDto order = new OrderDto();
+        order.setCustomer(user);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategoryDto.class)));
-        doThrow(new AddressCreateException("You didn't enter the address information correctly"))
-                .when(addressService).createAddress(anyString());
 
+        when(addressService.createAddress(anyString()))
+                .thenThrow(new AddressCreateException("You didn't enter the address information correctly"));
         mockMvc.perform(post("/account/my-orders/change/edit")
                         .param("id", "1")
                         .param("categoriesString", "smth")

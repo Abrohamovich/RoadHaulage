@@ -1,6 +1,5 @@
 package ua.ithillel.roadhaulage.util;
 
-
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
@@ -8,9 +7,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.springframework.stereotype.Component;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
-import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
-import ua.ithillel.roadhaulage.entity.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

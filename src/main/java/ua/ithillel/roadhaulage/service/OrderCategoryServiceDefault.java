@@ -6,7 +6,6 @@ import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.mapper.OrderCategoryMapper;
 import ua.ithillel.roadhaulage.repository.OrderCategoryRepository;
-import ua.ithillel.roadhaulage.repository.OrderRepository;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 
 import java.util.*;

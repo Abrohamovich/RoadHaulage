@@ -24,19 +24,23 @@ public class CreatedOrderController {
     private final UserRatingService userRatingService;
 
     @GetMapping
-    public String createdOrdersPage(@AuthenticationPrincipal UserDto userDto,
+    public String createdOrdersPage(@AuthenticationPrincipal UserDto user,
                                          Model model) {
-        List<OrderDto> orders = orderService.findOrdersByCustomerId(userDto.getId());
+        List<OrderDto> orders = orderService.findOrdersByCustomerId(user.getId());
         orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
         orders.forEach(OrderDto::defineView);
         model.addAttribute("orders", orders);
         return "account/customer-orders/created";
     }
     @PostMapping("/publish")
-    public String publishOrder(@RequestParam long id){
+    public String publishOrder(@AuthenticationPrincipal UserDto user,
+                               @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
+            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+                return "redirect:/error";
+            }
             orderDto.setStatus(OrderStatus.PUBLISHED);
             orderService.update(orderDto);
         }
@@ -44,10 +48,15 @@ public class CreatedOrderController {
     }
 
     @PostMapping("/close")
-    public String closeOrder(@RequestParam long id, @RequestParam double rating){
+    public String closeOrder(@AuthenticationPrincipal UserDto userDto,
+                             @RequestParam long id,
+                             @RequestParam double rating){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
+            if (!orderDto.getCustomer().getId().equals(userDto.getId())) {
+                return "redirect:/error";
+            }
             orderDto.setStatus(OrderStatus.COMPLETED);
             orderDto.setCompletionDate(new Date(System.currentTimeMillis()));
             Optional<UserRatingDto> userRatingOptional = userRatingService.findById(orderDto.getCourier().getId());
@@ -58,8 +67,17 @@ public class CreatedOrderController {
     }
 
     @GetMapping("/delete")
-    public String deleteOrder(@RequestParam long id){
-        orderService.delete(id);
+    public String deleteOrder(@AuthenticationPrincipal UserDto user,
+                              @RequestParam long id){
+        Optional<OrderDto> orderOptional = orderService.findById(id);
+        if (orderOptional.isPresent()){
+            OrderDto orderDto = orderOptional.get();
+            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+                return "redirect:/error";
+            }
+            orderService.delete(id);
+        }
+
         return "redirect:/account/my-orders/created";
     }
 }

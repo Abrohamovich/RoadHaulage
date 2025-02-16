@@ -1,19 +1,13 @@
 package ua.ithillel.roadhaulage.controller.account.settings;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.dto.UserDto;
-import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +17,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/account/settings/personal-information")
 @RequiredArgsConstructor
-@Slf4j
 public class PersonalInfoController {
     private final UserService userService;
 
@@ -76,7 +69,6 @@ public class PersonalInfoController {
         userDto.setPhone(phone);
         userDto.setIban(iban);
         userService.update(userDto);
-
 
         return "redirect:/account/settings/personal-information";
     }
