@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
@@ -465,10 +466,12 @@ public class UserServiceDefaultTests {
 
     @Test
     void loadUserByUsername_returnsUser() {
-        when(userMapper.toDto(user)).thenReturn(userDto);
+        AuthUserDto authUserDto = new AuthUserDto();
+        authUserDto.setEmail("john@doe.com");
+        when(userMapper.toAuthDto(user)).thenReturn(authUserDto);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
 
-        UserDto result = userServiceDefault.loadUserByUsername("test@gmail.com");
+        AuthUserDto result = userServiceDefault.loadUserByUsername("");
 
         assertNotNull(result);
         assertEquals(userDto.getEmail(), result.getEmail());

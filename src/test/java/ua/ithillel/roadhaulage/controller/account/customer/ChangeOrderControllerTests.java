@@ -11,15 +11,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.Optional;
 import java.util.Set;
@@ -35,15 +33,23 @@ public class ChangeOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private OrderCategoryService orderCategoryService;
     @MockitoBean
     private AddressService addressService;
+
+    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
         user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
@@ -54,7 +60,7 @@ public class ChangeOrderControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
@@ -76,6 +82,7 @@ public class ChangeOrderControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -88,6 +95,7 @@ public class ChangeOrderControllerTests {
 
     @Test
     void changePage_redirectErrorPage() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -102,6 +110,7 @@ public class ChangeOrderControllerTests {
         OrderDto order = new OrderDto();
         order.setCustomer(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
         when(orderCategoryService.createOrderCategorySet(anyString()))
@@ -142,6 +151,7 @@ public class ChangeOrderControllerTests {
         OrderDto order = new OrderDto();
         order.setCustomer(userDto);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -166,6 +176,7 @@ public class ChangeOrderControllerTests {
         OrderDto order = new OrderDto();
         order.setCustomer(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
         when(orderCategoryService.createOrderCategorySet(anyString()))

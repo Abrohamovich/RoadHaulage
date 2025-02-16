@@ -5,12 +5,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -24,21 +26,21 @@ public class CreatedOrderController {
     private final UserRatingService userRatingService;
 
     @GetMapping
-    public String createdOrdersPage(@AuthenticationPrincipal UserDto user,
+    public String createdOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                                          Model model) {
-        List<OrderDto> orders = orderService.findOrdersByCustomerId(user.getId());
+        List<OrderDto> orders = orderService.findOrdersByCustomerId(authUserDto.getId());
         orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
         orders.forEach(OrderDto::defineView);
         model.addAttribute("orders", orders);
         return "account/customer-orders/created";
     }
     @PostMapping("/publish")
-    public String publishOrder(@AuthenticationPrincipal UserDto user,
+    public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                                @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.PUBLISHED);
@@ -48,13 +50,13 @@ public class CreatedOrderController {
     }
 
     @PostMapping("/close")
-    public String closeOrder(@AuthenticationPrincipal UserDto userDto,
+    public String closeOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @RequestParam long id,
                              @RequestParam double rating){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(userDto.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.COMPLETED);
@@ -67,12 +69,12 @@ public class CreatedOrderController {
     }
 
     @GetMapping("/delete")
-    public String deleteOrder(@AuthenticationPrincipal UserDto user,
+    public String deleteOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                               @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
                 return "redirect:/error";
             }
             orderService.delete(id);

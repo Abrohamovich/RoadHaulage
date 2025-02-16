@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.mapper;
 
 import org.mapstruct.Mapper;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 
@@ -8,4 +9,5 @@ import ua.ithillel.roadhaulage.entity.User;
 public interface UserMapper {
     UserDto toDto(User user);
     User toEntity(UserDto userDto);
+    AuthUserDto toAuthDto(User user);
 }

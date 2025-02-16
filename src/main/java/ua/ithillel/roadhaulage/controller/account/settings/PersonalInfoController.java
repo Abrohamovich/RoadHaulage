@@ -6,13 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/account/settings/personal-information")
@@ -24,8 +22,10 @@ public class PersonalInfoController {
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,
                                    @ModelAttribute("lastNameError") String lastNameError,
                                    @ModelAttribute("phoneError") String phoneError,
-                                   @AuthenticationPrincipal UserDto userDto,
+                                   @AuthenticationPrincipal AuthUserDto authUserDto,
                                    Model model) {
+        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
+        UserDto userDto = userDtoOptional.get();
         List<String> codes = getCodes(userDto.getPhoneCode());
         Map<String, String> map = new HashMap<>();
         map.put("firstName", userDto.getFirstName());
@@ -38,13 +38,15 @@ public class PersonalInfoController {
     }
 
     @PostMapping("/update")
-    public String update(@AuthenticationPrincipal UserDto userDto,
+    public String update(@AuthenticationPrincipal AuthUserDto authUserDto,
                          @RequestParam(required = false) String firstName,
                          @RequestParam(required = false) String lastName,
                          @RequestParam(required = false) String phoneCode,
                          @RequestParam(required = false) String phone,
                          @RequestParam(required = false) String iban,
                          RedirectAttributes redirectAttributes) {
+        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
+        UserDto userDto = userDtoOptional.get();
         if (firstName.isEmpty()) {
             firstName = userDto.getFirstName();
         }

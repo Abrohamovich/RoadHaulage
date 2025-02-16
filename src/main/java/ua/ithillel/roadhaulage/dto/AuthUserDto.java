@@ -16,15 +16,30 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class AuthUserDto implements UserDetails {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String phone;
-    private String phoneCode;
     private String email;
     private UserRole role;
     private boolean enabled;
-    private String iban;
     private String password;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 }

@@ -11,12 +11,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +31,19 @@ public class AcceptedOrdersControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
+
+    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
         user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
@@ -48,7 +54,7 @@ public class AcceptedOrdersControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
@@ -69,6 +75,7 @@ public class AcceptedOrdersControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.returnOtherPublishedOrders(anyLong())).thenReturn(List.of(order));
 
         mockMvc.perform(get("/account/delivered-orders/accepted"))
@@ -83,6 +90,7 @@ public class AcceptedOrdersControllerTests {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(1L);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
 
         mockMvc.perform(post("/account/delivered-orders/accepted/accept")
@@ -95,6 +103,7 @@ public class AcceptedOrdersControllerTests {
 
     @Test
     void acceptOrder_orderIsNotPresent() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/account/delivered-orders/accepted/accept")
@@ -108,6 +117,8 @@ public class AcceptedOrdersControllerTests {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(1L);
         orderDto.setCourier(user);
+
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
 
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")
@@ -120,6 +131,7 @@ public class AcceptedOrdersControllerTests {
 
     @Test
     void declineOrder_orderIsNotPresent() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")
@@ -136,6 +148,8 @@ public class AcceptedOrdersControllerTests {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(1L);
         orderDto.setCourier(userDto);
+
+        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(orderDto));
 
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")

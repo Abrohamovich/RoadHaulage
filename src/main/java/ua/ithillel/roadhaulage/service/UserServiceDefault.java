@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
@@ -107,13 +108,13 @@ public class UserServiceDefault implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDto loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<UserDto> userDto = userRepository.findByEmail(email)
-                .map(userMapper::toDto);
-        if(userDto.isEmpty()) {
+    public AuthUserDto loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<AuthUserDto> authUserDto = userRepository.findByEmail(email)
+                .map(userMapper::toAuthDto);
+        if(authUserDto.isEmpty()) {
             throw new UsernameNotFoundException("Cant find user with username: " + email);
         }
-        return userDto.get();
+        return authUserDto.get();
     }
 
     private short verifyToken(String token) {

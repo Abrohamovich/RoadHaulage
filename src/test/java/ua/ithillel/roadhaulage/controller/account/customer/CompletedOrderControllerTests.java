@@ -11,14 +11,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -32,11 +31,20 @@ public class CompletedOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
+
+    private AuthUserDto authUserDto;
+    private UserDto user;
 
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
+        user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
@@ -46,7 +54,7 @@ public class CompletedOrderControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
@@ -67,6 +75,7 @@ public class CompletedOrderControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findOrdersByCustomerId(anyLong())).thenReturn(List.of(order));
 
         mockMvc.perform(get("/account/my-orders/completed"))

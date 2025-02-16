@@ -15,6 +15,7 @@ import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,13 +32,21 @@ public class CreatedOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private UserRatingService userRatingService;
+
+    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
         user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
@@ -48,7 +57,7 @@ public class CreatedOrderControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
@@ -69,6 +78,7 @@ public class CreatedOrderControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findOrdersByCustomerId(anyLong()))
                 .thenReturn(List.of(order));
 
@@ -84,6 +94,7 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -104,6 +115,7 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(userDto);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -115,6 +127,7 @@ public class CreatedOrderControllerTests {
 
     @Test
     void publishOrder_doNone() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -133,9 +146,9 @@ public class CreatedOrderControllerTests {
         order.setCustomer(user);
         order.setCourier(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
-
         when(userRatingService.findById(anyLong()))
                 .thenReturn(Optional.of(mock(UserRatingDto.class)));
 
@@ -159,6 +172,7 @@ public class CreatedOrderControllerTests {
         order.setCustomer(userDto);
         order.setCourier(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -171,6 +185,7 @@ public class CreatedOrderControllerTests {
 
     @Test
     void closeOrder_doNone() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -190,6 +205,7 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(user);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/created/delete")
@@ -209,6 +225,7 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(userDto);
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/created/delete")
@@ -219,6 +236,7 @@ public class CreatedOrderControllerTests {
 
     @Test
     void deleteOrder_doNone() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/account/my-orders/created/delete")

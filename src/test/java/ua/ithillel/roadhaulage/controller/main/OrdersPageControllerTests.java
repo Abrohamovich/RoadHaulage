@@ -11,19 +11,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,16 +40,23 @@ public class OrdersPageControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private OrderCategoryService orderCategoryService;
 
+    private AuthUserDto authUserDto;
     private UserDto user;
     private OrderDto order;
     private OrderCategoryDto orderCategory;
 
     @BeforeEach
     void init(){
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
         user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
@@ -70,12 +76,13 @@ public class OrdersPageControllerTests {
         order.setCustomer(user);
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
     @Test
-    void ordersPae() throws Exception {
+    void ordersPage() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.returnOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of(order));
 
@@ -90,6 +97,7 @@ public class OrdersPageControllerTests {
 
     @Test
     void ordersPage_otherPublishedOrdersIsEmpty() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.returnOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of());
 
@@ -101,6 +109,7 @@ public class OrdersPageControllerTests {
 
     @Test
     void filter() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.returnOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of(order, order));
 
@@ -109,7 +118,7 @@ public class OrdersPageControllerTests {
 
         mockMvc.perform(get("/orders/filter")
                         .param("currency", "ALL")
-                        .param("categoriesString", "")
+                        .param("categoriesString", "Grocery")
                         .param("max-cost", "0")
                         .param("min-cost", "100"))
                 .andExpect(status().isOk())

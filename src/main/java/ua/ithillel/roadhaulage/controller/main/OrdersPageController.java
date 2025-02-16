@@ -5,13 +5,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -21,11 +24,13 @@ import java.util.Set;
 public class OrdersPageController {
     private final OrderService orderService;
     private final OrderCategoryService orderCategoryService;
+    private final UserService userService;
 
     @GetMapping
-    public String ordersPage(@AuthenticationPrincipal UserDto userDto,
+    public String ordersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                              Model model) {
-        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.getId());
+        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
+        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
         ordersDto.forEach(OrderDto::defineView);
         if(!ordersDto.isEmpty()) addModels(model, ordersDto);
         model.addAttribute("categories", orderCategoryService.findAll());
@@ -33,13 +38,14 @@ public class OrdersPageController {
     }
 
     @GetMapping("/filter")
-    public String filter(@AuthenticationPrincipal UserDto userDto,
+    public String filter(@AuthenticationPrincipal AuthUserDto authUserDto,
                          @RequestParam(name = "currency") String currency,
                          @RequestParam(name = "categoriesString") String categoriesString,
                          @RequestParam(name = "max-cost") String maxCost,
                          @RequestParam(name = "min-cost") String minCost,
                          Model model) {
-        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.getId());
+        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
+        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
         ordersDto.forEach(OrderDto::defineView);
         if(!currency.equals("ALL")) {
             ordersDto = ordersDto.stream()

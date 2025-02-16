@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
@@ -18,6 +19,7 @@ import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -34,9 +36,17 @@ public class PersonalInfoControllerTests {
     @MockitoBean
     private UserService userService;
 
+    private AuthUserDto authUserDto;
+    private UserDto user;
+
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
+        user = new UserDto();
+        user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
         user.setLastName("Doe");
@@ -44,12 +54,13 @@ public class PersonalInfoControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
     @Test
     void personalInfoPage() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
 
         mockMvc.perform(get("/account/settings/personal-information"))
                 .andExpect(status().isOk())
@@ -60,6 +71,7 @@ public class PersonalInfoControllerTests {
 
     @Test
     void update_success() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByPhoneCodeAndPhone(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
@@ -80,6 +92,7 @@ public class PersonalInfoControllerTests {
         existingUser.setPhone("123456789");
         existingUser.setPhoneCode("380");
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByPhoneCodeAndPhone(anyString(), anyString()))
                 .thenReturn(Optional.of(existingUser));
 

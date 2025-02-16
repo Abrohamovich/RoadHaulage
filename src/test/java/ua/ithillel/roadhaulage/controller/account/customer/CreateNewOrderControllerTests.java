@@ -11,16 +11,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -34,15 +33,24 @@ public class CreateNewOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
+    private UserService userService;
+    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private OrderCategoryService orderCategoryService;
     @MockitoBean
     private AddressService addressService;
 
+    private AuthUserDto authUserDto;
+    private UserDto user;
+
     @BeforeEach
     void init(){
-        UserDto user = new UserDto();
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
+        user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
         user.setFirstName("John");
@@ -52,12 +60,13 @@ public class CreateNewOrderControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
     @Test
     void createPage() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         mockMvc.perform(get("/account/my-orders/create"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/customer-orders/create"))
@@ -68,6 +77,7 @@ public class CreateNewOrderControllerTests {
 
     @Test
     void createOrder() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategoryDto.class)));
         when(addressService.createAddress(anyString()))
@@ -101,6 +111,7 @@ public class CreateNewOrderControllerTests {
 
     @Test
     void createOrder_throwsAddressCreateException() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderCategoryService.createOrderCategorySet(anyString()))
                 .thenReturn(Set.of(mock(OrderCategoryDto.class)));
 

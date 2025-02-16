@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
@@ -14,6 +15,7 @@ import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -26,25 +28,27 @@ public class PrivacyController {
     private final EmailService emailService;
 
     @GetMapping
-    public String privacyPage(@AuthenticationPrincipal UserDto userDto,
+    public String privacyPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                               @ModelAttribute("passwordError") String passwordError,
                               @ModelAttribute("emailError") String emailError,
                               Model model) {
+        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
         Map<String, String> map = new HashMap<>();
         map.put("passwordError", passwordError);
         map.put("emailError", emailError);
-        map.put("email", userDto.getEmail());
+        map.put("email", userDto.get().getEmail());
         model.addAllAttributes(map);
         return "account/settings/privacy";
     }
 
     @PostMapping("/update")
     public String updatePrivacySettings(
-            @AuthenticationPrincipal UserDto userDto,
+            @AuthenticationPrincipal AuthUserDto authUserDto,
             @RequestParam String password,
             @RequestParam String email,
             RedirectAttributes redirectAttributes) {
-
+        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
+        UserDto userDto = userDtoOptional.get();
         if (email.isEmpty() && password.isEmpty()) {
             return "redirect:/account/settings/privacy";
         }

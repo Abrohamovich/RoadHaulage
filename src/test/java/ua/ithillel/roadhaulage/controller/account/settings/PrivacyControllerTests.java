@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.User;
@@ -42,10 +43,15 @@ public class PrivacyControllerTests {
     @MockitoBean
     private EmailService emailService;
 
+    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
+        authUserDto = new AuthUserDto();
+        authUserDto.setId(1L);
+        authUserDto.setRole(UserRole.USER);
+
         user = new UserDto();
         user.setId(1L);
         user.setRole(UserRole.USER);
@@ -56,12 +62,14 @@ public class PrivacyControllerTests {
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
         );
     }
 
     @Test
     void privacyPageTest_withoutErrorParams() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+
         mockMvc.perform(get("/account/settings/privacy")
                 .param("email", "john@doe.com"))
                 .andExpect(status().isOk())
@@ -71,6 +79,8 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withEmailErrorParam() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("emailError", "Something went wrong"))
@@ -82,6 +92,8 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withPasswordErrorParam() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("passwordError", "Something went wrong"))
@@ -93,6 +105,8 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withBothErrorParams() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("passwordError", "Something went wrong")
@@ -108,6 +122,7 @@ public class PrivacyControllerTests {
     void updatePrivacySettingsTest_updateAll() throws Exception {
         VerificationTokenDto verificationToken = new VerificationTokenDto();
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
         when(verificationTokenService.create(any(), anyString())).thenReturn(verificationToken);
 
@@ -125,6 +140,7 @@ public class PrivacyControllerTests {
 
     @Test
     void updatePrivacySettingsTest_updatePassword() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/account/settings/privacy/update")
@@ -140,6 +156,7 @@ public class PrivacyControllerTests {
     void updatePrivacySettingsTest_updateEmail() throws Exception {
         VerificationTokenDto verificationToken = new VerificationTokenDto();
 
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
         when(verificationTokenService.create(any(), anyString())).thenReturn(verificationToken);
 
@@ -157,6 +174,8 @@ public class PrivacyControllerTests {
 
     @Test
     void updatePrivacySettingsTest_emailAndPasswordIsEmpty() throws Exception {
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+
         mockMvc.perform(post("/account/settings/privacy/update")
                         .param("email", "")
                         .param("password", ""))
@@ -169,6 +188,8 @@ public class PrivacyControllerTests {
     void updatePrivacySettingsTest_withBothErrorParams() throws Exception {
         UserDto newUser = new UserDto();
         newUser.setEmail("existed@gmail.com");
+
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.of(newUser));
 
         mockMvc.perform(post("/account/settings/privacy/update")
@@ -185,6 +206,7 @@ public class PrivacyControllerTests {
     @Test
     void updatePrivacySettingsTest_withPasswordErrorParam() throws Exception {
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
 
         mockMvc.perform(post("/account/settings/privacy/update")
                         .param("email", "")
@@ -200,6 +222,8 @@ public class PrivacyControllerTests {
     void updatePrivacySettingsTest_withEmailErrorParams() throws Exception {
         UserDto newUser = new UserDto();
         newUser.setEmail("existed@gmail.com");
+
+        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.of(newUser));
 
         mockMvc.perform(post("/account/settings/privacy/update")

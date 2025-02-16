@@ -6,10 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
@@ -30,14 +27,14 @@ public class ChangeOrderController {
     private final AddressService addressService;
 
     @GetMapping
-    public String changePage(@AuthenticationPrincipal UserDto user,
+    public String changePage(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @RequestParam long id,
                              @ModelAttribute("errorMessage") String errorMessage,
                              Model model) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(user.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
                 return "redirect:/error";
             }
             orderDto.defineView();
@@ -49,7 +46,7 @@ public class ChangeOrderController {
     }
 
     @PostMapping("/edit")
-    public String changeOrder(@AuthenticationPrincipal UserDto user,
+    public String changeOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                               @RequestParam long id,
                               RedirectAttributes redirectAttributes,
                               @RequestParam(required = false) String categoriesString,
@@ -65,7 +62,7 @@ public class ChangeOrderController {
         Optional<OrderDto> orderDtoOptional = orderService.findById(id);
         OrderDto orderDto = orderDtoOptional.get();
 
-        if (!orderDto.getCustomer().getId().equals(user.getId())) {
+        if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
             return "redirect:/error";
         }
 

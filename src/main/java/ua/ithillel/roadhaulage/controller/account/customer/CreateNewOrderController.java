@@ -6,15 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
-import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.*;
@@ -24,14 +22,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/account/my-orders/create")
 @RequiredArgsConstructor
 public class CreateNewOrderController {
+    private final UserService userService;
     private final OrderService orderService;
     private final OrderCategoryService orderCategoryService;
     private final AddressService addressService;
 
     @GetMapping
-    public String createPage(@AuthenticationPrincipal UserDto userDto,
+    public String createPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @ModelAttribute("errorMessage") String errorMessage,
                              Model model) {
+        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
+        UserDto userDto = userDtoOptional.get();
         Date creationDate = new Date(System.currentTimeMillis());
         Map<String, String> map = new HashMap<>();
         map.put("firstName", userDto.getFirstName());
@@ -43,7 +44,7 @@ public class CreateNewOrderController {
     }
 
     @PostMapping("/create")
-    public String createOrder(@AuthenticationPrincipal UserDto userDto,
+    public String createOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                               RedirectAttributes redirectAttributes,
                               @RequestParam String categoryNames,
                               @RequestParam String deliveryAddressString,
@@ -55,6 +56,8 @@ public class CreateNewOrderController {
                               @RequestParam(name = "weight-unit") String weightUnit,
                               @RequestParam(name = "dimensions-unit") String dimensionsUnit,
                               @RequestParam String currency) {
+        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
+        UserDto userDto = userDtoOptional.get();
 
         Set<OrderCategoryDto> orderCategories = orderCategoryService.createOrderCategorySet(categoryNames);
         orderCategories = orderCategories.stream()
