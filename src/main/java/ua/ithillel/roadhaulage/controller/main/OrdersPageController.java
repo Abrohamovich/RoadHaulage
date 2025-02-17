@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.controller.main;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +14,10 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 
 @Controller
 @RequiredArgsConstructor
@@ -29,9 +30,7 @@ public class OrdersPageController {
     @GetMapping
     public String ordersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                              Model model) {
-        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
-        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
-        ordersDto.forEach(OrderDto::defineView);
+        List<OrderDto> ordersDto = getUserOrders(authUserDto);
         if(!ordersDto.isEmpty()) addModels(model, ordersDto);
         model.addAttribute("categories", orderCategoryService.findAll());
         return "orders";
@@ -39,47 +38,57 @@ public class OrdersPageController {
 
     @GetMapping("/filter")
     public String filter(@AuthenticationPrincipal AuthUserDto authUserDto,
-                         @RequestParam(name = "currency") String currency,
-                         @RequestParam(name = "categoriesString") String categoriesString,
+                         @RequestParam String currency,
+                         @RequestParam String categoriesString,
                          @RequestParam(name = "max-cost") String maxCost,
                          @RequestParam(name = "min-cost") String minCost,
+                         @RequestParam String comparisonType,
                          Model model) {
-        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
-        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
+        List<OrderDto> ordersDto = getUserOrders(authUserDto);
         ordersDto.forEach(OrderDto::defineView);
-        if(!currency.equals("ALL")) {
-            ordersDto = ordersDto.stream()
-                    .filter(order -> order.getCurrency().equals(currency))
-                    .toList();
-        }
-        if(!categoriesString.isEmpty()) {
-            Set<OrderCategoryDto> setCategories = orderCategoryService.createOrderCategorySet(categoriesString);
-            ordersDto = ordersDto.stream()
-                    .filter(order -> order.getCategories().contains(setCategories.iterator().next()))
-                    .toList();
-        }
+
+        Set<OrderCategoryDto> categoryDtoSet = categoriesString.isEmpty()
+                ? Set.of()
+                : orderCategoryService.createOrderCategorySet(categoriesString);
+
         ordersDto = ordersDto.stream()
-                .filter(order ->Double.parseDouble(order.getCost()) <= Double.parseDouble(maxCost))
-                .filter(order -> Double.parseDouble(order.getCost()) >= Double.parseDouble(minCost))
+                .filter(orderDto -> "ALL".equals(currency) || orderDto.getCurrency().equals(currency))
+                .filter(orderDto -> {
+                    double cost = Double.parseDouble(orderDto.getCost());
+                    return cost >= Double.parseDouble(minCost) && cost <= Double.parseDouble(maxCost);
+                })
+                .filter(orderDto -> {
+                    if (categoryDtoSet.isEmpty()) return true;
+                    else if (comparisonType.equals("loose")){
+                        return orderDto.getCategories().stream().anyMatch(categoryDtoSet::contains);
+                    } else if (comparisonType.equals("strict")){
+                        return orderDto.getCategories().containsAll(categoryDtoSet);
+                    }
+                    return false;
+                })
                 .toList();
+
         if(!ordersDto.isEmpty()) addModels(model, ordersDto);
+
         model.addAttribute("categories", orderCategoryService.findAll());
         model.addAttribute("categoriesString", categoriesString);
+
         return "orders";
     }
 
-
     private void addModels(Model model, List<OrderDto> ordersDto) {
-        double maxCost = ordersDto.stream()
-                .map(OrderDto::getCost)
-                .mapToDouble(Double::parseDouble)
-                .max().getAsDouble();
-        double minCost = ordersDto.stream()
-                .map(OrderDto::getCost)
-                .mapToDouble(Double::parseDouble)
-                .min().getAsDouble();
-        model.addAttribute("maxCost", maxCost);
-        model.addAttribute("minCost", minCost);
+        DoubleSummaryStatistics statistics = ordersDto.stream()
+                .mapToDouble(orderDto -> Double.parseDouble(orderDto.getCost()))
+                .summaryStatistics();
+        model.addAttribute("maxCost", statistics.getMax());
+        model.addAttribute("minCost", statistics.getMin());
         model.addAttribute("orders", ordersDto);
+    }
+
+    private List<OrderDto> getUserOrders(AuthUserDto authUserDto) {
+        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
+        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
+        ordersDto.forEach(OrderDto::defineView);
+        return ordersDto;
     }
 }

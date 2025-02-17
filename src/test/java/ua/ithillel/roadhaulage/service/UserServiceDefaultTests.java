@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
@@ -229,6 +231,29 @@ public class UserServiceDefaultTests {
                 .contains("A user with email " + email + " already exists." +
                         " A user with phone " + phoneCode + phone + " already exists." +
                         " Password must contain at least one digit and one uppercase"));
+    }
+
+    @Test
+    void update_withoutPasswordChanges(){
+        when(userMapper.toEntity(userDto)).thenReturn(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userMapper.toDto(any())).thenReturn(userDto);
+
+        userServiceDefault.update(userDto);
+    }
+
+    @Test
+    void update_withPasswordChanges(){
+        User userFromDB = new User();
+        userFromDB.setId(1L);
+        userFromDB.setPassword("oaiwhdOI(#R#(WQHf3wf");
+
+        when(userMapper.toEntity(userDto)).thenReturn(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(userFromDB));
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("OQ*#U(*#QYF(F(F(GF");
+        when(userMapper.toDto(any())).thenReturn(userDto);
+
+        userServiceDefault.update(userDto);
     }
 
     @Test

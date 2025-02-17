@@ -27,6 +27,7 @@ public class UserProfileController {
     @GetMapping("/{email}/info")
     public String getUserProfileInfo(@PathVariable String email, Model model) {
         Optional<UserDto> userDB = userService.findByEmail(email);
+        System.out.println("22");
         if(userDB.isPresent()) {
             UserDto userDto = userDB.get();
             Optional<UserRatingDto> userRatingDto = userRatingService.findById(userDto.getId());
@@ -34,7 +35,7 @@ public class UserProfileController {
             map.put("firstName", userDto.getFirstName());
             map.put("lastName", userDto.getLastName());
             map.put("email", userDto.getEmail());
-            map.put("phone", "+" + userDto.getPhoneCode() + userDto.getPhone());
+            map.put("phone", userDto.getPhoneCode() + userDto.getPhone());
             map.put("rating", String.valueOf(userRatingDto.get().getAverage()));
             map.put("count", String.valueOf(userRatingDto.get().getCount()));
             model.addAllAttributes(map);

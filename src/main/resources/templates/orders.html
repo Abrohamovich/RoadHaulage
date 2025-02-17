@@ -16,23 +16,37 @@
 <div class="container">
     <aside class="filter-bar">
         <form method="get" th:action="@{/orders/filter}">
-
             <label for="category">Category:</label>
             <input id="selectedValues" type="text" name="categoriesString" th:value="${categoriesString}" readonly>
             <select id="category">
                 <option th:each="category : ${categories}" th:text="${category.name}"></option>
             </select>
+            <label>Comparison Type:</label>
+            <div class="comparison-type">
+                <label for="strict-comparison" class="comparison-label">
+                    <input type="radio" id="strict-comparison" name="comparisonType" value="strict" class="comparison-radio">
+                    <span class="radio-text">Strict Comparison</span>
+                </label>
+                <br>
+                <label for="loose-comparison" class="comparison-label">
+                    <input type="radio" id="loose-comparison" name="comparisonType" value="loose" checked class="comparison-radio">
+                    <span class="radio-text">Loose Comparison</span>
+                </label>
+                <br>
+            </div>
 
             <label for="min-cost">Min cost:</label>
-            <input type="range" id="min-cost" name="min-cost" min="0" th:max="${maxCost}" th:value="${minCost}" step="1">
+            <input type="range" id="min-cost" name="min-cost" min="0" th:max="${maxCost}" th:value="${minCost}"
+                   step="1">
             <span class="value" id="min-cost-value" th:text="${minCost}"></span>
 
             <label for="max-cost">Max cost:</label>
-            <input type="range" id="max-cost" name="max-cost" min="0" th:max="${maxCost}" th:value="${maxCost}" step="1">
+            <input type="range" id="max-cost" name="max-cost" min="0" th:max="${maxCost}" th:value="${maxCost}"
+                   step="1">
             <span class="value" id="max-cost-value" th:text="${maxCost}"></span>
 
             <label for="currency">Currency:</label>
-            <select id = "currency" name="currency">
+            <select id="currency" name="currency">
                 <option>ALL</option>
                 <option>EUR</option>
                 <option>USD</option>
@@ -57,13 +71,20 @@
             <div class="button-container">
                 <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
                     <input type="hidden" name="id" th:value="${order.id}"/>
-                    <button type="submit" title="Accept order"><ion-icon name="arrow-down-outline"></ion-icon></button>
+                    <button type="submit" title="Accept order">
+                        <ion-icon name="arrow-down-outline"></ion-icon>
+                    </button>
                 </form>
-                <form th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}" method="get">
-                    <button type="submit" title="See full order"><ion-icon name="eye-outline"></ion-icon></button>
+                <form th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}"
+                      method="get">
+                    <button type="submit" title="See full order">
+                        <ion-icon name="eye-outline"></ion-icon>
+                    </button>
                 </form>
                 <form th:action="@{/user/{email}/info(email=${order.customer.email})}" method="get">
-                    <button type="submit" title="See customer info"><ion-icon name="person-outline"></ion-icon></button>
+                    <button type="submit" title="See customer info">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </button>
                 </form>
             </div>
         </div>
@@ -98,6 +119,7 @@
             display.textContent = slider.value;
         });
     }
+
     updateValue('min-cost', 'min-cost-value');
     updateValue('max-cost', 'max-cost-value');
 </script>

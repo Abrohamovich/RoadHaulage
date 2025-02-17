@@ -27,3 +27,7 @@ spring:
             enable: true
 server:
   port: 8080
+logging:
+  level:
+    root: info
+    ua.ithillel.roadhaulage: debug

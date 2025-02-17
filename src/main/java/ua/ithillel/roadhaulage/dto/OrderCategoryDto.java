@@ -1,9 +1,6 @@
 package ua.ithillel.roadhaulage.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ua.ithillel.roadhaulage.entity.Order;
 
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"name"})
 public class OrderCategoryDto {
     private Long id;
     private String name;
