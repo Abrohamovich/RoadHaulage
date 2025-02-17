@@ -44,14 +44,6 @@ public class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAll() {
-        return orderRepository.findAll()
-                .stream()
-                .map(orderMapper::toDto)
-                .toList();
-    }
-
-    @Override
     public void update(OrderDto orderDto) {
         Optional<Order> orderDB = orderRepository.findById(orderDto.getId());
         if (orderDB.isPresent()) {

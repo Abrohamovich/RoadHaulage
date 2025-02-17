@@ -2,8 +2,6 @@ package ua.ithillel.roadhaulage.service.interfaces;
 
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
-import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.entity.VerificationToken;
 
 import java.util.Optional;
 

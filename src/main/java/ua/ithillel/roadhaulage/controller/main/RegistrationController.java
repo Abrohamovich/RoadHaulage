@@ -55,6 +55,7 @@ public class RegistrationController {
             userDto = userService.save(userDto);
 
             UserRatingDto userRatingDto = new UserRatingDto();
+            userRatingDto.setId(userDto.getId());
             userRatingDto.setAverage(0.0);
             userRatingDto.setCount(0);
             userRatingDto.setUser(userDto);
