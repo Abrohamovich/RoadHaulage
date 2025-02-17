@@ -62,7 +62,7 @@ public class OrdersPageController {
                     else if (comparisonType.equals("loose")){
                         return orderDto.getCategories().stream().anyMatch(categoryDtoSet::contains);
                     } else if (comparisonType.equals("strict")){
-                        return orderDto.getCategories().containsAll(categoryDtoSet);
+                        return categoryDtoSet.containsAll(orderDto.getCategories());
                     }
                     return false;
                 })
