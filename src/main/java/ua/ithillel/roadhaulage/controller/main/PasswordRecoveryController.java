@@ -11,10 +11,10 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
-import static ua.ithillel.roadhaulage.util.PasswordGenerator.generatePassword;
-
 import java.util.Optional;
 import java.util.UUID;
+
+import static ua.ithillel.roadhaulage.util.PasswordGenerator.generatePassword;
 
 @Controller
 @RequestMapping("/password-recovery")

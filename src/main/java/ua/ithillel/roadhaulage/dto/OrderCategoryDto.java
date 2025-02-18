@@ -1,9 +1,6 @@
 package ua.ithillel.roadhaulage.dto;
 
 import lombok.*;
-import ua.ithillel.roadhaulage.entity.Order;
-
-import java.util.List;
 
 @Getter
 @Setter
