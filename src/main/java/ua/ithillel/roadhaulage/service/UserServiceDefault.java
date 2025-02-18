@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -79,6 +80,14 @@ public class UserServiceDefault implements UserService, UserDetailsService {
     public Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone) {
         return userRepository.findByPhoneCodeAndPhone(phoneCode, phone)
                 .map(userMapper::toDto);
+    }
+
+    @Override
+    public List<UserDto> findAllPageable(int page, int pageSize) {
+        return userRepository.findAll(PageRequest.of(page, pageSize))
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @Override

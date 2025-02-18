@@ -83,5 +83,4 @@ public class CompletedOrderControllerTests {
                 .andExpect(view().name("account/customer-orders/completed"))
                 .andExpect(model().attributeExists("orders"));
     }
-
 }

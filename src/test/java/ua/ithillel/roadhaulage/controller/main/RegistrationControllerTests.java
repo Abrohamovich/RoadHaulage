@@ -62,6 +62,7 @@ public class RegistrationControllerTests {
         String token = "test";
 
         UserDto user = new UserDto();
+        user.setId(1L);
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -75,6 +76,7 @@ public class RegistrationControllerTests {
         verificationToken.setUser(user);
         verificationToken.setToken(token);
 
+        when(userService.save(any(UserDto.class))).thenReturn(user);
         when(verificationTokenService.create(any(UserDto.class), anyString()))
                 .thenReturn(verificationToken);
 

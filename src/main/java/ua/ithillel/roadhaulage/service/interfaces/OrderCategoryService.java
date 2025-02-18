@@ -10,5 +10,7 @@ public interface OrderCategoryService {
     OrderCategoryDto save(OrderCategoryDto orderCategoryDto);
     Optional<OrderCategoryDto> findByName(String name);
     List<OrderCategoryDto> findAll();
+    List<OrderCategoryDto> findAllPageable(int page, int pageSize);
+    Optional<OrderCategoryDto> findById(long id);
     Set<OrderCategoryDto> createOrderCategorySet(String categoryNames);
 }

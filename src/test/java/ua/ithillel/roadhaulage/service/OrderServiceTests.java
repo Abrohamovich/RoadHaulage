@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
@@ -95,27 +97,6 @@ public class OrderServiceTests {
     }
 
     @Test
-    void updateOrder_success(){
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
-        when(orderMapper.toEntity(orderDto)).thenReturn(order);
-
-        orderServiceDefault.update(orderDto);
-
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).save(order);
-    }
-
-    @Test
-    void updateOrder_notFound(){
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        orderServiceDefault.update(orderDto);
-
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, never()).save(order);
-    }
-
-    @Test
     void findById_returnsPresentOptional(){
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
@@ -133,26 +114,6 @@ public class OrderServiceTests {
         Optional<OrderDto> result = orderServiceDefault.findById(1L);
 
         assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void findAll_returnsList(){
-        when(orderRepository.findAll()).thenReturn(List.of(order));
-        when(orderMapper.toDto(order)).thenReturn(orderDto);
-
-        List<OrderDto> result =  orderServiceDefault.findAll();
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void findAll_returnsEmptyList(){
-        when(orderRepository.findAll()).thenReturn(List.of());
-
-        List<OrderDto> result =  orderServiceDefault.findAll();
-
-        assertEquals(0, result.size());
     }
 
     @Test
@@ -192,6 +153,29 @@ public class OrderServiceTests {
         when(orderRepository.findOrdersByCourierId(anyLong())).thenReturn(List.of());
 
         List<OrderDto> result =  orderServiceDefault.findOrdersByCourierId(1L);
+
+        assertNotNull(result);
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void findAllPageable_returnsList(){
+        when(orderRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of(order, order)));
+        when(orderMapper.toDto(order)).thenReturn(orderDto);
+
+        List<OrderDto> result =  orderServiceDefault.findAllPageable(0, 1);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void findAllPageable_returnsEmptyList(){
+        when(orderRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        List<OrderDto> result =  orderServiceDefault.findAllPageable(0, 1);
 
         assertNotNull(result);
         assertEquals(0, result.size());

@@ -140,7 +140,7 @@ public class ChangeOrderControllerTests {
         verify(addressService, times(2))
                 .save(any(AddressDto.class));
         verify(orderService, times(1))
-                .update(any(OrderDto.class));
+                .save(any(OrderDto.class));
     }
 
     @Test

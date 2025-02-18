@@ -57,5 +57,3 @@ public class Order {
     @JoinColumn(name = "courier_id")
     private User courier;
 }
-
-

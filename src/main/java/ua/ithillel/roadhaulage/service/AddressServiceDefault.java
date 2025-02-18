@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.entity.Address;
@@ -24,11 +25,17 @@ public class AddressServiceDefault implements AddressService {
     }
 
     @Override
-    public List<AddressDto> findAll() {
-        return addressRepository.findAll()
+    public List<AddressDto> findAll(int page, int pageSize) {
+        return addressRepository.findAll(PageRequest.of(page, pageSize))
                 .stream()
                 .map(addressMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public Optional<AddressDto> findById(long id) {
+        return addressRepository.findById(id)
+                .map(addressMapper::toDto);
     }
 
     @Override

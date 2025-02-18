@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
@@ -61,10 +64,12 @@ public class AddressServiceDefaultTests {
 
     @Test
     void findAll_returnsFullList(){
-        when(addressRepository.findAll()).thenReturn(List.of(address));
+        Page<Address> addressPage = new PageImpl<>(List.of(address));
+
+        when(addressRepository.findAll(any(PageRequest.class))).thenReturn(addressPage);
         when(addressMapper.toDto(address)).thenReturn(addressDto);
 
-        List<AddressDto> result = addressService.findAll();
+        List<AddressDto> result = addressService.findAll(1, 1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -73,11 +78,34 @@ public class AddressServiceDefaultTests {
 
     @Test
     void findAll_returnsEmptyList(){
-        when(addressRepository.findAll()).thenReturn(List.of());
+        when(addressRepository.findAll(any(PageRequest.class))).thenReturn(Page.empty());
 
-        List<AddressDto> result = addressService.findAll();
+        List<AddressDto> result = addressService.findAll(1, 1);
 
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void findById_returnsPresentOptional(){
+        when(addressRepository.findById(anyLong())).
+                thenReturn(Optional.of(address));
+        when(addressMapper.toDto(address)).thenReturn(addressDto);
+
+        Optional<AddressDto> result = addressService.findById(1);
+
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    void findById_returnsEmptyOptional(){
+        when(addressRepository.findById(anyLong())).
+                thenReturn(Optional.empty());
+
+        Optional<AddressDto> result = addressService.findById(1);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test

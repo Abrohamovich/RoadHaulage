@@ -44,7 +44,7 @@ public class CreatedOrderController {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.PUBLISHED);
-            orderService.update(orderDto);
+            orderService.save(orderDto);
         }
         return "redirect:/account/my-orders/created";
     }
@@ -63,7 +63,7 @@ public class CreatedOrderController {
             orderDto.setCompletionDate(new Date(System.currentTimeMillis()));
             Optional<UserRatingDto> userRatingOptional = userRatingService.findById(orderDto.getCourier().getId());
             userRatingOptional.ifPresent(userRating -> userRatingService.update(userRating, rating));
-            orderService.update(orderDto);
+            orderService.save(orderDto);
         }
         return "redirect:/account/my-orders/completed";
     }

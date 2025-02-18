@@ -98,7 +98,7 @@ public class ChangeOrderController {
         orderDto.setDimensionsUnit(dimensionsUnit);
         orderDto.setAmendmentDate(new Date(System.currentTimeMillis()));
         orderDto.setStatus(OrderStatus.CHANGED);
-        orderService.update(orderDto);
+        orderService.save(orderDto);
 
         return "redirect:/account/my-orders/created";
     }

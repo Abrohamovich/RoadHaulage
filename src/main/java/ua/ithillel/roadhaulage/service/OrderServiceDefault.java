@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.entity.*;
@@ -18,8 +19,9 @@ public class OrderServiceDefault implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public void save(OrderDto orderDto) {
-        orderRepository.save(orderMapper.toEntity(orderDto));
+    public OrderDto save(OrderDto orderDto) {
+        Order savedOrder = orderRepository.save(orderMapper.toEntity(orderDto));
+        return orderMapper.toDto(savedOrder);
     }
 
     @Override
@@ -44,11 +46,11 @@ public class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public void update(OrderDto orderDto) {
-        Optional<Order> orderDB = orderRepository.findById(orderDto.getId());
-        if (orderDB.isPresent()) {
-            orderRepository.save(orderMapper.toEntity(orderDto));
-        }
+    public List<OrderDto> findAllPageable(int page, int pageSize) {
+        return orderRepository.findAll(PageRequest.of(page, pageSize))
+                .stream()
+                .map(orderMapper::toDto)
+                .toList();
     }
 
     @Override

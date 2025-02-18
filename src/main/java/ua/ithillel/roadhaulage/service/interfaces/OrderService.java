@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderService {
-    void save(OrderDto orderDto);
+    OrderDto save(OrderDto orderDto);
     void delete(long id);
     List<OrderDto> findOrdersByCustomerId(long id);
     List<OrderDto> findOrdersByCourierId(long id);
-    void update(OrderDto orderDto);
+    List<OrderDto> findAllPageable(int page, int pageSize);
     Optional<OrderDto> findById(long id);
     List<OrderDto> returnOtherPublishedOrders(long id);
 

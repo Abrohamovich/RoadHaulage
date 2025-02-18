@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
@@ -34,6 +35,20 @@ public class OrderCategoryServiceDefault implements OrderCategoryService {
                 .stream()
                 .map(orderCategoryMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<OrderCategoryDto> findAllPageable(int page, int pageSize) {
+        return orderCategoryRepository.findAll(PageRequest.of(page, pageSize))
+                .stream()
+                .map(orderCategoryMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public Optional<OrderCategoryDto> findById(long id) {
+        return orderCategoryRepository.findById(id)
+                .map(orderCategoryMapper::toDto);
     }
 
     @Override

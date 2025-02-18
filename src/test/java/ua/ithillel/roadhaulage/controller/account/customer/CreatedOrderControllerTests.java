@@ -103,7 +103,7 @@ public class CreatedOrderControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/created"));
 
-        verify(orderService, times(1)).update(any());
+        verify(orderService, times(1)).save(any());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class CreatedOrderControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/created"));
 
-        verify(orderService, times(0)).update(any());
+        verify(orderService, times(0)).save(any());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class CreatedOrderControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/completed"));
 
-        verify(orderService, times(1)).update(any());
+        verify(orderService, times(1)).save(any());
         verify(userRatingService, times(1)).update(any(), anyDouble());
     }
 
@@ -195,7 +195,7 @@ public class CreatedOrderControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/completed"));
 
-        verify(orderService, times(0)).update(any());
+        verify(orderService, times(0)).save(any());
         verify(userRatingService, times(0)).update(any(), anyDouble());
     }
 

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.mapper.OrderCategoryMapper;
@@ -70,6 +73,52 @@ public class OrderCategoryServiceDefaultTests {
 
         assertEquals(1, result.size());
         assertEquals(orderCategoryDto, result.getFirst());
+    }
+
+    @Test
+    void findAllPageable_returnsEmptyList(){
+        when(orderCategoryRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        List<OrderCategoryDto> result = orderCategoryService.findAllPageable(0,1);
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void findAllPageable_returnsFullList(){
+        when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
+
+        when(orderCategoryRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of(orderCategory)));
+
+        List<OrderCategoryDto> result = orderCategoryService.findAllPageable(0, 1);
+
+        assertEquals(1, result.size());
+        assertEquals(orderCategoryDto, result.getFirst());
+    }
+
+    @Test
+    void findById_returnsPresentOptional(){
+        when(orderCategoryRepository.findById(anyLong())).
+                thenReturn(Optional.of(orderCategory));
+        when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
+
+        Optional<OrderCategoryDto> result = orderCategoryService.findById(1);
+
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    void findById_returnsEmptyOptional(){
+        when(orderCategoryRepository.findById(anyLong())).
+                thenReturn(Optional.empty());
+
+        Optional<OrderCategoryDto> result = orderCategoryService.findById(1);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
