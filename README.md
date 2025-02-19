@@ -71,6 +71,28 @@ convenient and economical way to send a parcel, things, or even a small cargo.
 4. Respond to orders you are interested in.
 5. Manage accepted orders and communicate with customers.
 
+### For Admin
+1. Log in to your account to use api endpoint via Postman, Insomnia...
+2. Manage addresses by retrieving all, finding by ID, or updating them.
+3. Manage orders by retrieving all, finding by ID, or updating them.
+4. Manage order categories by retrieving all, finding by ID, or updating them.
+5. Manage users by retrieving all, finding by ID or email.
+6. Ensure to use the appropriate API endpoints for each action as described in the system documentation.
+
+## Docker Deployment
+
+To run this project using Docker, follow these steps:
+
+1. **Ensure Docker and Docker Compose are installed** on your system.
+
+2. **Clone the repository** if you haven't already:
+   ```bash
+   git clone https://github.com/Abrohamovich/RoadHaulage.git
+
+3. **Run docker command** in project directory
+   ```bash
+   docker-compose up --build
+   
 ## Contact
 
 * Email: gerasimov08nikital@gmail.com
