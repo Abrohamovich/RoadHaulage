@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
+import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.Optional;
@@ -13,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminInitializer implements CommandLineRunner {
     private final UserService userService;
+    private final UserRatingService userRatingService;
 
     @Override
     public void run(String... args) {
@@ -28,7 +31,13 @@ public class AdminInitializer implements CommandLineRunner {
             userDto.setRole(UserRole.ADMIN);
             userDto.setFirstName("Admin_fn");
             userDto.setLastName("Admin_ln");
-            userService.save(userDto);
+            userDto = userService.save(userDto);
+
+            UserRatingDto userRatingDto = new UserRatingDto();
+            userRatingDto.setUser(userDto);
+            userRatingDto.setAverage(0.0);
+            userRatingDto.setCount(0);
+            userRatingService.save(userRatingDto);
         }
     }
 }
