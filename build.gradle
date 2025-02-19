@@ -75,3 +75,7 @@ tasks.test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
+bootJar {
+    mainClass = 'ua.ithillel.roadhaulage.RoadHaulageApplication'
+}
