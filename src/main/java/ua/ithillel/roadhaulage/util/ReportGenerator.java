@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class ReportGenerator {
 
-    private final static String templatePath = "C:\\Users\\geras\\IdeaProjects\\RoadHaulage\\document\\reportTemplate.docx";
+    private final static String templatePath = "document/reportTemplate.docx";
 
     public void generateReport(UserDto userDto, List<OrderDto> customerOrderList, List<OrderDto> courierOrderList, ByteArrayOutputStream outputStream) {
         try (FileInputStream fis = new FileInputStream(templatePath);
