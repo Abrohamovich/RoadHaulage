@@ -2,9 +2,9 @@ spring:
   application:
     name: RoadHaulage
   datasource:
-    url: jdbc:mysql://localhost:3306/${MYSQL_DB_NAME} # change 'db' to 'localhost' if you want to use local database
-    username: ${MYSQL_USER_NAME}
-    password: ${MYSQL_USER_PASSWORD}
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${MYSQL_DATABASE}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
@@ -17,8 +17,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:

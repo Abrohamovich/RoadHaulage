@@ -29,8 +29,8 @@ public class AdminInitializer implements CommandLineRunner {
             userDto.setPhoneCode(System.getenv("ADMIN_PHONE_CODE"));
             userDto.setPhone(System.getenv("ADMIN_PHONE_NUMBER"));
             userDto.setRole(UserRole.ADMIN);
-            userDto.setFirstName("Admin_fn");
-            userDto.setLastName("Admin_ln");
+            userDto.setFirstName("Road");
+            userDto.setLastName("Haulage");
             userDto = userService.save(userDto);
 
             UserRatingDto userRatingDto = new UserRatingDto();

@@ -22,28 +22,26 @@ convenient and economical way to send a parcel, things, or even a small cargo.
     *   User-customers can create new transport orders, specifying details such as:
         * Customer information:
             * Name and Surname
-            * Category
-            * Departure Address
-            * Delivery Address
-            * IBAN Account Number
-            * Delivery Cost
+        * Categories
+        * Departure Address
+        * Delivery Address
+        * Delivery Cost
         * Cargo information:
-            * Weight of the shipment
+            * Weight of the order
             * Dimensions (length-width-height)
         * Date of order fulfillment (auto-generated)
     *   User-couriers can view published transport orders.
     *   User-couriers can respond to orders (update created orders), providing:
         * Courier information:
             * Name and Surname
-            * IBAN Account Number
         * Date of order acceptance (auto-generated)
-    *   Once a courier accepts an order, the order status is updated.
+    *   Once a courier accepts an order, the order status is ACCEPTED.
 
 *   **Order Statuses:**
     *   CREATED: The order has been created but not yet published.
     *   PUBLISHED: The order is available for couriers to view.
     *   CHANGED: The order details have been updated by the customer.
-    *   IN PROGRESS: A courier has accepted the order.
+    *   ACCEPTED: A courier has accepted the order.
     *   COMPLETED: The customer has confirmed the order completion.
 
 ## Technologies Used
@@ -55,21 +53,22 @@ convenient and economical way to send a parcel, things, or even a small cargo.
 
 ## Usage
 
-### For Customers:
+### Standard:
 1. Register an account and verify your email.
 2. Log in to your account.
-3. Create a new transport order by filling out the required information.
-4. Publish the order.
-5. Review responses from couriers.
-6. Accept a suitable courier's response.
-7. Confirm order completion when the delivery is made.
 
-### For Couriers:
-1. Register an account and verify your email.
-2. Log in to your account.
-3. Browse published transport orders.
-4. Respond to orders you are interested in.
-5. Manage accepted orders and communicate with customers.
+### As A Customer:
+
+1. Create a new transport order by filling out the required information.
+2. Publish the order.
+3. Review responses from couriers.
+4. Accept a suitable courier's response.
+5. Confirm order completion when the delivery is made.
+
+### As A Courier:
+1. Browse published transport orders.
+2. Respond to orders you are interested in.
+3. Manage accepted orders.
 
 ### For Admin
 1. Log in to your account to use api endpoint via Postman, Insomnia...
@@ -81,18 +80,41 @@ convenient and economical way to send a parcel, things, or even a small cargo.
 
 ## Docker Deployment
 
-To run this project using Docker, follow these steps:
+### From github source
 
-1. **Ensure Docker and Docker Compose are installed** on your system.
+1. **Ensure Docker is installed** on your system.
 
 2. **Clone the repository** if you haven't already:
    ```bash
    git clone https://github.com/Abrohamovich/RoadHaulage.git
+   ```
+3. **Create .env** file with environment variables
 
-3. **Run docker command** in project directory
+    ```
+    ADMIN_EMAIL=
+    ADMIN_PASSWORD= (watch isValid() method in UserServiceDefault)
+    ADMIN_PHONE_CODE=
+    ADMIN_PHONE_NUMBER=
+    MAIL_PASSWORD='abcd efgh klmn oprs'
+    MAIL_USERNAME=
+    MYSQL_DATABASE=
+    MYSQL_USER=
+    MYSQL_PASSWORD=
+    MYSQL_ROOT_PASSWORD=
+    DATABASE_HOST=db
+    DATABASE_PORT=3306
+    ```
+
+4. **Run docker command** in project directory
    ```bash
    docker-compose up --build
-   
+   ```
+### From Docker Hub
+
+1. **Follow the link** to my repository and follow the instructions
+
+    https://hub.docker.com/r/abrohamovich/roadhaulage
+
 ## Contact
 
 * Email: gerasimov08nikital@gmail.com
