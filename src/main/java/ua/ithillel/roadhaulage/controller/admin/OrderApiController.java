@@ -7,6 +7,7 @@ import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/api/order")
@@ -27,6 +28,10 @@ public class OrderApiController {
 
     @PostMapping("/update")
     public ResponseEntity<OrderDto> update(@RequestBody OrderDto orderDto) {
-        return ResponseEntity.ok(orderService.save(orderDto));
+        Optional<OrderDto> optionalOrderDto = orderService.findById(orderDto.getId());
+        if (optionalOrderDto.isPresent()) {
+            return ResponseEntity.ok(orderService.save(orderDto));
+        }
+        return ResponseEntity.notFound().build();
     }
 }

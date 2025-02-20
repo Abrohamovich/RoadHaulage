@@ -110,6 +110,8 @@ public class OrderApiControllerTests {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(1L);
 
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(orderDto));
         when(orderService.save(any(OrderDto.class)))
                 .thenReturn(orderDto);
 
@@ -118,5 +120,19 @@ public class OrderApiControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void update_returnNotFound() throws Exception {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setId(1L);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(post(BASE_URL + "/update")
+                        .content(objectMapper.writeValueAsString(orderDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

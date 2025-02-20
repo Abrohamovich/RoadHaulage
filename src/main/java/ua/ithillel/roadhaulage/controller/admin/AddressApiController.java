@@ -7,6 +7,7 @@ import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/api/address")
@@ -27,6 +28,10 @@ public class AddressApiController {
 
     @PostMapping("/update")
     public ResponseEntity<AddressDto> update(@RequestBody AddressDto addressDto) {
-        return ResponseEntity.ok(addressService.save(addressDto));
+        Optional<AddressDto> optionalAddressDto = addressService.findById(addressDto.getId());
+        if (optionalAddressDto.isPresent()) {
+            return ResponseEntity.ok(addressService.save(addressDto));
+        }
+        return ResponseEntity.notFound().build();
     }
 }

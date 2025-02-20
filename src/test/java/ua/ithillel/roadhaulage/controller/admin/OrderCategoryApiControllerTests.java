@@ -113,6 +113,8 @@ public class OrderCategoryApiControllerTests {
         orderCategoryDto.setId(1L);
         orderCategoryDto.setName("Test");
 
+        when(orderCategoryService.findById(anyLong()))
+                .thenReturn(Optional.of(orderCategoryDto));
         when(orderCategoryService.save(any(OrderCategoryDto.class)))
                 .thenReturn(orderCategoryDto);
 
@@ -123,5 +125,20 @@ public class OrderCategoryApiControllerTests {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Test")))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void update_returnsNotFound() throws Exception {
+        OrderCategoryDto orderCategoryDto = new OrderCategoryDto();
+        orderCategoryDto.setId(1L);
+        orderCategoryDto.setName("Test");
+
+        when(orderCategoryService.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(post(BASE_URL + "/update")
+                        .content(objectMapper.writeValueAsString(orderCategoryDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

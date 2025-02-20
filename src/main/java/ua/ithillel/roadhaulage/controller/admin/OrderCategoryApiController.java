@@ -7,6 +7,7 @@ import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/api/category")
@@ -27,6 +28,10 @@ public class OrderCategoryApiController {
 
     @PostMapping("/update")
     public ResponseEntity<OrderCategoryDto> update(@RequestBody OrderCategoryDto orderCategoryDto) {
-        return ResponseEntity.ok(orderCategoryService.save(orderCategoryDto));
+        Optional<OrderCategoryDto> optionalOrderCategoryDto = orderCategoryService.findById(orderCategoryDto.getId());
+        if (optionalOrderCategoryDto.isPresent()) {
+            return ResponseEntity.ok(orderCategoryService.save(orderCategoryDto));
+        }
+        return ResponseEntity.notFound().build();
     }
 }

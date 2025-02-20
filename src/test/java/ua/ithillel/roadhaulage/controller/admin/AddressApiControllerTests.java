@@ -122,6 +122,8 @@ public class AddressApiControllerTests {
         addressDto.setState("state");
         addressDto.setZip("12345");
 
+        when(addressService.findById(anyLong()))
+                .thenReturn(Optional.of(addressDto));
         when(addressService.save(any(AddressDto.class)))
                 .thenReturn(addressDto);
 
@@ -135,5 +137,19 @@ public class AddressApiControllerTests {
                 .andExpect(jsonPath("$.state", is("state")))
                 .andExpect(jsonPath("$.zip", is("12345")))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void update_returnNotFound() throws Exception {
+        AddressDto addressDto = new AddressDto();
+        addressDto.setId(1L);
+
+        when(addressService.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(post(BASE_URL + "/update")
+                        .content(objectMapper.writeValueAsString(addressDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
