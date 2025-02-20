@@ -35,15 +35,22 @@ public class Order {
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;
 
+    @Column(nullable = false)
     private String weight;
+    @Column(nullable = false)
     private String weightUnit;
 
+    @Column(nullable = false)
     private String dimensions;
+    @Column(nullable = false)
     private String dimensionsUnit;
 
+    @Column(nullable = false)
     private String cost;
+    @Column(nullable = false)
     private String currency;
 
+    @Column(nullable = false)
     private String additionalInfo;
 
     private Date creationDate;

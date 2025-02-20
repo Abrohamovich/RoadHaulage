@@ -13,6 +13,8 @@ public class UserRating {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+    @Column(nullable = false)
     private double average;
+    @Column(nullable = false)
     private long count;
 }
