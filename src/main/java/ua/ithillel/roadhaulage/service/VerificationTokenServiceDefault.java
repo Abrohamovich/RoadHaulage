@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
@@ -12,6 +13,7 @@ import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VerificationTokenServiceDefault implements VerificationTokenService {
@@ -31,17 +33,22 @@ public class VerificationTokenServiceDefault implements VerificationTokenService
     public VerificationTokenDto save(VerificationTokenDto token) {
         VerificationToken saved = verificationTokenRepository
                 .save(verificationTokenMapper.toEntity(token));
+        log.info("Creating verification token: {}, id: {}, user id: {}, expire date: {}", saved.getToken(),
+                saved.getId(), saved.getUser().getId(), saved.getExpiresAt());
         return verificationTokenMapper.toDto(saved);
     }
 
     @Override
     public Optional<VerificationTokenDto> getToken(String token) {
+        log.info("Retrieving verification token by token: {}", token);
         return verificationTokenRepository.findByToken(token)
                 .map(verificationTokenMapper::toDto);
     }
 
     @Override
     public void delete(VerificationTokenDto token) {
+        log.info("Deleting verification token, id: {}, token: {}, user id: {}",
+                token.getId(), token.getToken(), token.getUser().getId());
         verificationTokenRepository.delete(verificationTokenMapper.toEntity(token));
     }
 

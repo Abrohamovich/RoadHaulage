@@ -23,7 +23,6 @@ public class PasswordRecoveryController {
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
-
     private static final String password = generatePassword(10);
 
     @GetMapping

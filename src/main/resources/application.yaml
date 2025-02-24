@@ -27,3 +27,8 @@ spring:
             enable: true
 server:
   port: 8080
+logging:
+  level:
+    root: info
+  file:
+    name: road_haulage.log

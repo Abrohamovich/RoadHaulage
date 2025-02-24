@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceDefault implements UserService, UserDetailsService {
@@ -42,12 +44,16 @@ public class UserServiceDefault implements UserService, UserDetailsService {
             errors.add("A user with phone " + user.getPhoneCode() + user.getPhone() + " already exists");}
         if (!isValidPassword(user.getPassword())){
             errors.add("Password must contain at least one digit and one uppercase");}
-        if(!errors.isEmpty()) throw new UserCreateException(String.join(". ", errors));
+        if(!errors.isEmpty()) {
+            log.warn("Errors found: {}", String.join(". ", errors));
+            throw new UserCreateException(String.join(". ", errors));
+        }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         User savedUser = userRepository.save(user);
 
+        log.info("Saved user: {}", savedUser);
         return userMapper.toDto(savedUser);
     }
 
@@ -61,29 +67,34 @@ public class UserServiceDefault implements UserService, UserDetailsService {
         }
         User updatedUser = userRepository.save(user);
 
+        log.info("Updated user: {}", updatedUser);
         return userMapper.toDto(updatedUser);
     }
 
     @Override
     public Optional<UserDto> findById(long id) {
+        log.info("Finding user by id: {}", id);
         return userRepository.findById(id)
                 .map(userMapper::toDto);
     }
 
     @Override
     public Optional<UserDto> findByEmail(String email) {
+        log.info("Finding user by email: {}", email);
        return userRepository.findByEmail(email)
                .map(userMapper::toDto);
     }
 
     @Override
     public Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone) {
+        log.info("Finding user by phone code: {} and phone: {}", phoneCode, phone);
         return userRepository.findByPhoneCodeAndPhone(phoneCode, phone)
                 .map(userMapper::toDto);
     }
 
     @Override
     public List<UserDto> findAllPageable(int page, int pageSize) {
+        log.info("Finding all users pageable");
         return userRepository.findAll(PageRequest.of(page, pageSize))
                 .stream()
                 .map(userMapper::toDto)
@@ -100,6 +111,7 @@ public class UserServiceDefault implements UserService, UserDetailsService {
         userDto.setEnabled(true);
         userRepository.save(userMapper.toEntity(userDto));
         verificationTokenService.delete(verificationTokenService.getToken(token).get());
+        log.info("Verify email successful, user enabled: {}", userDto.isEnabled());
         return 0;
     }
 
@@ -109,10 +121,12 @@ public class UserServiceDefault implements UserService, UserDetailsService {
         if (st != 0) {
             return st;
         }
-        UserDto userDto = verificationTokenService.getToken(token).get().getUser();
-        userDto.setPassword(password);
+        VerificationTokenDto verificationTokenDto = verificationTokenService.getToken(token).get();
+        UserDto userDto = verificationTokenDto.getUser();
+        userDto.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(userMapper.toEntity(userDto));
-        verificationTokenService.delete(verificationTokenService.getToken(token).get());
+        verificationTokenService.delete(verificationTokenDto);
+        log.info("Verify password successful, password has changed");
         return 0;
     }
 
