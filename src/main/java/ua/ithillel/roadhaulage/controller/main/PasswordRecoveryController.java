@@ -11,6 +11,7 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,7 +45,10 @@ public class PasswordRecoveryController {
         }
 
         String token = UUID.randomUUID().toString();
-        VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDB.get(), token);
+        VerificationTokenDto verificationTokenDto = new VerificationTokenDto();
+        verificationTokenDto.setToken(token);
+        verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
+        verificationTokenDto.setUser(userDB.get());
         verificationTokenService.save(verificationTokenDto);
         emailService.sendPasswordResetEmail(email, token, userDB.get(), password);
 

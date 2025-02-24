@@ -53,7 +53,6 @@ public class PasswordRecoveryControllerTests {
         VerificationTokenDto verificationToken = mock(VerificationTokenDto.class);
 
         when(userService.findByEmail(email)).thenReturn(Optional.of(mockUser));
-        when(verificationTokenService.create(mockUser, token)).thenReturn(verificationToken);
 
         mockMvc.perform(post("/password-recovery/confirm")
                         .param("email", email))

@@ -95,16 +95,4 @@ public class VerificationTokenServiceDefaultTests {
 
         assertTrue(result.isEmpty());
     }
-
-    @Test
-    void create(){
-        VerificationTokenDto result = verificationTokenServiceDefault
-                .create(mock(UserDto.class), "token");
-
-        assertNotNull(result);
-        assertEquals("token", result.getToken());
-        assertTrue(result.getExpiresAt().isAfter(LocalDateTime.now().minusMinutes(1)));
-        assertTrue(result.getExpiresAt().isBefore(LocalDateTime.now().plusMinutes(21)));
-    }
-
 }

@@ -21,15 +21,6 @@ public class VerificationTokenServiceDefault implements VerificationTokenService
     private final VerificationTokenMapper verificationTokenMapper;
 
     @Override
-    public VerificationTokenDto create(UserDto userDto, String token) {
-        VerificationTokenDto verificationTokenDto = new VerificationTokenDto();
-        verificationTokenDto.setToken(token);
-        verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
-        verificationTokenDto.setUser(userDto);
-        return verificationTokenDto;
-    }
-
-    @Override
     public VerificationTokenDto save(VerificationTokenDto token) {
         VerificationToken saved = verificationTokenRepository
                 .save(verificationTokenMapper.toEntity(token));

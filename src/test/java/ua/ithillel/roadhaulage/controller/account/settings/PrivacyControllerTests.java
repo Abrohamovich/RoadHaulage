@@ -124,7 +124,6 @@ public class PrivacyControllerTests {
 
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(verificationTokenService.create(any(), anyString())).thenReturn(verificationToken);
 
         mockMvc.perform(post("/account/settings/privacy/update")
                         .param("email", "doe@john.com")
@@ -133,7 +132,6 @@ public class PrivacyControllerTests {
                 .andExpect(redirectedUrl("/logout"));
 
         verify(userService, times(2)).update(user);
-        verify(verificationTokenService, times(1)).create(any(), anyString());
         verify(verificationTokenService, times(1)).save(any());
         verify(emailService, times(1)).sendEmailConfirmation(anyString(), anyString(), any());
     }
@@ -158,7 +156,6 @@ public class PrivacyControllerTests {
 
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(verificationTokenService.create(any(), anyString())).thenReturn(verificationToken);
 
         mockMvc.perform(post("/account/settings/privacy/update")
                         .param("password", "")
@@ -167,7 +164,6 @@ public class PrivacyControllerTests {
                 .andExpect(redirectedUrl("/logout"));
 
         verify(userService, times(1)).update(user);
-        verify(verificationTokenService, times(1)).create(any(), anyString());
         verify(verificationTokenService, times(1)).save(any());
         verify(emailService, times(1)).sendEmailConfirmation(anyString(), anyString(), any());
     }

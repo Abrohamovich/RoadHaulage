@@ -77,8 +77,6 @@ public class RegistrationControllerTests {
         verificationToken.setToken(token);
 
         when(userService.save(any(UserDto.class))).thenReturn(user);
-        when(verificationTokenService.create(any(UserDto.class), anyString()))
-                .thenReturn(verificationToken);
 
         mockMvc.perform(post("/register/reg")
                 .param("email", email)

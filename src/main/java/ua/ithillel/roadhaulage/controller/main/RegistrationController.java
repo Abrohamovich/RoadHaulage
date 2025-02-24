@@ -15,6 +15,7 @@ import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
@@ -62,7 +63,11 @@ public class RegistrationController {
 
             String token = UUID.randomUUID().toString();
 
-            VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDto, token);
+            VerificationTokenDto verificationTokenDto = new VerificationTokenDto();
+            verificationTokenDto.setToken(token);
+            verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
+            verificationTokenDto.setUser(userDto);
+
             verificationTokenService.save(verificationTokenDto);
 
             emailService.sendEmailConfirmation(email, token, userDto);

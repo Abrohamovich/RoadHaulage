@@ -13,6 +13,7 @@ import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +82,12 @@ public class PrivacyController {
             userService.update(userDto);
 
             String token = UUID.randomUUID().toString();
-            VerificationTokenDto verificationTokenDto = verificationTokenService.create(userDto, token);
+
+            VerificationTokenDto verificationTokenDto = new VerificationTokenDto();
+            verificationTokenDto.setToken(token);
+            verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
+            verificationTokenDto.setUser(userDto);
+
             verificationTokenService.save(verificationTokenDto);
             emailService.sendEmailConfirmation(email, token, userDto);
             return "redirect:/logout";
