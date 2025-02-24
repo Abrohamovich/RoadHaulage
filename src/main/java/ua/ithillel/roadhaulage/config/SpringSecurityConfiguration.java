@@ -13,7 +13,6 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import ua.ithillel.roadhaulage.entity.UserRole;
 
 @Configuration
-@EnableWebSecurity
 public class SpringSecurityConfiguration {
 
     @Bean

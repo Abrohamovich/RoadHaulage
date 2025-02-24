@@ -6,7 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.UserRatingDto;
+import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRating;
 import ua.ithillel.roadhaulage.mapper.UserRatingMapper;
 import ua.ithillel.roadhaulage.repository.UserRatingRepository;
@@ -29,12 +31,18 @@ public class UserRatingServiceDefaultTests {
 
     @BeforeEach
     void init() {
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        User user = new User();
+        user.setId(1L);
         userRatingDto = new UserRatingDto();
         userRatingDto.setId(1L);
+        userRatingDto.setUser(userDto);
         userRatingDto.setAverage(4.5);
         userRatingDto.setCount(2);
         userRating = new UserRating();
         userRating.setId(1L);
+        userRating.setUser(user);
         userRating.setAverage(4.5);
         userRating.setCount(2);
     }

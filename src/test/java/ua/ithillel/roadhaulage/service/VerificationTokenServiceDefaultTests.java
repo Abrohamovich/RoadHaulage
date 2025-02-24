@@ -37,13 +37,19 @@ public class VerificationTokenServiceDefaultTests {
 
     @BeforeEach
     void init(){
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        User user = new User();
+        user.setId(1L);
         String token = UUID.randomUUID().toString();
         verificationTokenDto = new VerificationTokenDto();
         verificationTokenDto.setId(1L);
+        verificationTokenDto.setUser(userDto);
         verificationTokenDto.setToken(token);
         verificationTokenDto.setExpiresAt(LocalDateTime.now());
         verificationToken = new VerificationToken();
         verificationToken.setId(1L);
+        verificationToken.setUser(user);
         verificationToken.setToken(token);
         verificationToken.setExpiresAt(LocalDateTime.now());
     }
