@@ -1,9 +1,6 @@
 package ua.ithillel.roadhaulage.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 
 import java.sql.Date;
@@ -14,6 +11,7 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDto {
     private Long id;
     private OrderStatus status;

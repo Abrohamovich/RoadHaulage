@@ -1,15 +1,13 @@
 package ua.ithillel.roadhaulage.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ua.ithillel.roadhaulage.entity.UserRole;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserDto {
     private Long id;
     private String firstName;

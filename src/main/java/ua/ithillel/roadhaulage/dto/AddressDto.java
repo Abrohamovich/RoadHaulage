@@ -1,14 +1,12 @@
 package ua.ithillel.roadhaulage.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AddressDto {
     private Long id;
     private String street;
@@ -19,6 +17,9 @@ public class AddressDto {
 
     @Override
     public String toString() {
-        return street + ", " + city + ", " + state + ", " + zip + ", " + country;
+        return street + ", " +
+                city + ", " +
+                state + ", " +
+                zip + ", " + country;
     }
 }
