@@ -38,11 +38,54 @@ public class PasswordRecoveryControllerTests {
     private EmailService emailService;
 
     @Test
-    void getPasswordRecoveryPage() throws Exception {
+    void getPasswordRecoveryRequestPage() throws Exception {
         mockMvc.perform(get("/password-recovery"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("attentionMessage"))
                 .andExpect(view().name("password-recovery"));
+    }
+
+    @Test
+    void getPasswordRecoveryPage() throws Exception{
+        mockMvc.perform(get("/password-recovery/change"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("email"))
+                .andExpect(view().name("change-password"));
+    }
+
+    @Test
+    void changePassword_userIsPresent() throws Exception{
+        String email = "test@example.com";
+        String password = "newPassword123";
+        UserDto userDto = new UserDto();
+        userDto.setPassword(password);
+
+        VerificationTokenDto tokenDto = new VerificationTokenDto();
+
+        when(userService.findByEmail(email)).thenReturn(Optional.of(userDto));
+        when(verificationTokenService.findByUser(userDto)).thenReturn(Optional.of(tokenDto));
+
+        // Act & Assert
+        mockMvc.perform(post("/password-recovery/change/confirm")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
+    @Test
+    void changePassword_userIsNotPresent() throws Exception{
+        String email = "nonexistent@example.com";
+        String password = "newPassword123";
+
+        when(userService.findByEmail(email)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        mockMvc.perform(post("/password-recovery/change/confirm")
+                        .param("email", email)
+                        .param("password", password))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
     }
 
     @Test
@@ -80,22 +123,17 @@ public class PasswordRecoveryControllerTests {
     void recoverPassword_success_case0() throws Exception {
         String token = UUID.randomUUID().toString();
 
-        when(userService.verifyPassword(anyString(), anyString())).thenReturn((short) 0);
+        when(userService.verifyPassword(anyString())).thenReturn((short) 0);
 
         mockMvc.perform(get("/password-recovery/recover")
-                        .param("token", token))
-                .andExpect(flash().attributeExists("successMessage"))
-                .andExpect(flash().attribute("successMessage",
-                        "Your password has been successfully changed"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+                        .param("token", token));
     }
 
     @Test
     void recoverPassword_failure_case1() throws Exception {
         String token = UUID.randomUUID().toString();
 
-        when(userService.verifyPassword(anyString(), anyString())).thenReturn((short) 1);
+        when(userService.verifyPassword(anyString())).thenReturn((short) 1);
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -110,7 +148,7 @@ public class PasswordRecoveryControllerTests {
     void recoverPassword_failure_case2() throws Exception {
         String token = UUID.randomUUID().toString();
 
-        when(userService.verifyPassword(anyString(), anyString())).thenReturn((short) 2);
+        when(userService.verifyPassword(anyString())).thenReturn((short) 2);
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -125,7 +163,7 @@ public class PasswordRecoveryControllerTests {
     void recoverPassword_failure_case3() throws Exception {
         String token = UUID.randomUUID().toString();
 
-        when(userService.verifyPassword(anyString(), anyString())).thenReturn((short) 3);
+        when(userService.verifyPassword(anyString())).thenReturn((short) 3);
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))

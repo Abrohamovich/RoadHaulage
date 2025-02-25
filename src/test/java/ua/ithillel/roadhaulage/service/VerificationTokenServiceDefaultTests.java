@@ -13,6 +13,7 @@ import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.mapper.AddressMapper;
+import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
 import ua.ithillel.roadhaulage.repository.AddressRepository;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
@@ -32,6 +33,8 @@ public class VerificationTokenServiceDefaultTests {
     private VerificationTokenRepository verificationTokenRepository;
     @Mock
     private VerificationTokenMapper verificationTokenMapper;
+    @Mock
+    private UserMapper usermapper;
     private VerificationTokenDto verificationTokenDto;
     private VerificationToken verificationToken;
 
@@ -92,6 +95,34 @@ public class VerificationTokenServiceDefaultTests {
         when(verificationTokenRepository.findByToken(anyString())).thenReturn(Optional.empty());
 
         Optional<VerificationTokenDto> result = verificationTokenServiceDefault.getToken(anyString());
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void findByUser_returnsOptionalVerificationToken(){
+        when(verificationTokenMapper.toDto(verificationToken)).thenReturn(verificationTokenDto);
+        when(verificationTokenRepository.findByUser(any(User.class))).
+                thenReturn(Optional.of(verificationToken));
+        when(usermapper.toEntity(any(UserDto.class)))
+                .thenReturn(mock(User.class));
+
+        Optional<VerificationTokenDto> result = verificationTokenServiceDefault
+                .findByUser(mock(UserDto.class));
+
+        assertTrue(result.isPresent());
+        assertEquals(verificationTokenDto, result.get());
+    }
+
+    @Test
+    void findByUser_returnsEmptyOptional(){
+        when(verificationTokenRepository.findByUser(any(User.class)))
+                .thenReturn(Optional.empty());
+        when(usermapper.toEntity(any(UserDto.class)))
+                .thenReturn(mock(User.class));
+
+        Optional<VerificationTokenDto> result = verificationTokenServiceDefault
+                .findByUser(mock(UserDto.class));
 
         assertTrue(result.isEmpty());
     }

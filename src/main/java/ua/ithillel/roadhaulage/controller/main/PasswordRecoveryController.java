@@ -51,8 +51,10 @@ public class PasswordRecoveryController {
             userService.update(userDto);
 
             verificationTokenService.delete(verificationTokenDto);
+
+            return "redirect:/login";
         }
-        return "redirect:/login";
+        return "redirect:/error";
     }
 
     @PostMapping("/confirm")

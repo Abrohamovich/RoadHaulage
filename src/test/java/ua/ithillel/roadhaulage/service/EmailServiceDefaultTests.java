@@ -98,8 +98,6 @@ public class EmailServiceDefaultTests {
 
         %s
 
-        Your new password is: %s
-
         If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
 
         If you have any questions or concerns, please contact our support team.

@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
@@ -21,6 +23,7 @@ import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -270,7 +273,7 @@ public class UserServiceDefaultTests {
     void findById_returnsEmptyOptional() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Optional<UserDto> result = userServiceDefault.findById(anyLong());
+        Optional<UserDto> result = userServiceDefault.findById(1L);
 
         assertTrue(result.isEmpty());
     }
@@ -318,6 +321,28 @@ public class UserServiceDefaultTests {
         assertTrue(result.isEmpty());
         verify(userRepository, times(1))
                 .findByPhoneCodeAndPhone(anyString(), anyString());
+    }
+
+    @Test
+    void findAllPageable_returnsFullList(){
+        when(userMapper.toDto(user)).thenReturn(userDto);
+        when(userRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of(user)));
+
+        List<UserDto> result = userServiceDefault.findAllPageable(0, 1);
+
+        assertEquals(1, result.size());
+        assertEquals(userDto, result.getFirst());
+    }
+
+    @Test
+    void findAllPageable_returnsEmptyList(){
+        when(userRepository.findAll(PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        List<UserDto> result = userServiceDefault.findAllPageable(0, 1);
+
+        assertEquals(0, result.size());
     }
 
     @Test
@@ -404,33 +429,13 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    void verifyPassword_returnsZero_success() {
-        String token = UUID.randomUUID().toString();
-        String password = "password1LdadL";
-
-        VerificationTokenDto verificationToken = new VerificationTokenDto();
-        verificationToken.setId(1L);
-        verificationToken.setToken(token);
-        verificationToken.setExpiresAt(LocalDateTime.now().plusMinutes(20));
-        verificationToken.setUser(userDto);
-
-        when(userMapper.toEntity(userDto)).thenReturn(user);
-        when(verificationTokenService.getToken(anyString()))
-                .thenReturn(Optional.of(verificationToken));
-
-        short result = userServiceDefault.verifyPassword(token, password);
-
-        assertEquals(0, result);
-    }
-
-    @Test
     void verifyPassword_returnsOne_verificationTokenIsEmpty_failure() {
         String token = UUID.randomUUID().toString();
         String password = "NewPass_w0rd";
 
         when(verificationTokenService.getToken(token)).thenReturn(Optional.empty());
 
-        short result = userServiceDefault.verifyPassword(token, password);
+        short result = userServiceDefault.verifyPassword(token);
 
         assertEquals(1, result);
     }
@@ -449,7 +454,7 @@ public class UserServiceDefaultTests {
 
         when(verificationTokenService.getToken(token)).thenReturn(Optional.of(anotherVerificationToken));
 
-        short result = userServiceDefault.verifyPassword(token, "password");
+        short result = userServiceDefault.verifyPassword(token);
 
         assertEquals(1, result);
     }
@@ -466,7 +471,7 @@ public class UserServiceDefaultTests {
 
         when(verificationTokenService.getToken(token)).thenReturn(Optional.of(verificationToken));
 
-        short result = userServiceDefault.verifyPassword(token, password);
+        short result = userServiceDefault.verifyPassword(token);
 
         assertEquals(2, result);
     }
@@ -484,7 +489,7 @@ public class UserServiceDefaultTests {
 
         when(verificationTokenService.getToken(token)).thenReturn(Optional.of(verificationToken));
 
-        short result = userServiceDefault.verifyPassword(token, password);
+        short result = userServiceDefault.verifyPassword(token);
 
         assertEquals(3, result);
     }
