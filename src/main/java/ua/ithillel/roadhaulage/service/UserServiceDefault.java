@@ -116,18 +116,8 @@ public class UserServiceDefault implements UserService, UserDetailsService {
     }
 
     @Override
-    public short verifyPassword(String token, String password) {
-        short st = verifyToken(token);
-        if (st != 0) {
-            return st;
-        }
-        VerificationTokenDto verificationTokenDto = verificationTokenService.getToken(token).get();
-        UserDto userDto = verificationTokenDto.getUser();
-        userDto.setPassword(bCryptPasswordEncoder.encode(password));
-        userRepository.save(userMapper.toEntity(userDto));
-        verificationTokenService.delete(verificationTokenDto);
-        log.info("Verify password successful, password has changed");
-        return 0;
+    public short verifyPassword(String token) {
+        return verifyToken(token);
     }
 
     @Override

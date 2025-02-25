@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static ua.ithillel.roadhaulage.util.PasswordGenerator.generatePassword;
-
 @Controller
 @RequestMapping("/password-recovery")
 @RequiredArgsConstructor
@@ -24,17 +22,41 @@ public class PasswordRecoveryController {
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
-    private static final String password = generatePassword(10);
 
     @GetMapping
-    public String getPasswordRecoveryPage(@ModelAttribute("attentionMessage") String attentionMessage,
+    public String getPasswordRecoveryRequestPage(@ModelAttribute("attentionMessage") String attentionMessage,
                                           Model model) {
         model.addAttribute("attentionMessage", attentionMessage);
         return "password-recovery";
     }
 
+    @GetMapping("/change")
+    public String getPasswordRecoveryPage(@ModelAttribute("email") String email, Model model) {
+        model.addAttribute("email", email);
+        return "change-password";
+    }
+
+    @PostMapping("/change/confirm")
+    public String changePassword(@RequestParam String email,
+                                 @RequestParam String password){
+        Optional<UserDto> userDtoOptional = userService.findByEmail(email);
+        if (userDtoOptional.isPresent()) {
+            UserDto userDto = userDtoOptional.get();
+            Optional<VerificationTokenDto> verificationTokenDtoOptional =
+                    verificationTokenService.findByUser(userDto);
+
+            VerificationTokenDto verificationTokenDto = verificationTokenDtoOptional.get();
+
+            userDto.setPassword(password);
+            userService.update(userDto);
+
+            verificationTokenService.delete(verificationTokenDto);
+        }
+        return "redirect:/login";
+    }
+
     @PostMapping("/confirm")
-    public String recoverPasswordQues(@RequestParam String email,
+    public String sendRecoveryRequest(@RequestParam String email,
                                       RedirectAttributes redirectAttributes){
         Optional<UserDto> userDB = userService.findByEmail(email);
         if(userDB.isEmpty()){
@@ -50,7 +72,7 @@ public class PasswordRecoveryController {
         verificationTokenDto.setExpiresAt(LocalDateTime.now().plusMinutes(20));
         verificationTokenDto.setUser(userDB.get());
         verificationTokenService.save(verificationTokenDto);
-        emailService.sendPasswordResetEmail(email, token, userDB.get(), password);
+        emailService.sendPasswordResetEmail(email, token, userDB.get());
 
         redirectAttributes.addFlashAttribute(
                 "attentionMessage",
@@ -59,15 +81,22 @@ public class PasswordRecoveryController {
     }
 
     @GetMapping("recover")
-    public String recoverPassword(@RequestParam("token") String token,
+    public String checkRecoveryRequest(@RequestParam("token") String token,
                                   RedirectAttributes redirectAttributes) {
-        short successId = userService.verifyPassword(token, password);
+        short successId = userService.verifyPassword(token);
         String successMessage = switch (successId) {
             case 1 -> "This token does not exist, or this token is not yours";
             case 2 -> "There is no user with this token";
             case 3 -> "Your token has expired";
-            default -> "Your password has been successfully changed";
+            default -> "success";
         };
+
+        Optional<VerificationTokenDto> verificationTokenDto = verificationTokenService.getToken(token);
+        if(verificationTokenDto.isPresent() && successMessage.equals("success")){
+            String email = verificationTokenDto.get().getUser().getEmail();
+            redirectAttributes.addFlashAttribute("email", email);
+            return "redirect:/password-recovery/change";
+        }
 
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         return "redirect:/login";

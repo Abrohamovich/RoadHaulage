@@ -45,8 +45,7 @@ public class RegistrationController {
             UserDto userDto = new UserDto();
             userDto.setEmail(email);
             userDto.setRole(UserRole.USER);
-            //todo Change to "false"
-            userDto.setEnabled(true);
+            userDto.setEnabled(false);
             userDto.setFirstName(firstName);
             userDto.setLastName(lastName);
             userDto.setPhoneCode(phoneCode);

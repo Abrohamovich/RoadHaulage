@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
+import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class VerificationTokenServiceDefault implements VerificationTokenService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final VerificationTokenMapper verificationTokenMapper;
+    private final UserMapper userMapper;
 
     @Override
     public VerificationTokenDto save(VerificationTokenDto token) {
@@ -33,6 +35,13 @@ public class VerificationTokenServiceDefault implements VerificationTokenService
     public Optional<VerificationTokenDto> getToken(String token) {
         log.info("Retrieving verification token by token: {}", token);
         return verificationTokenRepository.findByToken(token)
+                .map(verificationTokenMapper::toDto);
+    }
+
+    @Override
+    public Optional<VerificationTokenDto> findByUser(UserDto userDto) {
+        log.info("Retrieving verification token by user email: {}", userDto);
+        return verificationTokenRepository.findByUser(userMapper.toEntity(userDto))
                 .map(verificationTokenMapper::toDto);
     }
 

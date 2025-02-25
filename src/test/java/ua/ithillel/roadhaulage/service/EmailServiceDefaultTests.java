@@ -114,7 +114,7 @@ public class EmailServiceDefaultTests {
 
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
 
-        service.sendPasswordResetEmail(email, token, user, password);
+        service.sendPasswordResetEmail(email, token, user);
 
         verify(mailSender).send(messageCaptor.capture());
         SimpleMailMessage capturedMessage = messageCaptor.getValue();

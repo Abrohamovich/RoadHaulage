@@ -13,5 +13,5 @@ public interface UserService{
     Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone);
     List<UserDto> findAllPageable(int page, int pageSize);
     short verifyEmail(String token);
-    short verifyPassword(String token, String password);
+    short verifyPassword(String token);
 }

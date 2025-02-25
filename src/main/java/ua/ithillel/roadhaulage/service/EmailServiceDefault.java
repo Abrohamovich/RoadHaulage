@@ -50,7 +50,7 @@ public class EmailServiceDefault implements EmailService {
     }
 
     @Override
-    public void sendPasswordResetEmail(String email, String token, UserDto userDto, String password) {
+    public void sendPasswordResetEmail(String email, String token, UserDto userDto) {
         String confirmUrl = "http://localhost:8080/password-recovery/recover?token=" + token;
         String emailBody = """
         Hello, %s!
@@ -58,8 +58,6 @@ public class EmailServiceDefault implements EmailService {
         You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
         
         %s
-        
-        Your new password is: %s
         
         If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
         
@@ -72,6 +70,6 @@ public class EmailServiceDefault implements EmailService {
         
         """;
         sendEmail(email, "Confirmation of password recovery",
-                String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl, password));
+                String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl));
     }
 }
