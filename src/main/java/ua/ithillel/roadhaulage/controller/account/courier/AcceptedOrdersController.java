@@ -1,13 +1,11 @@
 package ua.ithillel.roadhaulage.controller.account.courier;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
@@ -26,13 +24,18 @@ public class AcceptedOrdersController {
     private final OrderService orderService;
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("page={page}")
     public String acceptedOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
-                                     Model model) {
-        List<OrderDto> orders = orderService.findOrdersByCourierId(authUserDto.getId());
-        orders = orders.stream().filter(order -> order.getStatus().equals(OrderStatus.ACCEPTED)).toList();
-        orders.forEach(OrderDto::defineView);
+                                     @PathVariable int page, Model model) {
+        Page<OrderDto> ordersPage = orderService.findPageableOrdersByCourierId(authUserDto.getId(), page, 10);
+        List<OrderDto> orders = ordersPage.getContent()
+                .stream()
+                .filter(order -> order.getStatus().equals(OrderStatus.ACCEPTED))
+                .peek(OrderDto::defineView)
+                .toList();
         model.addAttribute("orders", orders);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
         return "account/courier-orders/accepted";
     }
 
@@ -49,7 +52,7 @@ public class AcceptedOrdersController {
             orderDto.setCourier(userDto);
             orderService.save(orderDto);
         }
-        return "redirect:/account/delivered-orders/accepted";
+        return "redirect:/account/courier-orders/accepted/page=0";
     }
 
     @PostMapping("/decline")
@@ -66,6 +69,6 @@ public class AcceptedOrdersController {
             orderDto.setAcceptDate(null);
             orderService.save(orderDto);
         }
-        return "redirect:/account/delivered-orders/accepted";
+        return "redirect:/account/courier-orders/accepted/page=0";
     }
 }

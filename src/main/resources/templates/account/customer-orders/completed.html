@@ -5,6 +5,7 @@
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
+<link rel="stylesheet" th:href="@{/css/pagination.css}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +40,21 @@
       <ion-icon name="arrow-down-outline"></ion-icon>
       <span class="order-content" th:text="${order.deliveryAddressString}"></span>
       <span class="order-content" th:text="${order.cost} + ' ' + ${order.currency}"></span>
+    </div>
+
+    <!--Pagination -->
+    <div class="pagination" th:if="${totalPages > 1}">
+      <a th:href="@{/account/my-orders/created/page={prev}(prev=${currentPage - 1})}"
+         th:classappend="${currentPage == 0 ? 'disabled' : ''}">Previous</a>
+
+      <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/account/my-orders/created/page={page}(page=${i})}"
+           th:text="${i + 1}"
+           th:classappend="${currentPage == i ? 'active' : ''}"></a>
+      </span>
+
+      <a th:href="@{/account/my-orders/created/page={next}(next=${currentPage + 1})}"
+         th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
     </div>
   </main>
 </div>
