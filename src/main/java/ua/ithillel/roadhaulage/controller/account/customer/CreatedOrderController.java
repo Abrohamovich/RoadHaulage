@@ -1,13 +1,12 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserRatingDto;
@@ -26,18 +25,26 @@ public class CreatedOrderController {
     private final OrderService orderService;
     private final UserRatingService userRatingService;
 
-    @GetMapping
+    @GetMapping("/page={page}")
     public String createdOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
-                                         Model model) {
-        List<OrderDto> orders = orderService.findOrdersByCustomerId(authUserDto.getId());
-        orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
+                                    @PathVariable int page, Model model) {
+        Page<OrderDto> ordersPage = orderService.findPageableOrdersByCustomerId(authUserDto.getId(), page, 10);
+        List<OrderDto> orders = ordersPage.getContent()
+                .stream()
+                .filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED))
+                .peek(OrderDto::defineView)
+                .toList();
         orders.forEach(OrderDto::defineView);
         model.addAttribute("orders", orders);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
         return "account/customer-orders/created";
     }
+
     @PostMapping("/publish")
     public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                               @RequestParam long id){
+                               @RequestParam long id,
+                               @RequestParam int currentPage){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
@@ -47,7 +54,7 @@ public class CreatedOrderController {
             orderDto.setStatus(OrderStatus.PUBLISHED);
             orderService.save(orderDto);
         }
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/created/page=0";
     }
 
     @PostMapping("/close")
@@ -81,6 +88,6 @@ public class CreatedOrderController {
             orderService.delete(id);
         }
 
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/created/page=0";
     }
 }

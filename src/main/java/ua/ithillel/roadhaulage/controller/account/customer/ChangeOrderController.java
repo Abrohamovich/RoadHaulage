@@ -103,6 +103,6 @@ public class ChangeOrderController {
         orderDto.setStatus(OrderStatus.CHANGED);
         orderService.save(orderDto);
 
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/created/page=0";
     }
 }

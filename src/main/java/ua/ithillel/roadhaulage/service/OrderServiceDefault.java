@@ -2,6 +2,8 @@ package ua.ithillel.roadhaulage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderDto;
@@ -13,6 +15,7 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,12 +47,24 @@ public class OrderServiceDefault implements OrderService {
     }
 
     @Override
+    public Page<OrderDto> findPageableOrdersByCustomerId(long id, int page, int size) {
+        return orderRepository.findOrdersByCustomerId(id, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
+    }
+
+    @Override
     public List<OrderDto> findOrdersByCourierId(long id) {
         log.info("Finding orders by courier id: {}", id);
         return orderRepository.findOrdersByCourierId(id)
                 .stream()
                 .map(orderMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public Page<OrderDto> findPageableOrdersByCourierId(long id, int page, int size) {
+        return orderRepository.findOrdersByCourierId(id, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
     }
 
     @Override
@@ -79,5 +94,18 @@ public class OrderServiceDefault implements OrderService {
                 .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
                 .toList();
         return orders.stream().map(orderMapper::toDto).toList();
+    }
+
+    @Override
+    public Page<OrderDto> returnOtherPublishedPageableOrders(long id, int page, int size) {
+        Page<Order> orderPage = orderRepository.findAll(PageRequest.of(page, size));
+
+        List<OrderDto> filteredOrders = orderPage.getContent().stream()
+                .filter(o -> !o.getCustomer().getId().equals(id))
+                .filter(o -> o.getStatus() == OrderStatus.PUBLISHED)
+                .map(orderMapper::toDto)
+                .toList(); // Collect into a List
+
+        return new PageImpl<>(filteredOrders, PageRequest.of(page, size), orderPage.getTotalElements());
     }
 }
