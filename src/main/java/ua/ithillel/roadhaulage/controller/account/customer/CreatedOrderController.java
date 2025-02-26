@@ -1,13 +1,11 @@
 package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserRatingDto;
@@ -26,15 +24,20 @@ public class CreatedOrderController {
     private final OrderService orderService;
     private final UserRatingService userRatingService;
 
-    @GetMapping
+    @GetMapping("/page={page}")
     public String createdOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
-                                         Model model) {
-        List<OrderDto> orders = orderService.findOrdersByCustomerId(authUserDto.getId());
-        orders = orders.stream().filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED)).toList();
-        orders.forEach(OrderDto::defineView);
+                                    @PathVariable int page, Model model) {
+        Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdAndStatusNot(authUserDto.getId(), OrderStatus.COMPLETED, page, 10);
+        List<OrderDto> orders = ordersPage.getContent()
+                .stream()
+                .peek(OrderDto::defineView)
+                .toList();
         model.addAttribute("orders", orders);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
         return "account/customer-orders/created";
     }
+
     @PostMapping("/publish")
     public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                                @RequestParam long id){
@@ -47,7 +50,7 @@ public class CreatedOrderController {
             orderDto.setStatus(OrderStatus.PUBLISHED);
             orderService.save(orderDto);
         }
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/created/page=0";
     }
 
     @PostMapping("/close")
@@ -81,6 +84,6 @@ public class CreatedOrderController {
             orderService.delete(id);
         }
 
-        return "redirect:/account/my-orders/created";
+        return "redirect:/account/my-orders/created/page=0";
     }
 }

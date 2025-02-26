@@ -5,6 +5,7 @@
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
+<link rel="stylesheet" th:href="@{/css/pagination.css}">
 <script src="/js/script.js"></script>
 <head>
     <meta charset="UTF-8">
@@ -48,6 +49,21 @@
                     <button type="submit" title="See full order"><ion-icon name="eye-outline"></ion-icon></button>
                 </form>
             </div>
+        </div>
+
+        <!--Pagination -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/account/delivered-orders/accepted/page={prev}(prev=${currentPage - 1})}"
+               th:classappend="${currentPage == 0 ? 'disabled' : ''}">Previous</a>
+
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/account/delivered-orders/accepted/page={page}(page=${i})}"
+           th:text="${i + 1}"
+           th:classappend="${currentPage == i ? 'active' : ''}"></a>
+      </span>
+
+            <a th:href="@{/account/delivered-orders/accepted/page={next}(next=${currentPage + 1})}"
+               th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
         </div>
     </main>
 </div>

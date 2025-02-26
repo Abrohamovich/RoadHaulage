@@ -1,23 +1,23 @@
 package ua.ithillel.roadhaulage.controller.main;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -26,70 +26,28 @@ import java.util.Set;
 public class OrdersPageController {
     private final OrderService orderService;
     private final OrderCategoryService orderCategoryService;
-    private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/page={page}")
     public String ordersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
-                             Model model) {
-        List<OrderDto> ordersDto = getUserOrders(authUserDto);
-        if(!ordersDto.isEmpty()) addModels(model, ordersDto);
-        model.addAttribute("categories", orderCategoryService.findAll());
-        return "orders";
-    }
-
-    @GetMapping("/filter")
-    public String filter(@AuthenticationPrincipal AuthUserDto authUserDto,
-                         @RequestParam String currency,
-                         @RequestParam String categoriesString,
-                         @RequestParam(name = "max-cost") String maxCost,
-                         @RequestParam(name = "min-cost") String minCost,
-                         @RequestParam String comparisonType,
-                         Model model) {
-        List<OrderDto> ordersDto = getUserOrders(authUserDto);
-        ordersDto.forEach(OrderDto::defineView);
-
-        Set<OrderCategoryDto> categoryDtoSet = categoriesString.isEmpty()
-                ? Set.of()
-                : orderCategoryService.createOrderCategorySet(categoriesString);
-
-        ordersDto = ordersDto.stream()
-                .filter(orderDto -> "ALL".equals(currency) || orderDto.getCurrency().equals(currency))
-                .filter(orderDto -> {
-                    double cost = Double.parseDouble(orderDto.getCost());
-                    return cost >= Double.parseDouble(minCost) && cost <= Double.parseDouble(maxCost);
-                })
-                .filter(orderDto -> {
-                    if (categoryDtoSet.isEmpty()) return true;
-                    else if (comparisonType.equals("loose")){
-                        return orderDto.getCategories().stream().anyMatch(categoryDtoSet::contains);
-                    } else if (comparisonType.equals("strict")){
-                        return categoryDtoSet.containsAll(orderDto.getCategories());
-                    }
-                    return false;
-                })
+                             @PathVariable int page, Model model) {
+        Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdNotAndStatus(
+                authUserDto.getId(), OrderStatus.PUBLISHED, page, 15);
+        List<OrderDto> orders = ordersPage.getContent().stream()
+                .peek(OrderDto::defineView)
                 .toList();
-
-        if(!ordersDto.isEmpty()) addModels(model, ordersDto);
-
+        if(!orders.isEmpty()) addModels(model, orders);
         model.addAttribute("categories", orderCategoryService.findAll());
-        model.addAttribute("categoriesString", categoriesString);
-
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", ordersPage.getTotalPages());
         return "orders";
     }
 
-    private void addModels(Model model, List<OrderDto> ordersDto) {
-        DoubleSummaryStatistics statistics = ordersDto.stream()
-                .mapToDouble(orderDto -> Double.parseDouble(orderDto.getCost()))
+    private void addModels(Model model, List<OrderDto> orders) {
+        DoubleSummaryStatistics statistics = orders.stream()
+                .mapToDouble(order -> Double.parseDouble(order.getCost()))
                 .summaryStatistics();
         model.addAttribute("maxCost", statistics.getMax());
         model.addAttribute("minCost", statistics.getMin());
-        model.addAttribute("orders", ordersDto);
-    }
-
-    private List<OrderDto> getUserOrders(AuthUserDto authUserDto) {
-        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
-        List<OrderDto> ordersDto = orderService.returnOtherPublishedOrders(userDto.get().getId());
-        ordersDto.forEach(OrderDto::defineView);
-        return ordersDto;
+        model.addAttribute("orders", orders);
     }
 }

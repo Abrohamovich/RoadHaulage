@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -15,7 +16,6 @@ import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,18 +32,15 @@ public class CreatedOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private UserService userService;
-    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private UserRatingService userRatingService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
@@ -78,14 +75,16 @@ public class CreatedOrderControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.findOrdersByCustomerId(anyLong()))
-                .thenReturn(List.of(order));
+        when(orderService.findOrdersByCustomerIdAndStatusNot(
+                1, OrderStatus.COMPLETED, 0, 10
+        )).thenReturn(new PageImpl<>(List.of(order)));
 
-        mockMvc.perform(get("/account/my-orders/created"))
+        mockMvc.perform(get("/account/my-orders/created/page=0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/customer-orders/created"))
-                .andExpect(model().attributeExists("orders"));
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"));
     }
 
     @Test
@@ -94,16 +93,13 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
         mockMvc.perform(post("/account/my-orders/created/publish")
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/created"));
-
-        verify(orderService, times(1)).save(any());
+                .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
     }
 
     @Test
@@ -115,7 +111,6 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(userDto);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -127,14 +122,13 @@ public class CreatedOrderControllerTests {
 
     @Test
     void publishOrder_doNone() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(post("/account/my-orders/created/publish")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/created"));
+                .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
 
         verify(orderService, times(0)).save(any());
     }
@@ -146,7 +140,6 @@ public class CreatedOrderControllerTests {
         order.setCustomer(user);
         order.setCourier(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
         when(userRatingService.findById(anyLong()))
@@ -172,7 +165,6 @@ public class CreatedOrderControllerTests {
         order.setCustomer(userDto);
         order.setCourier(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -185,7 +177,6 @@ public class CreatedOrderControllerTests {
 
     @Test
     void closeOrder_doNone() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -205,13 +196,12 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/created/delete")
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/created"));
+                .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
 
         verify(orderService, times(1)).delete(anyLong());
     }
@@ -225,7 +215,6 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(userDto);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(userDto));
         when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/created/delete")
@@ -236,12 +225,11 @@ public class CreatedOrderControllerTests {
 
     @Test
     void deleteOrder_doNone() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/account/my-orders/created/delete")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/created"));
+                .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
     }
 }

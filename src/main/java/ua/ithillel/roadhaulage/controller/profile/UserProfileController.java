@@ -1,6 +1,7 @@
 package ua.ithillel.roadhaulage.controller.profile;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,18 +48,20 @@ public class UserProfileController {
         return "redirect:/error";
     }
 
-    @GetMapping("/{email}/orders")
-    public String getUserProfileOrders(@PathVariable String email, Model model) {
+    @GetMapping("/{email}/orders/page={page}")
+    public String getUserProfileOrders(@PathVariable String email, @PathVariable int page, Model model) {
         Optional<UserDto> userDB = userService.findByEmail(email);
         if(userDB.isPresent()) {
             UserDto userDto = userDB.get();
-            List<OrderDto> ordersDto = orderService.findOrdersByCustomerId(userDto.getId());
-            ordersDto = ordersDto.stream()
-                    .filter(orderDto -> orderDto.getStatus().equals(OrderStatus.PUBLISHED))
+            Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdAndStatus(userDto.getId(), OrderStatus.PUBLISHED, page, 10);
+            List<OrderDto> orders = ordersPage.getContent();
+            orders = orders.stream()
+                    .peek(OrderDto::defineView)
                     .toList();
-            ordersDto.forEach(OrderDto::defineView);
             model.addAttribute("email", email);
-            model.addAttribute("orders", ordersDto);
+            model.addAttribute("orders", orders);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", ordersPage.getTotalPages());
             return "profile/orders";
         }
         return "redirect:/error";

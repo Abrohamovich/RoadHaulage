@@ -41,12 +41,11 @@ public class ChangeOrderControllerTests {
     @MockitoBean
     private AddressService addressService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
@@ -131,7 +130,7 @@ public class ChangeOrderControllerTests {
                 .param("dimensions-unit", "smth")
                 .param("currency", "smth"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/created"));
+                .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
 
         verify(orderCategoryService, times(1))
                 .createOrderCategorySet(anyString());

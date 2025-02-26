@@ -198,7 +198,8 @@
 //                } while (deliveryIdx == departureIdx);
 //
 //                int day = random.nextInt(24) + 1;
-//                Date creationDate = Date.valueOf("2025-02-" + String.format("%02d", day));
+//                int month = random.nextInt(12) + 1;
+//                Date creationDate = Date.valueOf(String.format("2025-%02d-%02d", month, day));
 //
 //                String additionalInfo = random.nextBoolean() ? "Fragile items" : "Handle with care";
 //

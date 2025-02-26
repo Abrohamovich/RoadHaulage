@@ -7,14 +7,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.*;
-import ua.ithillel.roadhaulage.entity.Order;
-import ua.ithillel.roadhaulage.entity.OrderCategory;
-import ua.ithillel.roadhaulage.entity.User;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -25,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.mockito.Mockito.when;
@@ -40,32 +38,25 @@ public class OrdersPageControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private UserService userService;
-    @MockitoBean
     private OrderService orderService;
     @MockitoBean
     private OrderCategoryService orderCategoryService;
 
-    private AuthUserDto authUserDto;
-    private UserDto user;
     private OrderDto order;
-    private OrderCategoryDto orderCategory;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
-        user = new UserDto();
-        user.setId(1L);
-        user.setRole(UserRole.USER);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPhone("123456789");
-        user.setIban("IBAN12345");
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setRole(UserRole.USER);
+        userDto.setFirstName("John");
+        userDto.setLastName("Doe");
 
-        orderCategory = new OrderCategoryDto();
+        OrderCategoryDto orderCategory = new OrderCategoryDto();
         orderCategory.setName("Grocery");
 
         order = new OrderDto();
@@ -73,7 +64,8 @@ public class OrdersPageControllerTests {
         order.setCategories(Set.of(orderCategory));
         order.setDeliveryAddress(new AddressDto());
         order.setDepartureAddress(new AddressDto());
-        order.setCustomer(user);
+        order.setCustomer(userDto);
+
 
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
@@ -82,49 +74,32 @@ public class OrdersPageControllerTests {
 
     @Test
     void ordersPage() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
-                .thenReturn(List.of(order));
+        when(orderService.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 15
+        )).thenReturn(new PageImpl<>(List.of(order)));
 
-        mockMvc.perform(get("/orders"))
+        mockMvc.perform(get("/orders/page=0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders"))
                 .andExpect(model().attributeExists("categories"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attributeExists("maxCost"))
-                .andExpect(model().attributeExists("minCost"));
+                .andExpect(model().attributeExists("minCost"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"));
     }
 
     @Test
     void ordersPage_otherPublishedOrdersIsEmpty() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
-                .thenReturn(List.of());
+        when(orderService.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 15
+        )).thenReturn(new PageImpl<>(List.of()));
 
-        mockMvc.perform(get("/orders"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("orders"))
-                .andExpect(model().attributeExists("categories"));
-    }
-
-    @Test
-    void filter() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
-                .thenReturn(List.of(order, order));
-
-        when(orderCategoryService.createOrderCategorySet(anyString()))
-                .thenReturn(Set.of(orderCategory));
-
-        mockMvc.perform(get("/orders/filter")
-                        .param("currency", "ALL")
-                        .param("categoriesString", "Grocery")
-                        .param("max-cost", "0")
-                        .param("min-cost", "100")
-                        .param("comparisonType", "strict"))
+        mockMvc.perform(get("/orders/page=0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders"))
                 .andExpect(model().attributeExists("categories"))
-                .andExpect(model().attributeExists("categoriesString"));
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"));
     }
 }
