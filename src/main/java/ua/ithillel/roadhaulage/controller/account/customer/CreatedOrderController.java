@@ -2,7 +2,6 @@ package ua.ithillel.roadhaulage.controller.account.customer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,10 +30,8 @@ public class CreatedOrderController {
         Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdAndStatusNot(authUserDto.getId(), OrderStatus.COMPLETED, page, 10);
         List<OrderDto> orders = ordersPage.getContent()
                 .stream()
-                .filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED))
                 .peek(OrderDto::defineView)
                 .toList();
-        orders.forEach(OrderDto::defineView);
         model.addAttribute("orders", orders);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", ordersPage.getTotalPages());

@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.*;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,16 +31,13 @@ public class CompletedOrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private UserService userService;
-    @MockitoBean
     private OrderService orderService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
@@ -64,7 +61,7 @@ public class CompletedOrderControllerTests {
         category.setName("Category");
 
         OrderDto order = new OrderDto();
-        order.setStatus(OrderStatus.ACCEPTED);
+        order.setStatus(OrderStatus.COMPLETED);
         order.setCategories(Set.of(category));
         order.setDepartureAddress(new AddressDto());
         order.setDeliveryAddress(new AddressDto());
@@ -74,13 +71,17 @@ public class CompletedOrderControllerTests {
         order.setCurrency("USD");
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
+        order.setCourier(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.findOrdersByCustomerId(anyLong())).thenReturn(List.of(order));
+        when(orderService.findOrdersByCustomerIdAndStatus(
+                1, OrderStatus.COMPLETED, 0, 10
+        )).thenReturn(new PageImpl<>(List.of(order)));
 
-        mockMvc.perform(get("/account/my-orders/completed"))
+        mockMvc.perform(get("/account/my-orders/completed/page=0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/customer-orders/completed"))
-                .andExpect(model().attributeExists("orders"));
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"));
     }
 }

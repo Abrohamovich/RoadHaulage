@@ -30,7 +30,8 @@ public class OrdersPageController {
     @GetMapping("/page={page}")
     public String ordersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @PathVariable int page, Model model) {
-        Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdNotAndStatus(authUserDto.getId(), OrderStatus.PUBLISHED, page, 15);
+        Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdNotAndStatus(
+                authUserDto.getId(), OrderStatus.PUBLISHED, page, 15);
         List<OrderDto> orders = ordersPage.getContent().stream()
                 .peek(OrderDto::defineView)
                 .toList();

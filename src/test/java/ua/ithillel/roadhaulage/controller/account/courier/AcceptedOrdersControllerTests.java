@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -35,12 +36,11 @@ public class AcceptedOrdersControllerTests {
     @MockitoBean
     private OrderService orderService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
@@ -74,15 +74,18 @@ public class AcceptedOrdersControllerTests {
         order.setCurrency("USD");
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
+        order.setCustomer(user);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.findOtherPublishedOrders(anyLong())).thenReturn(List.of(order));
+        when(orderService.findOrdersByCourierIdAndStatus(
+                1, OrderStatus.ACCEPTED, 0, 10
+        )).thenReturn(new PageImpl<>(List.of(order)));
 
-        mockMvc.perform(get("/account/delivered-orders/accepted"))
+        mockMvc.perform(get("/account/delivered-orders/accepted/page=0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/courier-orders/accepted"))
-                .andExpect(model().attributeExists("orders"));
-
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"));
     }
 
     @Test
@@ -96,9 +99,7 @@ public class AcceptedOrdersControllerTests {
         mockMvc.perform(post("/account/delivered-orders/accepted/accept")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
-
-        verify(orderService, times(1)).save(any(OrderDto.class));
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted/page=0"));
     }
 
     @Test
@@ -109,7 +110,7 @@ public class AcceptedOrdersControllerTests {
         mockMvc.perform(post("/account/delivered-orders/accepted/accept")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted/page=0"));
     }
 
     @Test
@@ -124,9 +125,7 @@ public class AcceptedOrdersControllerTests {
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
-
-        verify(orderService, times(1)).save(any(OrderDto.class));
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted/page=0"));
     }
 
     @Test
@@ -137,7 +136,7 @@ public class AcceptedOrdersControllerTests {
         mockMvc.perform(post("/account/delivered-orders/accepted/decline")
                         .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/delivered-orders/accepted"));
+                .andExpect(redirectedUrl("/account/delivered-orders/accepted/page=0"));
     }
 
     @Test

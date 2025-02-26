@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import ua.ithillel.roadhaulage.dto.AddressDto;
@@ -20,6 +21,7 @@ import java.sql.Date;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +67,7 @@ public class OrderServiceTests {
         order = new Order();
         order.setId(1L);
         order.setCustomer(user);
-        order.setStatus(OrderStatus.CREATED);
+        order.setStatus(OrderStatus.PUBLISHED);
         order.setDeliveryAddress(address);
         order.setDepartureAddress(address);
         order.setAdditionalInfo("additionalInfo");
@@ -182,44 +184,118 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOtherPublishedOrders_returnsList(){
-        Order order1 = new Order();
-        order1.setId(1L);
-        order1.setStatus(OrderStatus.PUBLISHED);
-        Order order2 = new Order();
-        order2.setId(2L);
-        order2.setStatus(OrderStatus.PUBLISHED);
-        Order order3 = new Order();
-        order3.setId(3L);
-        order3.setStatus(OrderStatus.PUBLISHED);
-        List<Order> allOrders = List.of(order1, order2, order3);
-        List<Order> customersOrders = List.of(order1, order2);
+    void findOrdersByCourierIdAndStatus_returnsPage(){
+        when(orderRepository.findOrdersByCourierIdAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(order, order)));
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
 
-        when(orderRepository.findAll()).thenReturn(allOrders);
-        when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(customersOrders);
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCourierIdAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
 
-        List<OrderDto> result = orderServiceDefault.findOtherPublishedOrders(1L);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
     }
 
     @Test
-    void findOtherPublishedOrders_returnsEmptyList(){
-        Order order1 = new Order();
-        order1.setId(1L);
-        order1.setStatus(OrderStatus.PUBLISHED);
-        Order order2 = new Order();
-        order2.setId(2L);
-        order2.setStatus(OrderStatus.PUBLISHED);
+    void findOrdersByCourierIdAndStatus_returnsEmptyPage(){
+        when(orderRepository.findOrdersByCourierIdAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of()));
 
-        List<Order> allOrders = Arrays.asList(order1, order2);
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCourierIdAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
 
-        when(orderRepository.findAll()).thenReturn(allOrders);
-        when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(allOrders);
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
+    }
 
-        List<OrderDto> result = orderServiceDefault.findOtherPublishedOrders(1L);
+    @Test
+    void findOrdersByCustomerIdAndStatus_returnsPage(){
+        when(orderRepository.findOrdersByCustomerIdAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(order, order)));
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
 
-        assertEquals(0, result.size());
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+    }
+
+    @Test
+    void findOrdersByCustomerIdAndStatus_returnsEmptyPage(){
+        when(orderRepository.findOrdersByCustomerIdAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
+    }
+
+    @Test
+    void findOrdersByCustomerIdAndStatusNot_returnsPage(){
+        when(orderRepository.findOrdersByCustomerIdAndStatusNot(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(order, order)));
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
+
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdAndStatusNot(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+    }
+
+    @Test
+    void findOrdersByCustomerIdAndStatusNot_returnsEmptyPage(){
+        when(orderRepository.findOrdersByCustomerIdAndStatusNot(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdAndStatusNot(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
+    }
+
+    @Test
+    void findOrdersByCustomerIdNotAndStatus_returnsPage(){
+        when(orderRepository.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of(order, order)));
+        when(orderMapper.toDto(any(Order.class))).thenReturn(orderDto);
+
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+    }
+
+    @Test
+    void findOrdersByCustomerIdNotAndStatus_returnsEmptyPage(){
+        when(orderRepository.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        Page<OrderDto> result = orderServiceDefault.findOrdersByCustomerIdNotAndStatus(
+                1, OrderStatus.PUBLISHED, 0, 10
+        );
+
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 }
