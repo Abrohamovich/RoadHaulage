@@ -28,7 +28,7 @@ public class CreatedOrderController {
     @GetMapping("/page={page}")
     public String createdOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                                     @PathVariable int page, Model model) {
-        Page<OrderDto> ordersPage = orderService.findPageableOrdersByCustomerId(authUserDto.getId(), page, 10);
+        Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdAndStatusNot(authUserDto.getId(), OrderStatus.COMPLETED, page, 10);
         List<OrderDto> orders = ordersPage.getContent()
                 .stream()
                 .filter(order -> !order.getStatus().equals(OrderStatus.COMPLETED))
@@ -43,8 +43,7 @@ public class CreatedOrderController {
 
     @PostMapping("/publish")
     public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                               @RequestParam long id,
-                               @RequestParam int currentPage){
+                               @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();

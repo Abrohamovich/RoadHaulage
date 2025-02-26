@@ -83,7 +83,7 @@ public class OrdersPageControllerTests {
     @Test
     void ordersPage() throws Exception {
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
+        when(orderService.findOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of(order));
 
         mockMvc.perform(get("/orders"))
@@ -98,7 +98,7 @@ public class OrdersPageControllerTests {
     @Test
     void ordersPage_otherPublishedOrdersIsEmpty() throws Exception {
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
+        when(orderService.findOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of());
 
         mockMvc.perform(get("/orders"))
@@ -110,7 +110,7 @@ public class OrdersPageControllerTests {
     @Test
     void filter() throws Exception {
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong()))
+        when(orderService.findOtherPublishedOrders(anyLong()))
                 .thenReturn(List.of(order, order));
 
         when(orderCategoryService.createOrderCategorySet(anyString()))

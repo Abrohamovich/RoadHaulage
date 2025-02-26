@@ -6,6 +6,7 @@
 <link rel="stylesheet" th:href="@{/css/orders.css}">
 <link rel="stylesheet" th:href="@{/css/orders-filter.css}">
 <link rel="stylesheet" th:href="@{/css/orders-page.css}">
+<link rel="stylesheet" th:href="@{/css/pagination.css}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,7 @@
 <div th:replace="~{header.html}"></div>
 <div class="container">
     <aside class="filter-bar">
-        <form method="get" th:action="@{/orders/filter}">
+        <form method="get" th:action="@{/orders/page=${currentPage}/filter}">
             <label for="category">Category:</label>
             <input id="selectedValues" type="text" name="categoriesString" th:value="${categoriesString}" readonly>
             <select id="category">
@@ -55,8 +56,8 @@
                 <option>PLN</option>
                 <option>UAH</option>
             </select>
-            <button type="submit">Filter</button>
-            <button type="reset" onclick="window.location.href='/orders'">Reset</button>
+            <button type="submit" disabled>Filter</button>
+            <button type="reset" th:href="@{/orders/page=${currentPage}}" >Reset</button>
         </form>
     </aside>
     <main class="orders">
@@ -87,6 +88,18 @@
                     </button>
                 </form>
             </div>
+        </div>
+        <!--Pagination -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/orders/page={prev}(prev=${currentPage - 1})}"
+               th:classappend="${currentPage == 0 ? 'disabled' : ''}">Previous</a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{/orders/page={page}(page=${i})}"
+                   th:text="${i + 1}"
+                   th:classappend="${currentPage == i ? 'active' : ''}"></a>
+            </span>
+            <a th:href="@{/orders/page={next}(next=${currentPage + 1})}"
+               th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
         </div>
     </main>
 </div>

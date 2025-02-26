@@ -27,10 +27,9 @@ public class AcceptedOrdersController {
     @GetMapping("page={page}")
     public String acceptedOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                                      @PathVariable int page, Model model) {
-        Page<OrderDto> ordersPage = orderService.findPageableOrdersByCourierId(authUserDto.getId(), page, 10);
+        Page<OrderDto> ordersPage = orderService.findOrdersByCourierIdAndStatus(authUserDto.getId(), OrderStatus.ACCEPTED, page, 10);
         List<OrderDto> orders = ordersPage.getContent()
                 .stream()
-                .filter(order -> order.getStatus().equals(OrderStatus.ACCEPTED))
                 .peek(OrderDto::defineView)
                 .toList();
         model.addAttribute("orders", orders);
@@ -52,7 +51,7 @@ public class AcceptedOrdersController {
             orderDto.setCourier(userDto);
             orderService.save(orderDto);
         }
-        return "redirect:/account/courier-orders/accepted/page=0";
+        return "redirect:/account/delivered-orders/accepted/page=0";
     }
 
     @PostMapping("/decline")
@@ -69,6 +68,6 @@ public class AcceptedOrdersController {
             orderDto.setAcceptDate(null);
             orderService.save(orderDto);
         }
-        return "redirect:/account/courier-orders/accepted/page=0";
+        return "redirect:/account/delivered-orders/accepted/page=0";
     }
 }

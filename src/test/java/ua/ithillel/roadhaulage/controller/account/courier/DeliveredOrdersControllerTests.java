@@ -76,7 +76,7 @@ public class DeliveredOrdersControllerTests {
         order.setDimensionsUnit("cm");
 
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderService.returnOtherPublishedOrders(anyLong())).thenReturn(List.of(order));
+        when(orderService.findOtherPublishedOrders(anyLong())).thenReturn(List.of(order));
 
         mockMvc.perform(get("/account/delivered-orders/delivered"))
                 .andExpect(status().isOk())

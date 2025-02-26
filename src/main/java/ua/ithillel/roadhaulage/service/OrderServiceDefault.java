@@ -47,24 +47,12 @@ public class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public Page<OrderDto> findPageableOrdersByCustomerId(long id, int page, int size) {
-        return orderRepository.findOrdersByCustomerId(id, PageRequest.of(page, size))
-                .map(orderMapper::toDto);
-    }
-
-    @Override
     public List<OrderDto> findOrdersByCourierId(long id) {
         log.info("Finding orders by courier id: {}", id);
         return orderRepository.findOrdersByCourierId(id)
                 .stream()
                 .map(orderMapper::toDto)
                 .toList();
-    }
-
-    @Override
-    public Page<OrderDto> findPageableOrdersByCourierId(long id, int page, int size) {
-        return orderRepository.findOrdersByCourierId(id, PageRequest.of(page, size))
-                .map(orderMapper::toDto);
     }
 
     @Override
@@ -84,28 +72,27 @@ public class OrderServiceDefault implements OrderService {
     }
 
     @Override
-    public List<OrderDto> returnOtherPublishedOrders(long id) {
-        log.info("Returning other published orders by customer id: {}", id);
-        List<Order> allOrders = orderRepository.findAll();
-        List<Order> customerOrders = orderRepository.findOrdersByCustomerId(id);
-        List<Order> orders = allOrders.stream()
-                .filter(order -> customerOrders.stream()
-                        .noneMatch(customerOrder -> customerOrder.getId().equals(order.getId())))
-                .filter(order -> order.getStatus().equals(OrderStatus.PUBLISHED))
-                .toList();
-        return orders.stream().map(orderMapper::toDto).toList();
+    public Page<OrderDto> findOrdersByCourierIdAndStatus(long id, OrderStatus status, int page, int size) {
+        return orderRepository.findOrdersByCourierIdAndStatus(id, status, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
     }
 
     @Override
-    public Page<OrderDto> returnOtherPublishedPageableOrders(long id, int page, int size) {
-        Page<Order> orderPage = orderRepository.findAll(PageRequest.of(page, size));
-
-        List<OrderDto> filteredOrders = orderPage.getContent().stream()
-                .filter(o -> !o.getCustomer().getId().equals(id))
-                .filter(o -> o.getStatus() == OrderStatus.PUBLISHED)
-                .map(orderMapper::toDto)
-                .toList(); // Collect into a List
-
-        return new PageImpl<>(filteredOrders, PageRequest.of(page, size), orderPage.getTotalElements());
+    public Page<OrderDto> findOrdersByCustomerIdAndStatus(long id, OrderStatus status, int page, int size) {
+        return orderRepository.findOrdersByCustomerIdAndStatus(id, status, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
     }
+
+    @Override
+    public Page<OrderDto> findOrdersByCustomerIdAndStatusNot(long id, OrderStatus status, int page, int size) {
+        return orderRepository.findOrdersByCustomerIdAndStatusNot(id, status, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
+    }
+
+    @Override
+    public Page<OrderDto> findOrdersByCustomerIdNotAndStatus(long id, OrderStatus status, int page, int size) {
+        return orderRepository.findOrdersByCustomerIdNotAndStatus(id, status, PageRequest.of(page, size))
+                .map(orderMapper::toDto);
+    }
+
 }

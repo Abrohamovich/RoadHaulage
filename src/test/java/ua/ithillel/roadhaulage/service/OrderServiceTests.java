@@ -182,7 +182,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void returnOtherPublishedOrders_returnsList(){
+    void findOtherPublishedOrders_returnsList(){
         Order order1 = new Order();
         order1.setId(1L);
         order1.setStatus(OrderStatus.PUBLISHED);
@@ -198,14 +198,14 @@ public class OrderServiceTests {
         when(orderRepository.findAll()).thenReturn(allOrders);
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(customersOrders);
 
-        List<OrderDto> result = orderServiceDefault.returnOtherPublishedOrders(1L);
+        List<OrderDto> result = orderServiceDefault.findOtherPublishedOrders(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
-    void returnOtherPublishedOrders_returnsEmptyList(){
+    void findOtherPublishedOrders_returnsEmptyList(){
         Order order1 = new Order();
         order1.setId(1L);
         order1.setStatus(OrderStatus.PUBLISHED);
@@ -218,7 +218,7 @@ public class OrderServiceTests {
         when(orderRepository.findAll()).thenReturn(allOrders);
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(allOrders);
 
-        List<OrderDto> result = orderServiceDefault.returnOtherPublishedOrders(1L);
+        List<OrderDto> result = orderServiceDefault.findOtherPublishedOrders(1L);
 
         assertEquals(0, result.size());
     }

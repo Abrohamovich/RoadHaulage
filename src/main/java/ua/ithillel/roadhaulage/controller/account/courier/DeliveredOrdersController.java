@@ -27,10 +27,9 @@ public class DeliveredOrdersController {
     @GetMapping("/page={page}")
     public String deliveredOrdersPage(@AuthenticationPrincipal AuthUserDto authUserDto,
                                       @PathVariable int page, Model model) {
-        Page<OrderDto> ordersPage = orderService.findPageableOrdersByCourierId(authUserDto.getId(), page, 10);
+        Page<OrderDto> ordersPage = orderService.findOrdersByCourierIdAndStatus(authUserDto.getId(), OrderStatus.COMPLETED, page, 10);
         List<OrderDto> orders = ordersPage.getContent()
                 .stream()
-                .filter(order -> order.getStatus().equals(OrderStatus.COMPLETED))
                 .peek(OrderDto::defineView)
                 .toList();
         model.addAttribute("orders", orders);

@@ -1,8 +1,8 @@
 <header>
   <div class="site-name">RoadHaulage</div>
   <div class="nav-links">
-    <a th:href="@{/orders}" sec:authorize="isAuthenticated()">Orders</a>
-    <a th:href="@{/aboutUs}">About us</a>
+    <a th:href="@{/orders/page=0}" sec:authorize="isAuthenticated()">Orders</a>
+    <a th:href="@{/about-us}">About us</a>
     <a th:href="@{/contact}">Contact</a>
     <a th:href="@{/account/settings/personal-information}" sec:authorize="hasAuthority('USER')">Account</a>
     <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
