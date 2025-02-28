@@ -35,8 +35,6 @@ public class UserRatingServiceDefault implements UserRatingService {
         userRatingDto.setAverage(average);
         userRatingDto.setCount(total + 1);
         UserRating updated = repository.save(userRatingMapper.toEntity(userRatingDto));
-        log.info("Update user rating from previous data, id: {}, average: {}, count: {}",
-                updated.getAverage(), updated.getCount(), updated.getId());
         return userRatingMapper.toDto(updated);
     }
 

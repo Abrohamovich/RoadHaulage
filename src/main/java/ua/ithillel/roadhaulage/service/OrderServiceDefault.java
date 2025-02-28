@@ -73,24 +73,28 @@ public class OrderServiceDefault implements OrderService {
 
     @Override
     public Page<OrderDto> findOrdersByCourierIdAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCourierIdAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for customer ID: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdAndStatusNot(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID: {}, status not: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdAndStatusNot(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdNotAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID not: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdNotAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
