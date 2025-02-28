@@ -3,7 +3,6 @@ package ua.ithillel.roadhaulage.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderDto;
@@ -15,7 +14,6 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

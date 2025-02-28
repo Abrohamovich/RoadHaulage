@@ -2,7 +2,6 @@ package ua.ithillel.roadhaulage.service.interfaces;
 
 import org.springframework.data.domain.Page;
 import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.entity.Order;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 
 import java.util.List;

@@ -11,7 +11,6 @@ import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
