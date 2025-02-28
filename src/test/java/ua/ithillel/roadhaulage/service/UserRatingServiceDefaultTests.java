@@ -93,4 +93,27 @@ public class UserRatingServiceDefaultTests {
 
         assertFalse(result.isPresent());
     }
+
+    @Test
+    void findByUserEmail_ShouldReturnUserRatingDto() {
+        when(repository.findUserRatingByUserEmail(anyString()))
+                .thenReturn(Optional.of(userRating));
+        when(userRatingMapper.toDto(userRating))
+                .thenReturn(userRatingDto);
+
+        Optional<UserRatingDto> result = service.findByUserEmail("string");
+
+        assertTrue(result.isPresent());
+        assertEquals(userRatingDto, result.get());
+    }
+
+    @Test
+    void findByUserEmail_ShouldReturnEmptyOptional(){
+        when(repository.findUserRatingByUserEmail(anyString()))
+                .thenReturn(Optional.empty());
+
+        Optional<UserRatingDto> result = service.findByUserEmail("string");
+
+        assertTrue(result.isEmpty());
+    }
 }

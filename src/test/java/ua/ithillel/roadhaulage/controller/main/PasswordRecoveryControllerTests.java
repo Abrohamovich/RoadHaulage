@@ -122,11 +122,21 @@ public class PasswordRecoveryControllerTests {
     @Test
     void recoverPassword_success_case0() throws Exception {
         String token = UUID.randomUUID().toString();
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@test.com");
+        VerificationTokenDto verToken = new VerificationTokenDto();
+        verToken.setUser(userDto);
+        verToken.setToken(token);
 
-        when(userService.verifyPassword(anyString())).thenReturn((short) 0);
+        when(userService.verifyPassword(token)).thenReturn((short) 0);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.of(verToken));
 
         mockMvc.perform(get("/password-recovery/recover")
-                        .param("token", token));
+                        .param("token", token))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("email"))
+                .andExpect(redirectedUrl("/password-recovery/change"));
     }
 
     @Test
@@ -134,6 +144,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 1);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -149,6 +161,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 2);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -164,6 +178,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 3);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))

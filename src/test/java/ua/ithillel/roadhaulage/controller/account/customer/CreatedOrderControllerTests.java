@@ -149,7 +149,7 @@ public class CreatedOrderControllerTests {
                         .param("id", "1")
                         .param("rating", "3.3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/completed"));
+                .andExpect(redirectedUrl("/account/my-orders/completed/page=0"));
 
         verify(orderService, times(1)).save(any());
         verify(userRatingService, times(1)).update(any(), anyDouble());
@@ -184,7 +184,7 @@ public class CreatedOrderControllerTests {
                         .param("id", "1")
                         .param("rating", "3.3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/completed"));
+                .andExpect(redirectedUrl("/account/my-orders/completed/page=0"));
 
         verify(orderService, times(0)).save(any());
         verify(userRatingService, times(0)).update(any(), anyDouble());
