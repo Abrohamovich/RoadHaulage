@@ -46,4 +46,11 @@ public class UserRatingServiceDefault implements UserRatingService {
         return repository.findById(id)
                 .map(userRatingMapper::toDto);
     }
+
+    @Override
+    public Optional<UserRatingDto> findByUserEmail(String email) {
+        log.info("Returning userRating for user with email : {}", email);
+        return repository.findUserRatingByUserEmail(email)
+                .map(userRatingMapper::toDto);
+    }
 }

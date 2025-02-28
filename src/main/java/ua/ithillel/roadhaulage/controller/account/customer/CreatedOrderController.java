@@ -69,7 +69,7 @@ public class CreatedOrderController {
             userRatingOptional.ifPresent(userRating -> userRatingService.update(userRating, rating));
             orderService.save(orderDto);
         }
-        return "redirect:/account/my-orders/completed";
+        return "redirect:/account/my-orders/completed/page=0";
     }
 
     @GetMapping("/delete")

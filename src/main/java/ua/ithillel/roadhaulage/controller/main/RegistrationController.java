@@ -58,7 +58,7 @@ public class RegistrationController {
             userRatingDto.setAverage(0.0);
             userRatingDto.setCount(0);
             userRatingDto.setUser(userDto);
-            userRatingService.save(userRatingDto);
+            userRatingDto = userRatingService.save(userRatingDto);
 
             String token = UUID.randomUUID().toString();
 
