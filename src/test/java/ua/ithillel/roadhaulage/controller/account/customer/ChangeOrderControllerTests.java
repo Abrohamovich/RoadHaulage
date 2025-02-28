@@ -42,6 +42,7 @@ public class ChangeOrderControllerTests {
     private AddressService addressService;
 
     private UserDto user;
+    private OrderDto order;
 
     @BeforeEach
     void init(){
@@ -58,18 +59,11 @@ public class ChangeOrderControllerTests {
         user.setPhone("123456789");
         user.setIban("IBAN12345");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
-        );
-    }
-
-    @Test
-    void changePage_returnsChangePage() throws Exception {
         OrderCategoryDto category = new OrderCategoryDto();
         category.setName("Category");
 
-        OrderDto order = new OrderDto();
-        order.setStatus(OrderStatus.COMPLETED);
+        order = new OrderDto();
+        order.setStatus(OrderStatus.PUBLISHED);
         order.setCustomer(user);
         order.setCategories(Set.of(category));
         order.setDepartureAddress(new AddressDto());
@@ -81,7 +75,13 @@ public class ChangeOrderControllerTests {
         order.setDimensions("2");
         order.setDimensionsUnit("cm");
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
+        );
+    }
+
+    @Test
+    void changePage_returnsChangePage() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -93,10 +93,24 @@ public class ChangeOrderControllerTests {
     }
 
     @Test
-    void changePage_redirectErrorPage() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
+    void changePage_redirectErrorPage_orderIsNotPresent() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/account/my-orders/change")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
+    void changePage_redirectErrorPage_orderDoesNotBelongToCurrentUser() throws Exception {
+        UserDto newUser = new UserDto();
+        newUser.setId(5L);
+        order.setCustomer(newUser);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/change")
                         .param("id", "1"))
@@ -108,6 +122,7 @@ public class ChangeOrderControllerTests {
     void changeOrder() throws Exception {
         OrderDto order = new OrderDto();
         order.setCustomer(user);
+        order.setStatus(OrderStatus.CREATED);
 
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
@@ -147,10 +162,8 @@ public class ChangeOrderControllerTests {
         UserDto userDto = new UserDto();
         userDto.setId(4L);
 
-        OrderDto order = new OrderDto();
         order.setCustomer(userDto);
 
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -172,10 +185,6 @@ public class ChangeOrderControllerTests {
 
     @Test
     void changeOrder_throwsAddressCreateException() throws Exception {
-        OrderDto order = new OrderDto();
-        order.setCustomer(user);
-
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
         when(orderCategoryService.createOrderCategorySet(anyString()))
@@ -198,5 +207,27 @@ public class ChangeOrderControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/create"))
                 .andExpect(flash().attribute("errorMessage", "You didn't enter the address information correctly"));
+    }
+
+    @Test
+    void changeOrder_orderStatusIsNotPublishedNorCreated() throws Exception {
+        order.setStatus(OrderStatus.COMPLETED);
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/change/edit")
+                        .param("id", "1")
+                        .param("categoriesString", "smth")
+                        .param("cost", "smth")
+                        .param("deliveryAddressString", "smth")
+                        .param("departureAddressString", "smth")
+                        .param("additionalInfo", "smth")
+                        .param("weight", "smth")
+                        .param("dimensions", "smth")
+                        .param("weight-unit", "smth")
+                        .param("dimensions-unit", "smth")
+                        .param("currency", "smth"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
     }
 }
