@@ -1,7 +1,6 @@
 package ua.ithillel.roadhaulage.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
 

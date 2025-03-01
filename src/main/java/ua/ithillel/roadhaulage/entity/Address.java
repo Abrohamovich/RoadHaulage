@@ -3,7 +3,6 @@ package ua.ithillel.roadhaulage.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Data
