@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.entity.OrderCategory;
 import ua.ithillel.roadhaulage.mapper.OrderCategoryMapper;

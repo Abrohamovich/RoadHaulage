@@ -18,10 +18,11 @@ import ua.ithillel.roadhaulage.mapper.OrderMapper;
 import ua.ithillel.roadhaulage.repository.OrderRepository;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

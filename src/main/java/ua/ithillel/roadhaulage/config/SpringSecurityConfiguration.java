@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import ua.ithillel.roadhaulage.entity.UserRole;
+import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 @Configuration
 public class SpringSecurityConfiguration {
@@ -52,10 +53,10 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationManager(UserDetailsService userDetailsService) {
+    public DaoAuthenticationProvider authenticationProvider(UserService userService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(bCryptPasswordEncoder());
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userService);
         return authProvider;
     }
 

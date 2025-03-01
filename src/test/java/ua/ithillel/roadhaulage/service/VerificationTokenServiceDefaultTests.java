@@ -6,16 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
-import ua.ithillel.roadhaulage.entity.Address;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.VerificationToken;
-import ua.ithillel.roadhaulage.mapper.AddressMapper;
 import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.mapper.VerificationTokenMapper;
-import ua.ithillel.roadhaulage.repository.AddressRepository;
 import ua.ithillel.roadhaulage.repository.VerificationTokenRepository;
 
 import java.time.LocalDateTime;

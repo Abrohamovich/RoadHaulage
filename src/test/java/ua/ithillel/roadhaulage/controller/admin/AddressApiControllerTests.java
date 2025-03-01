@@ -16,17 +16,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.AddressDto;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
-import ua.ithillel.roadhaulage.mapper.AddressMapper;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(controllers = AddressApiController.class)
 @AutoConfigureMockMvc(addFilters = false)
