@@ -10,10 +10,7 @@ import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
-import ua.ithillel.roadhaulage.service.interfaces.EmailService;
-import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
-import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
+import ua.ithillel.roadhaulage.service.interfaces.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/register")
 @RequiredArgsConstructor
 public class RegistrationController {
-    private final UserService userService;
+    private final RegisterService registerService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
     private final UserRatingService userRatingService;
@@ -52,7 +49,7 @@ public class RegistrationController {
             userDto.setPhone(phone);
             userDto.setPassword(password);
 
-            userDto = userService.save(userDto);
+            userDto = registerService.register(userDto);
 
             UserRatingDto userRatingDto = new UserRatingDto();
             userRatingDto.setAverage(0.0);

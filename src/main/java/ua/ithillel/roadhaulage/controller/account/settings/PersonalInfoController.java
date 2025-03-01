@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.*;
@@ -17,6 +18,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PersonalInfoController {
     private final UserService userService;
+    private final RegisterService registerService;
 
     @GetMapping
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,
@@ -69,7 +71,7 @@ public class PersonalInfoController {
         userDto.setPhoneCode(phoneCode);
         userDto.setPhone(phone);
         userDto.setIban(iban);
-        userService.update(userDto);
+        registerService.update(userDto);
 
         return "redirect:/account/settings/personal-information";
     }

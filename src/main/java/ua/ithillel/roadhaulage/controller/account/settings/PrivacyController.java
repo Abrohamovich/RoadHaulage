@@ -10,6 +10,7 @@ import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class PrivacyController {
     private final UserService userService;
+    private final RegisterService registerService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
 
@@ -72,13 +74,13 @@ public class PrivacyController {
 
         if (!password.isEmpty()) {
             userDto.setPassword(password);
-            userService.update(userDto);
+            registerService.update(userDto);
         }
 
         if (!email.isEmpty() && !email.equals(userDto.getEmail())) {
             userDto.setEmail(email);
             userDto.setEnabled(false);
-            userService.update(userDto);
+            registerService.update(userDto);
 
             String token = UUID.randomUUID().toString();
 

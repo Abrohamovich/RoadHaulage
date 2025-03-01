@@ -26,50 +26,10 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceDefault implements UserService, UserDetailsService {
+public class UserServiceDefault implements UserService{
     private final UserRepository userRepository;
     private final VerificationTokenService verificationTokenService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
-
-    @Override
-    public UserDto save(UserDto userDto) {
-        List<String> errors = new ArrayList<>();
-
-        User user = userMapper.toEntity(userDto);
-
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            errors.add("A user with email " + user.getEmail() + " already exists");}
-        if (userRepository.findByPhoneCodeAndPhone(user.getPhoneCode(), user.getPhone()).isPresent()) {
-            errors.add("A user with phone " + user.getPhoneCode() + user.getPhone() + " already exists");}
-        if (!isValidPassword(user.getPassword())){
-            errors.add("Password must contain at least one digit and one uppercase");}
-        if(!errors.isEmpty()) {
-            log.warn("Errors found: {}", String.join(". ", errors));
-            throw new UserCreateException(String.join(". ", errors));
-        }
-
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
-        User savedUser = userRepository.save(user);
-
-        log.info("Saved user: {}", savedUser);
-        return userMapper.toDto(savedUser);
-    }
-
-    @Override
-    public UserDto update(UserDto userDto) {
-        User user = userMapper.toEntity(userDto);
-
-        Optional<User> userFromDB = userRepository.findById(user.getId());
-        if (userFromDB.isPresent() && !userFromDB.get().getPassword().equals(user.getPassword())) {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        }
-        User updatedUser = userRepository.save(user);
-
-        log.info("Updated user: {}", updatedUser);
-        return userMapper.toDto(updatedUser);
-    }
 
     @Override
     public Optional<UserDto> findById(long id) {
@@ -142,10 +102,5 @@ public class UserServiceDefault implements UserService, UserDetailsService {
             return 3;
         }
         return 0;
-    }
-
-    private boolean isValidPassword(String password) {
-        return Pattern.compile("\\d").matcher(password).find()
-                && Pattern.compile("[A-Z]").matcher(password).find();
     }
 }

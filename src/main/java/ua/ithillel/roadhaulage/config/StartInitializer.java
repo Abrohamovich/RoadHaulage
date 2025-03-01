@@ -15,6 +15,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class StartInitializer implements CommandLineRunner {
     private final UserService userService;
+    private final RegisterService registerService;
     private final UserRatingService userRatingService;
     private final OrderCategoryService orderCategoryService;
     private final AddressService addressService;
@@ -54,7 +55,7 @@ public class StartInitializer implements CommandLineRunner {
             userDto.setRole(UserRole.ADMIN);
             userDto.setFirstName("Road");
             userDto.setLastName("Haulage");
-            userDto = userService.save(userDto);
+            userDto = registerService.register(userDto);
 
             UserRatingDto userRatingDto = new UserRatingDto();
             userRatingDto.setUser(userDto);
