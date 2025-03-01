@@ -33,4 +33,15 @@ public class JwtUtil {
 
         return jwtParserBuilder.parseSignedClaims(token).getPayload();
     }
+
+    public boolean validateToken(String token, AuthUserDto user) {
+        try {
+            Claims claims = parseToken(token);
+
+            return claims.getSubject().equals(user.getUsername())
+                    && !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

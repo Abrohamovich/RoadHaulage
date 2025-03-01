@@ -22,13 +22,4 @@ public class MainPagesController {
     public String contact() {
         return "contact";
     }
-
-    @GetMapping("/login")
-    public String login(@ModelAttribute("attentionMessage") String attentionMessage,
-                        @ModelAttribute("successMessage") String successMessage,
-                        Model model) {
-        model.addAttribute("attentionMessage", attentionMessage);
-        model.addAttribute("successMessage", successMessage);
-        return "login";
-    }
 }

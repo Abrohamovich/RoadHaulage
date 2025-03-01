@@ -73,7 +73,8 @@ public class SpringSecurityConfiguration {
                                 "/orders/**",
                                 "/verify-email",
                                 "/password-recovery/**",
-                                "/api/auth/**").permitAll()
+                                "/api/auth/**",
+                                "login").permitAll()
                         .requestMatchers("/account/**", "/generate-report").hasAuthority(UserRole.USER.name())
                         .requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
                         .anyRequest().authenticated()
