@@ -10,7 +10,6 @@ import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
-import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.util.ArrayList;
 import java.util.List;

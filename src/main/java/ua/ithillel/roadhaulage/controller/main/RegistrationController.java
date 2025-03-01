@@ -10,7 +10,10 @@ import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
-import ua.ithillel.roadhaulage.service.interfaces.*;
+import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
+import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
+import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

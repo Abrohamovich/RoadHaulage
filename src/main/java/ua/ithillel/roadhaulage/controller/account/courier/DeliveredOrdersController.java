@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
-import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/account/delivered-orders/delivered")

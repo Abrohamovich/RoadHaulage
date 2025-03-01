@@ -8,9 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
-import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
@@ -18,7 +16,6 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor

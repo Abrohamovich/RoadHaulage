@@ -3,13 +3,12 @@ package ua.ithillel.roadhaulage.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ua.ithillel.roadhaulage.dto.*;
-import ua.ithillel.roadhaulage.entity.OrderStatus;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.*;
 
-import java.sql.Date;
-import java.util.*;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
