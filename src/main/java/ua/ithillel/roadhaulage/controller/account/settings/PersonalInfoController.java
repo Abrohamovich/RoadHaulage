@@ -24,8 +24,7 @@ public class PersonalInfoController {
                                    @ModelAttribute("phoneError") String phoneError,
                                    @AuthenticationPrincipal AuthUserDto authUserDto,
                                    Model model) {
-        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
-        UserDto userDto = userDtoOptional.get();
+        UserDto userDto = userService.findById(authUserDto.getId()).get();
         List<String> codes = getCodes(userDto.getPhoneCode());
         Map<String, String> map = new HashMap<>();
         map.put("firstName", userDto.getFirstName());

@@ -51,6 +51,7 @@ public class PrivacyControllerTests {
         authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
+        authUserDto.setEmail("john@doe.com");
 
         user = new UserDto();
         user.setId(1L);
@@ -68,8 +69,6 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withoutErrorParams() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-
         mockMvc.perform(get("/account/settings/privacy")
                 .param("email", "john@doe.com"))
                 .andExpect(status().isOk())
@@ -79,8 +78,6 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withEmailErrorParam() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("emailError", "Something went wrong"))
@@ -92,8 +89,6 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withPasswordErrorParam() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("passwordError", "Something went wrong"))
@@ -105,8 +100,6 @@ public class PrivacyControllerTests {
 
     @Test
     void privacyPageTest_withBothErrorParams() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-
         mockMvc.perform(get("/account/settings/privacy")
                         .param("email", "john@doe.com")
                         .param("passwordError", "Something went wrong")

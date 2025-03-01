@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ua.ithillel'
-version = '1.0'
+version = '1.1'
 
 java {
     toolchain {
@@ -37,7 +37,6 @@ dependencies {
     implementation 'commons-io:commons-io:2.18.0'
     implementation 'com.google.protobuf:protobuf-java:4.28.2'
     implementation 'org.apache.commons:commons-compress:1.26.0'
-    implementation 'net.minidev:json-smart:2.5.2'
 
     compileOnly 'org.projectlombok:lombok'
 

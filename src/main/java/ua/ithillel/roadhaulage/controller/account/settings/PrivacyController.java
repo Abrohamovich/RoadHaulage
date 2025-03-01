@@ -33,11 +33,10 @@ public class PrivacyController {
                               @ModelAttribute("passwordError") String passwordError,
                               @ModelAttribute("emailError") String emailError,
                               Model model) {
-        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
         Map<String, String> map = new HashMap<>();
         map.put("passwordError", passwordError);
         map.put("emailError", emailError);
-        map.put("email", userDto.get().getEmail());
+        map.put("email", authUserDto.getEmail());
         model.addAllAttributes(map);
         return "account/settings/privacy";
     }
