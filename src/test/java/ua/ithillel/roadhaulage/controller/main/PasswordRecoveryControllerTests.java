@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -32,6 +33,8 @@ public class PasswordRecoveryControllerTests {
     private MockMvc mockMvc;
     @MockitoBean
     private UserService userService;
+    @MockitoBean
+    private RegisterService registerService;
     @MockitoBean
     private VerificationTokenService verificationTokenService;
     @MockitoBean

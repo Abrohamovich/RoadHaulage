@@ -14,10 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
-import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
-import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -39,16 +38,17 @@ public class PrivacyControllerTests {
     @MockitoBean
     private UserService userService;
     @MockitoBean
+    private RegisterService registerService;
+    @MockitoBean
     private VerificationTokenService verificationTokenService;
     @MockitoBean
     private EmailService emailService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
         authUserDto.setEmail("john@doe.com");
@@ -124,7 +124,7 @@ public class PrivacyControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/logout"));
 
-        verify(userService, times(2)).update(user);
+        verify(registerService, times(2)).update(user);
         verify(verificationTokenService, times(1)).save(any());
         verify(emailService, times(1)).sendEmailConfirmation(anyString(), anyString(), any());
     }
@@ -140,7 +140,7 @@ public class PrivacyControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/settings/privacy"));
 
-        verify(userService, times(1)).update(user);
+        verify(registerService, times(1)).update(user);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class PrivacyControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/logout"));
 
-        verify(userService, times(1)).update(user);
+        verify(registerService, times(1)).update(user);
         verify(verificationTokenService, times(1)).save(any());
         verify(emailService, times(1)).sendEmailConfirmation(anyString(), anyString(), any());
     }

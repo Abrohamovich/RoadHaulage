@@ -11,17 +11,14 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
-import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
-import ua.ithillel.roadhaulage.entity.VerificationToken;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,7 +32,7 @@ public class RegistrationControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private UserService userService;
+    private RegisterService registerService;
     @MockitoBean
     private VerificationTokenService verificationTokenService;
     @MockitoBean
@@ -76,7 +73,7 @@ public class RegistrationControllerTests {
         verificationToken.setUser(user);
         verificationToken.setToken(token);
 
-        when(userService.save(any(UserDto.class))).thenReturn(user);
+        when(registerService.register(any(UserDto.class))).thenReturn(user);
 
         mockMvc.perform(post("/register/reg")
                 .param("email", email)
@@ -99,7 +96,7 @@ public class RegistrationControllerTests {
         String lastName = "Test";
 
         doThrow(new UserCreateException("User creation failed"))
-                .when(userService).save(any(UserDto.class));
+                .when(registerService).register(any(UserDto.class));
 
         mockMvc.perform(post("/register/reg")
                         .param("email", email)

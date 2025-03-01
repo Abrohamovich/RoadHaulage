@@ -15,14 +15,15 @@ import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.User;
 import ua.ithillel.roadhaulage.entity.UserRole;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,13 +36,14 @@ public class PersonalInfoControllerTests {
     private MockMvc mockMvc;
     @MockitoBean
     private UserService userService;
+    @MockitoBean
+    private RegisterService registerService;
 
-    private AuthUserDto authUserDto;
     private UserDto user;
 
     @BeforeEach
     void init(){
-        authUserDto = new AuthUserDto();
+        AuthUserDto authUserDto = new AuthUserDto();
         authUserDto.setId(1L);
         authUserDto.setRole(UserRole.USER);
 
@@ -84,6 +86,7 @@ public class PersonalInfoControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/settings/personal-information"));
 
+        verify(registerService, times(1)).update(any(UserDto.class));
     }
 
     @Test
@@ -106,6 +109,7 @@ public class PersonalInfoControllerTests {
                 .andExpect(redirectedUrl("/account/settings/personal-information"))
                 .andExpect(flash().attributeExists("phoneError"))
                 .andExpect(flash().attribute("phoneError", "Phone number already exists"));
-    }
 
+        verify(registerService, times(0)).update(any(UserDto.class));
+    }
 }
