@@ -38,13 +38,16 @@ public class CreatedOrderController {
         return "account/customer-orders/created";
     }
 
+    //Sets the order status to PUBLISHED
     @PostMapping("/publish")
     public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                                @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if(orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId()) ||
+                    !(orderDto.getStatus().equals(OrderStatus.CREATED) ||
+                    orderDto.getStatus().equals(OrderStatus.CHANGED))) {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.PUBLISHED);
@@ -53,6 +56,7 @@ public class CreatedOrderController {
         return "redirect:/account/my-orders/created/page=0";
     }
 
+    //Sets the order status to DELIVERED
     @PostMapping("/close")
     public String closeOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @RequestParam long id,
@@ -60,7 +64,8 @@ public class CreatedOrderController {
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()){
             OrderDto orderDto = orderOptional.get();
-            if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
+            if (!orderDto.getCustomer().getId().equals(authUserDto.getId()) ||
+                    !orderDto.getStatus().equals(OrderStatus.ACCEPTED)) {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.COMPLETED);
@@ -69,7 +74,7 @@ public class CreatedOrderController {
             userRatingOptional.ifPresent(userRating -> userRatingService.update(userRating, rating));
             orderService.save(orderDto);
         }
-        return "redirect:/account/my-orders/completed";
+        return "redirect:/account/my-orders/completed/page=0";
     }
 
     @GetMapping("/delete")

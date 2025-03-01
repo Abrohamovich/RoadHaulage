@@ -30,8 +30,8 @@ public class ReportGeneratorController {
     public void generateReport(@AuthenticationPrincipal AuthUserDto authUserDto, HttpServletResponse response) {
         try {
             Optional<UserDto> userDto = userService.findById(authUserDto.getId());
-            List<OrderDto> customerOrderList = orderService.findOrdersByCustomerId(userDto.get().getId());
-            List<OrderDto> courierOrderList = orderService.findOrdersByCourierId(userDto.get().getId());
+            List<OrderDto> customerOrderList = orderService.findOrdersByCustomerId(authUserDto.getId());
+            List<OrderDto> courierOrderList = orderService.findOrdersByCourierId(authUserDto.getId());
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             reportGenerator.generateReport(userDto.get(), customerOrderList, courierOrderList, outputStream);

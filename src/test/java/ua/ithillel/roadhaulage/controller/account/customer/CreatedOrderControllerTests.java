@@ -13,7 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.*;
-import ua.ithillel.roadhaulage.entity.*;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
+import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
 
@@ -22,8 +23,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(controllers = CreatedOrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -88,10 +90,11 @@ public class CreatedOrderControllerTests {
     }
 
     @Test
-    void publishOrder() throws Exception {
+    void publishOrder_success() throws Exception {
         OrderDto order = new OrderDto();
         order.setId(1L);
         order.setCustomer(user);
+        order.setStatus(OrderStatus.CREATED);
 
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
@@ -103,7 +106,7 @@ public class CreatedOrderControllerTests {
     }
 
     @Test
-    void publishOrder_orderDoesNotBelongToCurrentUser() throws Exception {
+    void publishOrder_failure_orderDoesNotBelongToCurrentUser() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(5L);
 
@@ -121,7 +124,23 @@ public class CreatedOrderControllerTests {
     }
 
     @Test
-    void publishOrder_doNone() throws Exception {
+    void publishOrder_failure_orderStatusIsNotCreatedNorChanged() throws Exception {
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(user);
+        order.setStatus(OrderStatus.ACCEPTED);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/created/publish")
+                        .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
+    void publishOrder_doNone_orderIsNotPresent() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -139,6 +158,7 @@ public class CreatedOrderControllerTests {
         order.setId(1L);
         order.setCustomer(user);
         order.setCourier(user);
+        order.setStatus(OrderStatus.ACCEPTED);
 
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.of(order));
@@ -149,7 +169,7 @@ public class CreatedOrderControllerTests {
                         .param("id", "1")
                         .param("rating", "3.3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/completed"));
+                .andExpect(redirectedUrl("/account/my-orders/completed/page=0"));
 
         verify(orderService, times(1)).save(any());
         verify(userRatingService, times(1)).update(any(), anyDouble());
@@ -176,7 +196,25 @@ public class CreatedOrderControllerTests {
     }
 
     @Test
-    void closeOrder_doNone() throws Exception {
+    void closeOrder_orderStatusIsNotAccepted() throws Exception {
+        OrderDto order = new OrderDto();
+        order.setId(1L);
+        order.setCustomer(user);
+        order.setCourier(user);
+        order.setStatus(OrderStatus.CREATED);
+
+        when(orderService.findById(anyLong()))
+                .thenReturn(Optional.of(order));
+
+        mockMvc.perform(post("/account/my-orders/created/close")
+                        .param("id", "1")
+                        .param("rating", "3.3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"));
+    }
+
+    @Test
+    void closeOrder_doNone_orderIsNotPresent() throws Exception {
         when(orderService.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -184,7 +222,7 @@ public class CreatedOrderControllerTests {
                         .param("id", "1")
                         .param("rating", "3.3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/account/my-orders/completed"));
+                .andExpect(redirectedUrl("/account/my-orders/completed/page=0"));
 
         verify(orderService, times(0)).save(any());
         verify(userRatingService, times(0)).update(any(), anyDouble());

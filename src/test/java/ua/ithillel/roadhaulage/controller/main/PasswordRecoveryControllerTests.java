@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -19,10 +20,10 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = PasswordRecoveryController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -32,6 +33,8 @@ public class PasswordRecoveryControllerTests {
     private MockMvc mockMvc;
     @MockitoBean
     private UserService userService;
+    @MockitoBean
+    private RegisterService registerService;
     @MockitoBean
     private VerificationTokenService verificationTokenService;
     @MockitoBean
@@ -122,11 +125,21 @@ public class PasswordRecoveryControllerTests {
     @Test
     void recoverPassword_success_case0() throws Exception {
         String token = UUID.randomUUID().toString();
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@test.com");
+        VerificationTokenDto verToken = new VerificationTokenDto();
+        verToken.setUser(userDto);
+        verToken.setToken(token);
 
-        when(userService.verifyPassword(anyString())).thenReturn((short) 0);
+        when(userService.verifyPassword(token)).thenReturn((short) 0);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.of(verToken));
 
         mockMvc.perform(get("/password-recovery/recover")
-                        .param("token", token));
+                        .param("token", token))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("email"))
+                .andExpect(redirectedUrl("/password-recovery/change"));
     }
 
     @Test
@@ -134,6 +147,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 1);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -149,6 +164,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 2);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))
@@ -164,6 +181,8 @@ public class PasswordRecoveryControllerTests {
         String token = UUID.randomUUID().toString();
 
         when(userService.verifyPassword(anyString())).thenReturn((short) 3);
+        when(verificationTokenService.getToken(token))
+                .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/password-recovery/recover")
                         .param("token", token))

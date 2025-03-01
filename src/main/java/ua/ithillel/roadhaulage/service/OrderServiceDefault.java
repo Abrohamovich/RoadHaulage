@@ -3,7 +3,6 @@ package ua.ithillel.roadhaulage.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.OrderDto;
@@ -15,7 +14,6 @@ import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -73,24 +71,28 @@ public class OrderServiceDefault implements OrderService {
 
     @Override
     public Page<OrderDto> findOrdersByCourierIdAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCourierIdAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for customer ID: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdAndStatusNot(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID: {}, status not: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdAndStatusNot(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }
 
     @Override
     public Page<OrderDto> findOrdersByCustomerIdNotAndStatus(long id, OrderStatus status, int page, int size) {
+        log.info("Finding orders for courier ID not: {}, status: {}, page: {}, size: {}", id, status, page, size);
         return orderRepository.findOrdersByCustomerIdNotAndStatus(id, status, PageRequest.of(page, size))
                 .map(orderMapper::toDto);
     }

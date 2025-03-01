@@ -76,7 +76,7 @@
          th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
     </div>
 
-    <div id="ratingModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);">
+    <div id="ratingModal" style="z-index: 100; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);">
       <form id="ratingForm" th:action="@{/account/my-orders/created/close}" method="post">
         <input type="hidden" name="id" id="orderId" />
         <label for="rating">Rating:</label>

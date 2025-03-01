@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
@@ -38,29 +39,34 @@ public class AcceptedOrdersController {
         return "account/courier-orders/accepted";
     }
 
+    //Sets the current user as the courier of an order with the status PUBLISHED
     @PostMapping("/accept")
     public String acceptOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                               @RequestParam long id){
-        Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
-        UserDto userDto = userDtoOptional.get();
+        Optional<UserDto> userOptional = userService.findById(authUserDto.getId());
         Optional<OrderDto> orderOptional = orderService.findById(id);
-        if (orderOptional.isPresent()) {
+        if (orderOptional.isPresent() && userOptional.isPresent()) {
+            UserDto userDto = userOptional.get();
             OrderDto orderDto = orderOptional.get();
-            orderDto.setAcceptDate(new Date(System.currentTimeMillis()));
-            orderDto.setStatus(OrderStatus.ACCEPTED);
-            orderDto.setCourier(userDto);
-            orderService.save(orderDto);
+            if (orderDto.getStatus().equals(OrderStatus.PUBLISHED)) {
+                orderDto.setAcceptDate(new Date(System.currentTimeMillis()));
+                orderDto.setStatus(OrderStatus.ACCEPTED);
+                orderDto.setCourier(userDto);
+                orderService.save(orderDto);
+            } else return "redirect:/error";
         }
         return "redirect:/account/delivered-orders/accepted/page=0";
     }
 
+    //Removes the current courier user from the order with the status ACCEPTED
     @PostMapping("/decline")
     public String declineOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                                @RequestParam long id){
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
-            if(!orderDto.getCourier().getId().equals(authUserDto.getId())){
+            if(!orderDto.getCourier().getId().equals(authUserDto.getId()) ||
+                    !orderDto.getStatus().equals(OrderStatus.ACCEPTED)) {
                 return "redirect:/error";
             }
             orderDto.setCourier(null);

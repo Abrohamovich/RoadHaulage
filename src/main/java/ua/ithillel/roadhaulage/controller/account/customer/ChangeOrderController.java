@@ -65,7 +65,9 @@ public class ChangeOrderController {
         Optional<OrderDto> orderDtoOptional = orderService.findById(id);
         OrderDto orderDto = orderDtoOptional.get();
 
-        if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
+        if (!orderDto.getCustomer().getId().equals(authUserDto.getId()) ||
+                !(orderDto.getStatus().equals(OrderStatus.PUBLISHED) ||
+                        orderDto.getStatus().equals(OrderStatus.CREATED))) {
             return "redirect:/error";
         }
 

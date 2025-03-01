@@ -10,6 +10,7 @@ import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class PrivacyController {
     private final UserService userService;
+    private final RegisterService registerService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
 
@@ -33,11 +35,10 @@ public class PrivacyController {
                               @ModelAttribute("passwordError") String passwordError,
                               @ModelAttribute("emailError") String emailError,
                               Model model) {
-        Optional<UserDto> userDto = userService.findById(authUserDto.getId());
         Map<String, String> map = new HashMap<>();
         map.put("passwordError", passwordError);
         map.put("emailError", emailError);
-        map.put("email", userDto.get().getEmail());
+        map.put("email", authUserDto.getEmail());
         model.addAllAttributes(map);
         return "account/settings/privacy";
     }
@@ -73,13 +74,13 @@ public class PrivacyController {
 
         if (!password.isEmpty()) {
             userDto.setPassword(password);
-            userService.update(userDto);
+            registerService.update(userDto);
         }
 
         if (!email.isEmpty() && !email.equals(userDto.getEmail())) {
             userDto.setEmail(email);
             userDto.setEnabled(false);
-            userService.update(userDto);
+            registerService.update(userDto);
 
             String token = UUID.randomUUID().toString();
 

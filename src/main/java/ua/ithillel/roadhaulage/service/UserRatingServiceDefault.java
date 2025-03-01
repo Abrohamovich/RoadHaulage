@@ -35,8 +35,6 @@ public class UserRatingServiceDefault implements UserRatingService {
         userRatingDto.setAverage(average);
         userRatingDto.setCount(total + 1);
         UserRating updated = repository.save(userRatingMapper.toEntity(userRatingDto));
-        log.info("Update user rating from previous data, id: {}, average: {}, count: {}",
-                updated.getAverage(), updated.getCount(), updated.getId());
         return userRatingMapper.toDto(updated);
     }
 
@@ -44,6 +42,13 @@ public class UserRatingServiceDefault implements UserRatingService {
     public Optional<UserRatingDto> findById(long id) {
         log.info("Returning userRating for id : {}", id);
         return repository.findById(id)
+                .map(userRatingMapper::toDto);
+    }
+
+    @Override
+    public Optional<UserRatingDto> findByUserEmail(String email) {
+        log.info("Returning userRating for user with email : {}", email);
+        return repository.findUserRatingByUserEmail(email)
                 .map(userRatingMapper::toDto);
     }
 }

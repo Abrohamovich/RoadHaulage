@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PasswordRecoveryController {
     private final UserService userService;
+    private final RegisterService registerService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
 
@@ -48,7 +50,7 @@ public class PasswordRecoveryController {
             VerificationTokenDto verificationTokenDto = verificationTokenDtoOptional.get();
 
             userDto.setPassword(password);
-            userService.update(userDto);
+            registerService.update(userDto);
 
             verificationTokenService.delete(verificationTokenDto);
 

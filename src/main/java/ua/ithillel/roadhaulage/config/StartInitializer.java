@@ -1,28 +1,29 @@
-//package ua.ithillel.roadhaulage.config;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.boot.CommandLineRunner;
-//import org.springframework.stereotype.Component;
-//import ua.ithillel.roadhaulage.dto.*;
-//import ua.ithillel.roadhaulage.entity.OrderStatus;
-//import ua.ithillel.roadhaulage.entity.UserRole;
-//import ua.ithillel.roadhaulage.service.interfaces.*;
-//
-//import java.sql.Date;
-//import java.util.*;
-//
-//@Component
-//@RequiredArgsConstructor
-//public class StartInitializer implements CommandLineRunner {
-//    private final UserService userService;
-//    private final UserRatingService userRatingService;
-//    private final OrderCategoryService orderCategoryService;
-//    private final AddressService addressService;
-//    private final OrderService orderService;
-//
-//    @Override
-//    public void run(String... args) {
-//        adminInit();
+package ua.ithillel.roadhaulage.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import ua.ithillel.roadhaulage.dto.*;
+import ua.ithillel.roadhaulage.entity.OrderStatus;
+import ua.ithillel.roadhaulage.entity.UserRole;
+import ua.ithillel.roadhaulage.service.interfaces.*;
+
+import java.sql.Date;
+import java.util.*;
+
+@Component
+@RequiredArgsConstructor
+public class StartInitializer implements CommandLineRunner {
+    private final UserService userService;
+    private final RegisterService registerService;
+    private final UserRatingService userRatingService;
+    private final OrderCategoryService orderCategoryService;
+    private final AddressService addressService;
+    private final OrderService orderService;
+
+    @Override
+    public void run(String... args) {
+        adminInit();
 //
 //        List<UserDto> userDtos = new ArrayList<>();
 //        List<AddressDto> addressDtos = new ArrayList<>();
@@ -39,31 +40,31 @@
 //            addressDtos.add(addressService.save(a));
 //        });
 //        testOrderInit(userDtos, orderCategoryDtos, addressDtos).forEach(orderService::save);
-//    }
-//
-//    private void adminInit(){
-//        String email = System.getenv("ADMIN_EMAIL");
-//        Optional<UserDto> userDtoOptional = userService.findByEmail(email);
-//        if (userDtoOptional.isEmpty()) {
-//            UserDto userDto = new UserDto();
-//            userDto.setEmail(email);
-//            userDto.setEnabled(true);
-//            userDto.setPassword(System.getenv("ADMIN_PASSWORD"));
-//            userDto.setPhoneCode(System.getenv("ADMIN_PHONE_CODE"));
-//            userDto.setPhone(System.getenv("ADMIN_PHONE_NUMBER"));
-//            userDto.setRole(UserRole.ADMIN);
-//            userDto.setFirstName("Road");
-//            userDto.setLastName("Haulage");
-//            userDto = userService.save(userDto);
-//
-//            UserRatingDto userRatingDto = new UserRatingDto();
-//            userRatingDto.setUser(userDto);
-//            userRatingDto.setAverage(0.0);
-//            userRatingDto.setCount(0);
-//            userRatingService.save(userRatingDto);
-//        }
-//    }
-//
+    }
+
+    private void adminInit(){
+        String email = System.getenv("ADMIN_EMAIL");
+        Optional<UserDto> userDtoOptional = userService.findByEmail(email);
+        if (userDtoOptional.isEmpty()) {
+            UserDto userDto = new UserDto();
+            userDto.setEmail(email);
+            userDto.setEnabled(true);
+            userDto.setPassword(System.getenv("ADMIN_PASSWORD"));
+            userDto.setPhoneCode(System.getenv("ADMIN_PHONE_CODE"));
+            userDto.setPhone(System.getenv("ADMIN_PHONE_NUMBER"));
+            userDto.setRole(UserRole.ADMIN);
+            userDto.setFirstName("Road");
+            userDto.setLastName("Haulage");
+            userDto = registerService.register(userDto);
+
+            UserRatingDto userRatingDto = new UserRatingDto();
+            userRatingDto.setUser(userDto);
+            userRatingDto.setAverage(0.0);
+            userRatingDto.setCount(0);
+            userRatingService.save(userRatingDto);
+        }
+    }
+
 //    private List<UserDto> testUsersInit(){
 //        return List.of(
 //                UserDto.builder().firstName("John").lastName("Doe").phoneCode("33")
@@ -225,4 +226,4 @@
 //
 //        return orders;
 //    }
-//}
+}
