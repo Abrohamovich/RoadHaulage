@@ -69,9 +69,9 @@ public class OrderCategoryServiceDefault implements OrderCategoryService {
                 .toArray(String[]::new);
 
         Set<OrderCategoryDto> categories = new HashSet<>();
-        for(String name : categoryNames) {
+        for (String name : categoryNames) {
             Optional<OrderCategory> orderCategory = orderCategoryRepository.findByName(name);
-            if (orderCategory.isEmpty()){
+            if (orderCategory.isEmpty()) {
                 OrderCategoryDto orderCategoryDto = new OrderCategoryDto();
                 orderCategoryDto.setName(name);
                 categories.add(orderCategoryDto);

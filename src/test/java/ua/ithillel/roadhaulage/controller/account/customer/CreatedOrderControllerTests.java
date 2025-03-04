@@ -4,14 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.UserRole;
@@ -30,9 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = CreatedOrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class CreatedOrderControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class CreatedOrderControllerTests extends TestParent {
     @MockitoBean
     private OrderService orderService;
     @MockitoBean
@@ -41,10 +38,10 @@ public class CreatedOrderControllerTests {
     private UserDto user;
 
     @BeforeEach
-    void init(){
-        AuthUserDto authUserDto = new AuthUserDto();
-        authUserDto.setId(1L);
-        authUserDto.setRole(UserRole.USER);
+    void init() {
+
+        authUser.setId(1L);
+        authUser.setRole(UserRole.USER);
 
         user = new UserDto();
         user.setId(1L);
@@ -52,11 +49,11 @@ public class CreatedOrderControllerTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities())
         );
     }
 
@@ -100,7 +97,7 @@ public class CreatedOrderControllerTests {
                 .thenReturn(Optional.of(order));
 
         mockMvc.perform(post("/account/my-orders/created/publish")
-                .param("id", "1"))
+                        .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
     }
@@ -237,7 +234,7 @@ public class CreatedOrderControllerTests {
         when(orderService.findById(anyLong())).thenReturn(Optional.of(order));
 
         mockMvc.perform(get("/account/my-orders/created/delete")
-                .param("id", "1"))
+                        .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/my-orders/created/page=0"));
 

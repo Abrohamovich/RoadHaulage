@@ -6,7 +6,10 @@ import java.util.Optional;
 
 public interface UserRatingService {
     UserRatingDto save(UserRatingDto userRatingDto);
+
     UserRatingDto update(UserRatingDto userRating, double rating);
+
     Optional<UserRatingDto> findById(long id);
+
     Optional<UserRatingDto> findByUserEmail(String email);
 }

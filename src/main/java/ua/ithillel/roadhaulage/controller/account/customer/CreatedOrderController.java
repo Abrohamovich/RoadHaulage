@@ -41,13 +41,13 @@ public class CreatedOrderController {
     //Sets the order status to PUBLISHED
     @PostMapping("/publish")
     public String publishOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                               @RequestParam long id){
+                               @RequestParam long id) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
-        if(orderOptional.isPresent()){
+        if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
             if (!orderDto.getCustomer().getId().equals(authUserDto.getId()) ||
                     !(orderDto.getStatus().equals(OrderStatus.CREATED) ||
-                    orderDto.getStatus().equals(OrderStatus.CHANGED))) {
+                            orderDto.getStatus().equals(OrderStatus.CHANGED))) {
                 return "redirect:/error";
             }
             orderDto.setStatus(OrderStatus.PUBLISHED);
@@ -60,9 +60,9 @@ public class CreatedOrderController {
     @PostMapping("/close")
     public String closeOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
                              @RequestParam long id,
-                             @RequestParam double rating){
+                             @RequestParam double rating) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
-        if (orderOptional.isPresent()){
+        if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
             if (!orderDto.getCustomer().getId().equals(authUserDto.getId()) ||
                     !orderDto.getStatus().equals(OrderStatus.ACCEPTED)) {
@@ -79,9 +79,9 @@ public class CreatedOrderController {
 
     @GetMapping("/delete")
     public String deleteOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                              @RequestParam long id){
+                              @RequestParam long id) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
-        if (orderOptional.isPresent()){
+        if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
             if (!orderDto.getCustomer().getId().equals(authUserDto.getId())) {
                 return "redirect:/error";

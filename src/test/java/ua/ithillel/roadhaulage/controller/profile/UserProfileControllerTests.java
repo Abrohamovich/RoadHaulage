@@ -3,17 +3,15 @@ package ua.ithillel.roadhaulage.controller.profile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.*;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
 import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -29,11 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserProfileController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class UserProfileControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockitoBean
-    private UserService userService;
+public class UserProfileControllerTests extends TestParent {
     @MockitoBean
     private UserRatingService userRatingService;
     @MockitoBean
@@ -46,8 +40,8 @@ public class UserProfileControllerTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
-        user.setPhoneCode("1");
-        user.setPhone("98565785");
+        user.setCountryCode("1");
+        user.setLocalPhone("98565785");
         UserRatingDto userRating = new UserRatingDto();
         userRating.setId(1L);
         userRating.setAverage(3.3);
@@ -61,7 +55,7 @@ public class UserProfileControllerTests {
         mockMvc.perform(get("/user/john.doe@example.com/info"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("firstName", "lastName", "email",
-                        "phone", "rating", "count"))
+                        "localPhone", "rating", "count"))
                 .andExpect(view().name("profile/info"));
     }
 
@@ -73,7 +67,7 @@ public class UserProfileControllerTests {
         when(userRatingService.findByUserEmail(email))
                 .thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/user/" + email +"/info"))
+        mockMvc.perform(get("/user/" + email + "/info"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/error"));
     }
@@ -85,8 +79,8 @@ public class UserProfileControllerTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
-        user.setPhoneCode("1");
-        user.setPhone("995251532");
+        user.setCountryCode("1");
+        user.setLocalPhone("995251532");
         OrderDto order = new OrderDto();
         order.setCustomer(user);
         order.setStatus(OrderStatus.PUBLISHED);
@@ -119,7 +113,7 @@ public class UserProfileControllerTests {
 
         when(userService.findByEmail(email)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/user/" + email +"/orders/page=0"))
+        mockMvc.perform(get("/user/" + email + "/orders/page=0"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/error"));
     }

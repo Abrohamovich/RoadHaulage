@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.OrderDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
@@ -42,7 +41,7 @@ public class AcceptedOrdersController {
     //Sets the current user as the courier of an order with the status PUBLISHED
     @PostMapping("/accept")
     public String acceptOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                              @RequestParam long id){
+                              @RequestParam long id) {
         Optional<UserDto> userOptional = userService.findById(authUserDto.getId());
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent() && userOptional.isPresent()) {
@@ -61,11 +60,11 @@ public class AcceptedOrdersController {
     //Removes the current courier user from the order with the status ACCEPTED
     @PostMapping("/decline")
     public String declineOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                               @RequestParam long id){
+                               @RequestParam long id) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
-            if(!orderDto.getCourier().getId().equals(authUserDto.getId()) ||
+            if (!orderDto.getCourier().getId().equals(authUserDto.getId()) ||
                     !orderDto.getStatus().equals(OrderStatus.ACCEPTED)) {
                 return "redirect:/error";
             }

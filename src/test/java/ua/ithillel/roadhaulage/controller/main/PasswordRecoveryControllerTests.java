@@ -3,16 +3,14 @@ package ua.ithillel.roadhaulage.controller.main;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.util.Optional;
@@ -28,11 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PasswordRecoveryController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class PasswordRecoveryControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockitoBean
-    private UserService userService;
+public class PasswordRecoveryControllerTests extends TestParent {
     @MockitoBean
     private RegisterService registerService;
     @MockitoBean
@@ -49,7 +43,7 @@ public class PasswordRecoveryControllerTests {
     }
 
     @Test
-    void getPasswordRecoveryPage() throws Exception{
+    void getPasswordRecoveryPage() throws Exception {
         mockMvc.perform(get("/password-recovery/change"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("email"))
@@ -57,7 +51,7 @@ public class PasswordRecoveryControllerTests {
     }
 
     @Test
-    void changePassword_userIsPresent() throws Exception{
+    void changePassword_userIsPresent() throws Exception {
         String email = "test@example.com";
         String password = "newPassword123";
         UserDto userDto = new UserDto();
@@ -77,7 +71,7 @@ public class PasswordRecoveryControllerTests {
     }
 
     @Test
-    void changePassword_userIsNotPresent() throws Exception{
+    void changePassword_userIsNotPresent() throws Exception {
         String email = "nonexistent@example.com";
         String password = "newPassword123";
 

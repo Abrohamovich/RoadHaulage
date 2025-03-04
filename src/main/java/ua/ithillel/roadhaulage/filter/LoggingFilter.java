@@ -10,7 +10,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class LoggingFilter implements Filter{
+public class LoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -18,8 +18,12 @@ public class LoggingFilter implements Filter{
         HttpServletResponse res = (HttpServletResponse) response;
         log.info("Request: {} {}", req.getMethod(), req.getRequestURI());
 
-        request.getParameterMap().forEach((key, value) ->
-                log.info("Request param: {} = {}", key, String.join(",", value)));
+        request.getParameterMap().forEach((key, value) -> {
+            if (key.equals("password")) {
+                return;
+            }
+            log.info("Request param: {} = {}", key, String.join(",", value));
+        });
 
         chain.doFilter(request, response);
 
@@ -28,5 +32,4 @@ public class LoggingFilter implements Filter{
                 req.getRequestURI(),
                 res.getStatus());
     }
-
 }

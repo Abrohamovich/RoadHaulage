@@ -6,19 +6,23 @@ header {
     padding: 10px 20px;
     color: #fff;
 }
+
 header .site-name {
     font-size: 22px;
     font-weight: bold;
 }
+
 header .nav-links {
     display: flex;
     gap: 15px;
 }
+
 header .nav-links a {
     color: #ffffff;
     text-decoration: none;
     font-size: 19px;
 }
+
 header .nav-links a:hover {
     text-decoration: underline;
 }

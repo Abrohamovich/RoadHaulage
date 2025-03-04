@@ -4,20 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.AuthUserDto;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.EmailService;
 import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.util.Optional;
@@ -32,11 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PrivacyController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class PrivacyControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockitoBean
-    private UserService userService;
+public class PrivacyControllerTests extends TestParent {
     @MockitoBean
     private RegisterService registerService;
     @MockitoBean
@@ -47,11 +40,11 @@ public class PrivacyControllerTests {
     private UserDto user;
 
     @BeforeEach
-    void init(){
-        AuthUserDto authUserDto = new AuthUserDto();
-        authUserDto.setId(1L);
-        authUserDto.setRole(UserRole.USER);
-        authUserDto.setEmail("john@doe.com");
+    void init() {
+
+        authUser.setId(1L);
+        authUser.setRole(UserRole.USER);
+        authUser.setEmail("john@doe.com");
 
         user = new UserDto();
         user.setId(1L);
@@ -59,18 +52,18 @@ public class PrivacyControllerTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities())
         );
     }
 
     @Test
     void privacyPageTest_withoutErrorParams() throws Exception {
         mockMvc.perform(get("/account/settings/privacy")
-                .param("email", "john@doe.com"))
+                        .param("email", "john@doe.com"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/settings/privacy"))
                 .andExpect(model().attributeExists("email"));
@@ -224,5 +217,4 @@ public class PrivacyControllerTests {
 
         verify(userService, times(2)).findByEmail(anyString());
     }
-
 }

@@ -3,13 +3,12 @@ package ua.ithillel.roadhaulage.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ua.ithillel.roadhaulage.dto.*;
-import ua.ithillel.roadhaulage.entity.OrderStatus;
+import ua.ithillel.roadhaulage.dto.UserDto;
+import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.*;
 
-import java.sql.Date;
-import java.util.*;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class StartInitializer implements CommandLineRunner {
 //        testOrderInit(userDtos, orderCategoryDtos, addressDtos).forEach(orderService::save);
     }
 
-    private void adminInit(){
+    private void adminInit() {
         String email = System.getenv("ADMIN_EMAIL");
         Optional<UserDto> userDtoOptional = userService.findByEmail(email);
         if (userDtoOptional.isEmpty()) {
@@ -50,8 +49,8 @@ public class StartInitializer implements CommandLineRunner {
             userDto.setEmail(email);
             userDto.setEnabled(true);
             userDto.setPassword(System.getenv("ADMIN_PASSWORD"));
-            userDto.setPhoneCode(System.getenv("ADMIN_PHONE_CODE"));
-            userDto.setPhone(System.getenv("ADMIN_PHONE_NUMBER"));
+            userDto.setCountryCode(System.getenv("ADMIN_PHONE_CODE"));
+            userDto.setLocalPhone(System.getenv("ADMIN_PHONE_NUMBER"));
             userDto.setRole(UserRole.ADMIN);
             userDto.setFirstName("Road");
             userDto.setLastName("Haulage");
@@ -67,15 +66,15 @@ public class StartInitializer implements CommandLineRunner {
 
 //    private List<UserDto> testUsersInit(){
 //        return List.of(
-//                UserDto.builder().firstName("John").lastName("Doe").phoneCode("33")
-//                        .phone("612345678").email("doe.john@gmail.com").role(UserRole.USER)
+//                UserDto.builder().firstName("John").lastName("Doe").countryCode("33")
+//                        .localPhone("612345678").email("doe.john@gmail.com").role(UserRole.USER)
 //                        .enabled(true).iban("FR7630006000011234567890189").password("EAW#$#Co97%#23").build(),
-//                UserDto.builder().firstName("Anna").lastName("Schmidt").phoneCode("49")
-//                        .phone("15239876543").email("anna.schmidt@gmail.com").role(UserRole.ADMIN)
+//                UserDto.builder().firstName("Anna").lastName("Schmidt").countryCode("49")
+//                        .localPhone("15239876543").email("anna.schmidt@gmail.com").role(UserRole.ADMIN)
 //                        .enabled(true).iban("DE44100000000123456789").password("QWErTY#1234@xyz").build(),
 //
-//                UserDto.builder().firstName("Carlos").lastName("Gomez").phoneCode("34")
-//                        .phone("678901234").email("carlos.gomez@gmail.com").role(UserRole.USER)
+//                UserDto.builder().firstName("Carlos").lastName("Gomez").countryCode("34")
+//                        .localPhone("678901234").email("carlos.gomez@gmail.com").role(UserRole.USER)
 //                        .enabled(true).iban("ES9121000418450200051332").password("mNBvC!98765@#asd").build()
 //
 //

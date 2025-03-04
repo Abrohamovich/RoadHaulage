@@ -10,7 +10,10 @@ import ua.ithillel.roadhaulage.dto.UserRatingDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.exception.UserCreateException;
-import ua.ithillel.roadhaulage.service.interfaces.*;
+import ua.ithillel.roadhaulage.service.interfaces.EmailService;
+import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
+import ua.ithillel.roadhaulage.service.interfaces.UserRatingService;
+import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -34,19 +37,19 @@ public class RegistrationController {
     @PostMapping("/reg")
     public String register(@RequestParam String email,
                            @RequestParam String password,
-                           @RequestParam(name = "countryCode") String phoneCode,
-                           @RequestParam String phone,
+                           @RequestParam(name = "countryCode") String countryCode,
+                           @RequestParam String localPhone,
                            @RequestParam String firstName,
                            @RequestParam String lastName, RedirectAttributes redirectAttributes) {
-        try{
+        try {
             UserDto userDto = new UserDto();
             userDto.setEmail(email);
             userDto.setRole(UserRole.USER);
             userDto.setEnabled(false);
             userDto.setFirstName(firstName);
             userDto.setLastName(lastName);
-            userDto.setPhoneCode(phoneCode);
-            userDto.setPhone(phone);
+            userDto.setCountryCode(countryCode);
+            userDto.setLocalPhone(localPhone);
             userDto.setPassword(password);
 
             userDto = registerService.register(userDto);
@@ -73,7 +76,7 @@ public class RegistrationController {
                     "Please check your email to confirm registration. The link is valid for 20 minutes");
             return "redirect:/login";
 
-        } catch (UserCreateException ex){
+        } catch (UserCreateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/register";
         }

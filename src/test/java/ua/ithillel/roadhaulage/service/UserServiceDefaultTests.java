@@ -39,7 +39,7 @@ public class UserServiceDefaultTests {
     private User user;
 
     @BeforeEach
-    void init(){
+    void init() {
         userDto = new UserDto();
         userDto.setId(1L);
         userDto.setRole(UserRole.USER);
@@ -47,8 +47,8 @@ public class UserServiceDefaultTests {
         userDto.setFirstName("John");
         userDto.setLastName("Doe");
         userDto.setEmail("john@doe.com");
-        userDto.setPhoneCode("1");
-        userDto.setPhone("123456789");
+        userDto.setCountryCode("1");
+        userDto.setLocalPhone("123456789");
         userDto.setPassword("password1LdadL");
         userDto.setEnabled(true);
         user = new User();
@@ -58,8 +58,8 @@ public class UserServiceDefaultTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhoneCode("1");
-        user.setPhone("123456789");
+        user.setCountryCode("1");
+        user.setLocalPhone("123456789");
         user.setPassword("password1LdadL");
         user.setEnabled(true);
     }
@@ -106,30 +106,30 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    void findByPhoneCodeAndPhone_returnsUserOptional() {
+    void findByCountryCodeAndLocalPhone_returnsUserOptional() {
         when(userMapper.toDto(any(User.class))).thenReturn(mock(UserDto.class));
-        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.of(mock(User.class)));
+        when(userRepository.findByCountryCodeAndLocalPhone(anyString(), anyString())).thenReturn(Optional.of(mock(User.class)));
 
-        Optional<UserDto> result = userServiceDefault.findByPhoneCodeAndPhone(anyString(), anyString());
+        Optional<UserDto> result = userServiceDefault.findByCountryCodeAndLocalPhone(anyString(), anyString());
 
         assertTrue(result.isPresent());
         verify(userRepository, times(1))
-                .findByPhoneCodeAndPhone(anyString(), anyString());
+                .findByCountryCodeAndLocalPhone(anyString(), anyString());
     }
 
     @Test
-    void findByPhoneCodeAndPhone_returnsEmptyOptional() {
-        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.empty());
+    void findByCountryCodeAndLocalPhone_returnsEmptyOptional() {
+        when(userRepository.findByCountryCodeAndLocalPhone(anyString(), anyString())).thenReturn(Optional.empty());
 
-        Optional<UserDto> result = userServiceDefault.findByPhoneCodeAndPhone(anyString(), anyString());
+        Optional<UserDto> result = userServiceDefault.findByCountryCodeAndLocalPhone(anyString(), anyString());
 
         assertTrue(result.isEmpty());
         verify(userRepository, times(1))
-                .findByPhoneCodeAndPhone(anyString(), anyString());
+                .findByCountryCodeAndLocalPhone(anyString(), anyString());
     }
 
     @Test
-    void findAllPageable_returnsFullList(){
+    void findAllPageable_returnsFullList() {
         when(userMapper.toDto(user)).thenReturn(userDto);
         when(userRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of(user)));
@@ -141,7 +141,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    void findAllPageable_returnsEmptyList(){
+    void findAllPageable_returnsEmptyList() {
         when(userRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of()));
 

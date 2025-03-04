@@ -3,11 +3,10 @@ package ua.ithillel.roadhaulage.controller.main;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
@@ -27,9 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = RegistrationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class RegistrationControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class RegistrationControllerTests extends TestParent {
     @MockitoBean
     private RegisterService registerService;
     @MockitoBean
@@ -52,8 +49,8 @@ public class RegistrationControllerTests {
         String email = "test@test.com";
         String firstName = "Test";
         String lastName = "Test";
-        String phoneCode = "1";
-        String phone = "995251532";
+        String countryCode = "1";
+        String localPhone = "995251532";
         String password = "Lolipop1Capop";
         String token = "test";
 
@@ -64,8 +61,8 @@ public class RegistrationControllerTests {
         user.setLastName(lastName);
         user.setEnabled(false);
         user.setRole(UserRole.USER);
-        user.setPhoneCode(phoneCode);
-        user.setPhone(phone);
+        user.setCountryCode(countryCode);
+        user.setLocalPhone(localPhone);
         user.setPassword(password);
 
         VerificationTokenDto verificationToken = new VerificationTokenDto();
@@ -75,12 +72,12 @@ public class RegistrationControllerTests {
         when(registerService.register(any(UserDto.class))).thenReturn(user);
 
         mockMvc.perform(post("/register/reg")
-                .param("email", email)
-                .param("password", password)
-                .param("countryCode", phoneCode)
-                .param("phone", phone)
-                .param("firstName", firstName)
-                .param("lastName", lastName))
+                        .param("email", email)
+                        .param("password", password)
+                        .param("countryCode", countryCode)
+                        .param("localPhone", localPhone)
+                        .param("firstName", firstName)
+                        .param("lastName", lastName))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -89,8 +86,8 @@ public class RegistrationControllerTests {
     void register_throwsUserCreateException() throws Exception {
         String email = "test@test.com";
         String password = "Lolipop1Capop";
-        String phoneCode = "1";
-        String phone = "995251532";
+        String countryCode = "1";
+        String localPhone = "995251532";
         String firstName = "Test";
         String lastName = "Test";
 
@@ -100,8 +97,8 @@ public class RegistrationControllerTests {
         mockMvc.perform(post("/register/reg")
                         .param("email", email)
                         .param("password", password)
-                        .param("countryCode", phoneCode)
-                        .param("phone", phone)
+                        .param("countryCode", countryCode)
+                        .param("localPhone", localPhone)
                         .param("firstName", firstName)
                         .param("lastName", lastName))
                 .andExpect(status().is3xxRedirection())

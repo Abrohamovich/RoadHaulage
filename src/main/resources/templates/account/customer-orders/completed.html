@@ -1,62 +1,64 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
 <link rel="stylesheet" th:href="@{/css/pagination.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadHaulage</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RoadHaulage</title>
 </head>
 <style>
-  #completed-link{
-    display: inline-block;
-    padding: 10px;
-    margin: 0 0 0 20px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-  #completed-link a{
-    color: white;
-  }
-  #completed-link a::after{
-    background-color: white;
-  }
+    #completed-link {
+        display: inline-block;
+        padding: 10px;
+        margin: 0 0 0 20px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    #completed-link a {
+        color: white;
+    }
+
+    #completed-link a::after {
+        background-color: white;
+    }
 </style>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="~{account/sidebar.html}"></div>
-  <main>
-    <div th:each="order : ${orders}" class="order">
-      <span class="order-content" th:text="${order.courier.firstName} + ' ' + ${order.courier.lastName}"></span>
-      <span class="order-content" th:text="${order.categoriesString}"></span>
-      <span class="order-content" th:text="${order.departureAddressString}"></span>
-      <ion-icon name="arrow-down-outline"></ion-icon>
-      <span class="order-content" th:text="${order.deliveryAddressString}"></span>
-      <span class="order-content" th:text="${order.cost} + ' ' + ${order.currency}"></span>
-    </div>
+    <div th:replace="~{account/sidebar.html}"></div>
+    <main>
+        <div class="order" th:each="order : ${orders}">
+            <span class="order-content" th:text="${order.courier.firstName} + ' ' + ${order.courier.lastName}"></span>
+            <span class="order-content" th:text="${order.categoriesString}"></span>
+            <span class="order-content" th:text="${order.departureAddressString}"></span>
+            <ion-icon name="arrow-down-outline"></ion-icon>
+            <span class="order-content" th:text="${order.deliveryAddressString}"></span>
+            <span class="order-content" th:text="${order.cost} + ' ' + ${order.currency}"></span>
+        </div>
 
-    <!--Pagination -->
-    <div class="pagination" th:if="${totalPages > 1}">
-      <a th:href="@{/account/my-orders/created/page={prev}(prev=${currentPage - 1})}"
-         th:classappend="${currentPage == 0 ? 'disabled' : ''}">Previous</a>
+        <!--Pagination -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:classappend="${currentPage == 0 ? 'disabled' : ''}"
+               th:href="@{/account/my-orders/created/page={prev}(prev=${currentPage - 1})}">Previous</a>
 
-      <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-        <a th:href="@{/account/my-orders/created/page={page}(page=${i})}"
-           th:text="${i + 1}"
-           th:classappend="${currentPage == i ? 'active' : ''}"></a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:classappend="${currentPage == i ? 'active' : ''}"
+           th:href="@{/account/my-orders/created/page={page}(page=${i})}"
+           th:text="${i + 1}"></a>
       </span>
 
-      <a th:href="@{/account/my-orders/created/page={next}(next=${currentPage + 1})}"
-         th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
-    </div>
-  </main>
+            <a th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
+               th:href="@{/account/my-orders/created/page={next}(next=${currentPage + 1})}">Next</a>
+        </div>
+    </main>
 </div>
 </body>
 </html>

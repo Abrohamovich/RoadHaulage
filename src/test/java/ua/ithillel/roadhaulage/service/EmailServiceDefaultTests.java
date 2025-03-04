@@ -24,7 +24,7 @@ public class EmailServiceDefaultTests {
     private EmailServiceDefault service;
 
     @Test
-    void sendEmailTest(){
+    void sendEmailTest() {
         String to = "test@example.com";
         String subject = "Test Subject";
         String body = "This is the email body.";
@@ -41,7 +41,7 @@ public class EmailServiceDefaultTests {
     }
 
     @Test
-    void sendEmailConfirmationTest(){
+    void sendEmailConfirmationTest() {
         String email = "test@example.com";
         String token = "12345";
 
@@ -52,19 +52,19 @@ public class EmailServiceDefaultTests {
         String expectedConfirmUrl = "http://localhost:8080/verify-email?token=" + token;
         String expectedEmailBody = """
                 Hello, John Doe!
-
+                
                 You have provided this email address to register or update your details on our website.
                 To complete the registration process and confirm your address, please click on the link below:
-
+                
                 http://localhost:8080/verify-email?token=12345
-
+                
                 If you have not requested a confirmation email, simply PASS this message.
                 Your account will remain secure and no changes will be made.
-
+                
                 If you have any questions or concerns, please contact our support team.
-
+                
                 Thank you for using our service!
-
+                
                 Regards,
                 RoadHaulage Team
                 """;
@@ -82,7 +82,7 @@ public class EmailServiceDefaultTests {
     }
 
     @Test
-    void sendPasswordResetEmailTest(){
+    void sendPasswordResetEmailTest() {
         String email = "test@example.com";
         String token = "reset-token-123";
         String password = "newPassword123";
@@ -93,22 +93,22 @@ public class EmailServiceDefaultTests {
 
         String expectedConfirmUrl = "http://localhost:8080/password-recovery/recover?token=" + token;
         String emailBody = """
-        Hello, %s!
-
-        You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
-
-        %s
-
-        If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
-
-        If you have any questions or concerns, please contact our support team.
-
-        Thank you for using our service!
-
-        Regards, \s
-        RoadHaulage Team
-
-        """;
+                Hello, %s!
+                
+                You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
+                
+                %s
+                
+                If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
+                
+                If you have any questions or concerns, please contact our support team.
+                
+                Thank you for using our service!
+                
+                Regards, \s
+                RoadHaulage Team
+                
+                """;
         String expectedEmailBody = String.format(emailBody, user.getFirstName() + " " + user.getLastName(), expectedConfirmUrl, password);
 
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
@@ -122,5 +122,4 @@ public class EmailServiceDefaultTests {
         assertEquals("Confirmation of password recovery", capturedMessage.getSubject());
         assertEquals(expectedEmailBody, capturedMessage.getText());
     }
-
 }

@@ -3,30 +3,24 @@ package ua.ithillel.roadhaulage.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
-import ua.ithillel.roadhaulage.entity.User;
-import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.UserService;
 import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceDefault implements UserService{
+public class UserServiceDefault implements UserService {
     private final UserRepository userRepository;
     private final VerificationTokenService verificationTokenService;
     private final UserMapper userMapper;
@@ -41,14 +35,14 @@ public class UserServiceDefault implements UserService{
     @Override
     public Optional<UserDto> findByEmail(String email) {
         log.info("Finding user by email: {}", email);
-       return userRepository.findByEmail(email)
-               .map(userMapper::toDto);
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDto);
     }
 
     @Override
-    public Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone) {
-        log.info("Finding user by phone code: {} and phone: {}", phoneCode, phone);
-        return userRepository.findByPhoneCodeAndPhone(phoneCode, phone)
+    public Optional<UserDto> findByCountryCodeAndLocalPhone(String countryCode, String localPhone) {
+        log.info("Finding user by countryCode code: {} and localPhone: {}", countryCode, localPhone);
+        return userRepository.findByCountryCodeAndLocalPhone(countryCode, localPhone)
                 .map(userMapper::toDto);
     }
 
@@ -84,7 +78,7 @@ public class UserServiceDefault implements UserService{
     public AuthUserDto loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<AuthUserDto> authUserDto = userRepository.findByEmail(email)
                 .map(userMapper::toAuthDto);
-        if(authUserDto.isEmpty()) {
+        if (authUserDto.isEmpty()) {
             throw new UsernameNotFoundException("Cant find user with username: " + email);
         }
         return authUserDto.get();

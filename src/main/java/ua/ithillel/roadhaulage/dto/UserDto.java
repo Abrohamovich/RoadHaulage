@@ -12,8 +12,8 @@ public class UserDto {
     private Long id;
     private String firstName;
     private String lastName;
-    private String phone;
-    private String phoneCode;
+    private String countryCode;
+    private String localPhone;
     private String email;
     private UserRole role;
     private boolean enabled;

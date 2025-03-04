@@ -10,7 +10,6 @@ import ua.ithillel.roadhaulage.exception.UserCreateException;
 import ua.ithillel.roadhaulage.mapper.UserMapper;
 import ua.ithillel.roadhaulage.repository.UserRepository;
 import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
-import ua.ithillel.roadhaulage.service.interfaces.VerificationTokenService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +31,15 @@ public class RegisterServiceDefault implements RegisterService {
         User user = userMapper.toEntity(userDto);
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            errors.add("A user with email " + user.getEmail() + " already exists");}
-        if (userRepository.findByPhoneCodeAndPhone(user.getPhoneCode(), user.getPhone()).isPresent()) {
-            errors.add("A user with phone " + user.getPhoneCode() + user.getPhone() + " already exists");}
-        if (!isValidPassword(user.getPassword())){
-            errors.add("Password must contain at least one digit and one uppercase");}
-        if(!errors.isEmpty()) {
+            errors.add("A user with email " + user.getEmail() + " already exists");
+        }
+        if (userRepository.findByCountryCodeAndLocalPhone(user.getCountryCode(), user.getLocalPhone()).isPresent()) {
+            errors.add("A user with phone " + user.getCountryCode() + user.getLocalPhone() + " already exists");
+        }
+        if (!isValidPassword(user.getPassword())) {
+            errors.add("Password must contain at least one digit and one uppercase");
+        }
+        if (!errors.isEmpty()) {
             log.warn("Errors found: {}", String.join(". ", errors));
             throw new UserCreateException(String.join(". ", errors));
         }

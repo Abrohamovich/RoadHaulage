@@ -4,15 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.dto.*;
+import ua.ithillel.roadhaulage.config.TestParent;
+import ua.ithillel.roadhaulage.dto.AddressDto;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.OrderService;
@@ -27,19 +29,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = CompletedOrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class CompletedOrderControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class CompletedOrderControllerTests extends TestParent {
     @MockitoBean
     private OrderService orderService;
 
     private UserDto user;
 
     @BeforeEach
-    void init(){
-        AuthUserDto authUserDto = new AuthUserDto();
-        authUserDto.setId(1L);
-        authUserDto.setRole(UserRole.USER);
+    void init() {
+
+        authUser.setId(1L);
+        authUser.setRole(UserRole.USER);
 
         user = new UserDto();
         user.setId(1L);
@@ -47,11 +47,11 @@ public class CompletedOrderControllerTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities())
         );
     }
 

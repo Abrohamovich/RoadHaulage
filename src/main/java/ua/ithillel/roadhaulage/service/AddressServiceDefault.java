@@ -55,7 +55,7 @@ public class AddressServiceDefault implements AddressService {
                                 + word.substring(1).toLowerCase())
                         .reduce((a, b) -> a + " " + b).orElse(""))
                 .toArray(String[]::new);
-        if(addressFields.length != 5) {
+        if (addressFields.length != 5) {
             log.warn("Invalid address as string: {}", addressString);
             throw new AddressCreateException("You didn't enter the address information correctly");
         }

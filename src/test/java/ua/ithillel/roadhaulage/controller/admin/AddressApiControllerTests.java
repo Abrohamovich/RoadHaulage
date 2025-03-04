@@ -12,9 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
@@ -31,24 +30,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = AddressApiController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class AddressApiControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+public class AddressApiControllerTests extends TestParent {
+    private static final String BASE_URL = "/admin/api/address";
     @Autowired
     private ObjectMapper objectMapper;
     @MockitoBean
     private AddressService addressService;
 
-    private static final String BASE_URL = "/admin/api/address";
-
     @BeforeEach
-    void init(){
-        AuthUserDto authUserDto = new AuthUserDto();
-        authUserDto.setId(1L);
-        authUserDto.setRole(UserRole.ADMIN);
+    void init() {
+
+        authUser.setId(1L);
+        authUser.setRole(UserRole.ADMIN);
 
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authUserDto, null, authUserDto.getAuthorities())
+                new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities())
         );
     }
 

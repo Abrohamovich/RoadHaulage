@@ -27,7 +27,7 @@ public class PasswordRecoveryController {
 
     @GetMapping
     public String getPasswordRecoveryRequestPage(@ModelAttribute("attentionMessage") String attentionMessage,
-                                          Model model) {
+                                                 Model model) {
         model.addAttribute("attentionMessage", attentionMessage);
         return "password-recovery";
     }
@@ -40,7 +40,7 @@ public class PasswordRecoveryController {
 
     @PostMapping("/change/confirm")
     public String changePassword(@RequestParam String email,
-                                 @RequestParam String password){
+                                 @RequestParam String password) {
         Optional<UserDto> userDtoOptional = userService.findByEmail(email);
         if (userDtoOptional.isPresent()) {
             UserDto userDto = userDtoOptional.get();
@@ -61,9 +61,9 @@ public class PasswordRecoveryController {
 
     @PostMapping("/confirm")
     public String sendRecoveryRequest(@RequestParam String email,
-                                      RedirectAttributes redirectAttributes){
+                                      RedirectAttributes redirectAttributes) {
         Optional<UserDto> userDB = userService.findByEmail(email);
-        if(userDB.isEmpty()){
+        if (userDB.isEmpty()) {
             redirectAttributes.addFlashAttribute(
                     "attentionMessage",
                     "User with email " + email + " not found");
@@ -86,7 +86,7 @@ public class PasswordRecoveryController {
 
     @GetMapping("recover")
     public String checkRecoveryRequest(@RequestParam("token") String token,
-                                  RedirectAttributes redirectAttributes) {
+                                       RedirectAttributes redirectAttributes) {
         short successId = userService.verifyPassword(token);
         String successMessage = switch (successId) {
             case 1 -> "This token does not exist, or this token is not yours";
@@ -96,7 +96,7 @@ public class PasswordRecoveryController {
         };
 
         Optional<VerificationTokenDto> verificationTokenDto = verificationTokenService.getToken(token);
-        if(verificationTokenDto.isPresent() && successMessage.equals("success")){
+        if (verificationTokenDto.isPresent() && successMessage.equals("success")) {
             String email = verificationTokenDto.get().getUser().getEmail();
             redirectAttributes.addFlashAttribute("email", email);
             return "redirect:/password-recovery/change";

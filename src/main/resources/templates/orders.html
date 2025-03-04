@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/orders.css}">
@@ -9,7 +9,7 @@
 <link rel="stylesheet" th:href="@{/css/pagination.css}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Orders</title>
 </head>
 <body>
@@ -18,32 +18,34 @@
     <aside class="filter-bar">
         <form method="get" th:action="@{/orders/page=${currentPage}/filter}">
             <label for="category">Category:</label>
-            <input id="selectedValues" type="text" name="categoriesString" th:value="${categoriesString}" readonly>
+            <input id="selectedValues" name="categoriesString" readonly th:value="${categoriesString}" type="text">
             <select id="category">
                 <option th:each="category : ${categories}" th:text="${category.name}"></option>
             </select>
             <label>Comparison Type:</label>
             <div class="comparison-type">
-                <label for="strict-comparison" class="comparison-label">
-                    <input type="radio" id="strict-comparison" name="comparisonType" value="strict" class="comparison-radio">
+                <label class="comparison-label" for="strict-comparison">
+                    <input class="comparison-radio" id="strict-comparison" name="comparisonType" type="radio"
+                           value="strict">
                     <span class="radio-text">Strict Comparison</span>
                 </label>
                 <br>
-                <label for="loose-comparison" class="comparison-label">
-                    <input type="radio" id="loose-comparison" name="comparisonType" value="loose" checked class="comparison-radio">
+                <label class="comparison-label" for="loose-comparison">
+                    <input checked class="comparison-radio" id="loose-comparison" name="comparisonType" type="radio"
+                           value="loose">
                     <span class="radio-text">Loose Comparison</span>
                 </label>
                 <br>
             </div>
 
             <label for="min-cost">Min cost:</label>
-            <input type="range" id="min-cost" name="min-cost" min="0" th:max="${maxCost}" th:value="${minCost}"
-                   step="1">
+            <input id="min-cost" min="0" name="min-cost" step="1" th:max="${maxCost}" th:value="${minCost}"
+                   type="range">
             <span class="value" id="min-cost-value" th:text="${minCost}"></span>
 
             <label for="max-cost">Max cost:</label>
-            <input type="range" id="max-cost" name="max-cost" min="0" th:max="${maxCost}" th:value="${maxCost}"
-                   step="1">
+            <input id="max-cost" min="0" name="max-cost" step="1" th:max="${maxCost}" th:value="${maxCost}"
+                   type="range">
             <span class="value" id="max-cost-value" th:text="${maxCost}"></span>
 
             <label for="currency">Currency:</label>
@@ -56,12 +58,12 @@
                 <option>PLN</option>
                 <option>UAH</option>
             </select>
-            <button type="submit" disabled>Filter</button>
-            <button type="reset" th:href="@{/orders/page=${currentPage}}" >Reset</button>
+            <button disabled type="submit">Filter</button>
+            <button th:href="@{/orders/page=${currentPage}}" type="reset">Reset</button>
         </form>
     </aside>
     <main class="orders">
-        <div th:each="order : ${orders}" class="order">
+        <div class="order" th:each="order : ${orders}">
             <span class="order-content"
                   th:text="${order.customer.firstName} + ' ' +  ${order.customer.lastName}"></span>
             <span class="order-content" th:text="${order.categoriesString}"></span>
@@ -70,20 +72,20 @@
             <span class="order-content" th:text="${order.deliveryAddressString}"></span>
             <span class="order-content" th:text="${order.cost} + ' ' + ${order.currency}"></span>
             <div class="button-container">
-                <form th:action="@{/account/delivered-orders/accepted/accept}" method="post">
-                    <input type="hidden" name="id" th:value="${order.id}"/>
-                    <button type="submit" title="Accept order">
+                <form method="post" th:action="@{/account/delivered-orders/accepted/accept}">
+                    <input name="id" th:value="${order.id}" type="hidden"/>
+                    <button title="Accept order" type="submit">
                         <ion-icon name="arrow-down-outline"></ion-icon>
                     </button>
                 </form>
-                <form th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}"
-                      method="get">
-                    <button type="submit" title="See full order">
+                <form method="get"
+                      th:action="@{/user/{email}/order/{id}(email=${order.customer.email}, id=${order.id})}">
+                    <button title="See full order" type="submit">
                         <ion-icon name="eye-outline"></ion-icon>
                     </button>
                 </form>
-                <form th:action="@{/user/{email}/info(email=${order.customer.email})}" method="get">
-                    <button type="submit" title="See customer info">
+                <form method="get" th:action="@{/user/{email}/info(email=${order.customer.email})}">
+                    <button title="See customer info" type="submit">
                         <ion-icon name="person-outline"></ion-icon>
                     </button>
                 </form>
@@ -91,15 +93,15 @@
         </div>
         <!--Pagination -->
         <div class="pagination" th:if="${totalPages > 1}">
-            <a th:href="@{/orders/page={prev}(prev=${currentPage - 1})}"
-               th:classappend="${currentPage == 0 ? 'disabled' : ''}">Previous</a>
+            <a th:classappend="${currentPage == 0 ? 'disabled' : ''}"
+               th:href="@{/orders/page={prev}(prev=${currentPage - 1})}">Previous</a>
             <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                <a th:href="@{/orders/page={page}(page=${i})}"
-                   th:text="${i + 1}"
-                   th:classappend="${currentPage == i ? 'active' : ''}"></a>
+                <a th:classappend="${currentPage == i ? 'active' : ''}"
+                   th:href="@{/orders/page={page}(page=${i})}"
+                   th:text="${i + 1}"></a>
             </span>
-            <a th:href="@{/orders/page={next}(next=${currentPage + 1})}"
-               th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">Next</a>
+            <a th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}"
+               th:href="@{/orders/page={next}(next=${currentPage + 1})}">Next</a>
         </div>
     </main>
 </div>
@@ -137,6 +139,6 @@
     updateValue('max-cost', 'max-cost-value');
 </script>
 <script src="/js/script.js"></script>
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" type="module"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </html>

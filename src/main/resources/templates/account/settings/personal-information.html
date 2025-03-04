@@ -1,73 +1,80 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/main.css}">
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadHaulage</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RoadHaulage</title>
 </head>
 <style>
-  #personal-info-link{
-    display: inline-block;
-    padding: 10px;
-    margin: 0 0 0 20px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-  #personal-info-link a{
-    color: white;
-  }
-  #personal-info-link a::after{
-    background-color: white;
-  }
-  .form-group select{
-    margin-left: 0;
-    margin-right: 30px;
-  }
+    #personal-info-link {
+        display: inline-block;
+        padding: 10px;
+        margin: 0 0 0 20px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    #personal-info-link a {
+        color: white;
+    }
+
+    #personal-info-link a::after {
+        background-color: white;
+    }
+
+    .form-group select {
+        margin-left: 0;
+        margin-right: 30px;
+    }
 </style>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="~{account/sidebar.html}"></div>
-  <main style="flex-direction: column">
-    <form th:action="@{/account/settings/personal-information/update}" method="post">
-      <div class="form-group">
-        <label for="firstName">First name</label>
-        <input type="text" id="firstName" name="firstName" th:placeholder="${firstName}"
-               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
-      </div>
-      <p style="color: red" th:if="${firstNameError}" th:text="${firstNameError}"></p>
-      <div class="form-group">
-        <label for="lastName">Last name</label>
-        <input type="text" id="lastName" name="lastName" th:placeholder="${lastName}"
-               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
-      </div>
-      <p style="color: red" th:if="${lastNameError}" th:text="${lastNameError}"></p>
-      <div class="form-group selector">
-        <label>Contact phone</label>
-        <select name="phoneCode">
-          <option th:each="code: ${codes}" th:value="${code}" th:text="'+' + ${code}"></option>
-        </select>
-        <input type="text" pattern="[0-9]+" name="phone" th:placeholder="${phone}"
-               oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-      </div>
-      <p style="color: red" th:if="${phoneError}" th:text="${phoneError}"></p>
-      <div class="form-group">
-        <label for="iban">IBAN</label>
-        <input type="text" id="iban" name="iban" th:placeholder="${iban}"
-               oninput="this.value = this.value.replace(/[^A-Z0-9]/g, '');">
-      </div>
-      <button type="submit">Save changes</button>
-    </form>
-    <form th:action="@{/generate-report}" method="get">
-      <button type="submit">Generate report</button>
-    </form>
-  </main>
+    <div th:replace="~{account/sidebar.html}"></div>
+    <main style="flex-direction: column">
+        <form method="post" th:action="@{/account/settings/personal-information/update}">
+            <div class="form-group">
+                <label for="firstName">First name</label>
+                <input id="firstName" name="firstName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');"
+                       th:placeholder="${firstName}"
+                       type="text">
+            </div>
+            <p style="color: red" th:if="${firstNameError}" th:text="${firstNameError}"></p>
+            <div class="form-group">
+                <label for="lastName">Last name</label>
+                <input id="lastName" name="lastName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');"
+                       th:placeholder="${lastName}"
+                       type="text">
+            </div>
+            <p style="color: red" th:if="${lastNameError}" th:text="${lastNameError}"></p>
+            <div class="form-group selector">
+                <label>Contact phone</label>
+                <select name="countryCode">
+                    <option th:each="code: ${codes}" th:text="'+' + ${code}" th:value="${code}"></option>
+                </select>
+                <input name="localPhone" oninput="this.value = this.value.replace(/[^0-9]/g, '');" pattern="[0-9]+"
+                       th:placeholder="${localPhone}"
+                       type="text">
+            </div>
+            <p style="color: red" th:if="${phoneError}" th:text="${phoneError}"></p>
+            <div class="form-group">
+                <label for="iban">IBAN</label>
+                <input id="iban" name="iban" oninput="this.value = this.value.replace(/[^A-Z0-9]/g, '');"
+                       th:placeholder="${iban}"
+                       type="text">
+            </div>
+            <button type="submit">Save changes</button>
+        </form>
+        <form method="get" th:action="@{/generate-report}">
+            <button type="submit">Generate report</button>
+        </form>
+    </main>
 </div>
 </body>
 <script>

@@ -3,12 +3,9 @@ package ua.ithillel.roadhaulage.controller.main;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.ithillel.roadhaulage.service.interfaces.UserService;
+import ua.ithillel.roadhaulage.config.TestParent;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,11 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = EmailVerificationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class EmailVerificationControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockitoBean
-    private UserService userService;
+public class EmailVerificationControllerTests extends TestParent {
 
     @Test
     void verifyEmail_success_case0() throws Exception {
@@ -82,5 +75,4 @@ public class EmailVerificationControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
-
 }

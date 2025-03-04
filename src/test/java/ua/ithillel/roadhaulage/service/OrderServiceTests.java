@@ -37,7 +37,7 @@ public class OrderServiceTests {
     private Order order;
 
     @BeforeEach
-    void init(){
+    void init() {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         User user = new User();
@@ -84,7 +84,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void save(){
+    void save() {
         when(orderMapper.toEntity(orderDto)).thenReturn(order);
 
         orderServiceDefault.save(orderDto);
@@ -93,14 +93,14 @@ public class OrderServiceTests {
     }
 
     @Test
-    void delete(){
+    void delete() {
         orderServiceDefault.delete(order.getId());
 
         verify(orderRepository, times(1)).deleteById(order.getId());
     }
 
     @Test
-    void findById_returnsPresentOptional(){
+    void findById_returnsPresentOptional() {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
@@ -111,7 +111,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findById_returnsEmptyOptional(){
+    void findById_returnsEmptyOptional() {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Optional<OrderDto> result = orderServiceDefault.findById(1L);
@@ -120,72 +120,72 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerId_returnsList(){
+    void findOrdersByCustomerId_returnsList() {
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(List.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
-        List<OrderDto> result =  orderServiceDefault.findOrdersByCustomerId(1L);
+        List<OrderDto> result = orderServiceDefault.findOrdersByCustomerId(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
-    void findOrdersByCustomerId_returnsEmptyList(){
+    void findOrdersByCustomerId_returnsEmptyList() {
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(List.of());
 
-        List<OrderDto> result =  orderServiceDefault.findOrdersByCustomerId(1L);
+        List<OrderDto> result = orderServiceDefault.findOrdersByCustomerId(1L);
 
         assertNotNull(result);
         assertEquals(0, result.size());
     }
 
     @Test
-    void findOrdersByCourierId_returnsList(){
+    void findOrdersByCourierId_returnsList() {
         when(orderRepository.findOrdersByCourierId(anyLong())).thenReturn(List.of(order, order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
-        List<OrderDto> result =  orderServiceDefault.findOrdersByCourierId(1L);
+        List<OrderDto> result = orderServiceDefault.findOrdersByCourierId(1L);
 
         assertNotNull(result);
         assertEquals(2, result.size());
     }
 
     @Test
-    void findOrdersByCourierId_returnsEmptyList(){
+    void findOrdersByCourierId_returnsEmptyList() {
         when(orderRepository.findOrdersByCourierId(anyLong())).thenReturn(List.of());
 
-        List<OrderDto> result =  orderServiceDefault.findOrdersByCourierId(1L);
+        List<OrderDto> result = orderServiceDefault.findOrdersByCourierId(1L);
 
         assertNotNull(result);
         assertEquals(0, result.size());
     }
 
     @Test
-    void findAllPageable_returnsList(){
+    void findAllPageable_returnsList() {
         when(orderRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of(order, order)));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
-        List<OrderDto> result =  orderServiceDefault.findAllPageable(0, 1);
+        List<OrderDto> result = orderServiceDefault.findAllPageable(0, 1);
 
         assertNotNull(result);
         assertEquals(2, result.size());
     }
 
     @Test
-    void findAllPageable_returnsEmptyList(){
+    void findAllPageable_returnsEmptyList() {
         when(orderRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        List<OrderDto> result =  orderServiceDefault.findAllPageable(0, 1);
+        List<OrderDto> result = orderServiceDefault.findAllPageable(0, 1);
 
         assertNotNull(result);
         assertEquals(0, result.size());
     }
 
     @Test
-    void findOrdersByCourierIdAndStatus_returnsPage(){
+    void findOrdersByCourierIdAndStatus_returnsPage() {
         when(orderRepository.findOrdersByCourierIdAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of(order, order)));
@@ -200,7 +200,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCourierIdAndStatus_returnsEmptyPage(){
+    void findOrdersByCourierIdAndStatus_returnsEmptyPage() {
         when(orderRepository.findOrdersByCourierIdAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of()));
@@ -214,7 +214,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdAndStatus_returnsPage(){
+    void findOrdersByCustomerIdAndStatus_returnsPage() {
         when(orderRepository.findOrdersByCustomerIdAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of(order, order)));
@@ -229,7 +229,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdAndStatus_returnsEmptyPage(){
+    void findOrdersByCustomerIdAndStatus_returnsEmptyPage() {
         when(orderRepository.findOrdersByCustomerIdAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of()));
@@ -243,7 +243,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdAndStatusNot_returnsPage(){
+    void findOrdersByCustomerIdAndStatusNot_returnsPage() {
         when(orderRepository.findOrdersByCustomerIdAndStatusNot(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of(order, order)));
@@ -258,7 +258,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdAndStatusNot_returnsEmptyPage(){
+    void findOrdersByCustomerIdAndStatusNot_returnsEmptyPage() {
         when(orderRepository.findOrdersByCustomerIdAndStatusNot(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of()));
@@ -272,7 +272,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdNotAndStatus_returnsPage(){
+    void findOrdersByCustomerIdNotAndStatus_returnsPage() {
         when(orderRepository.findOrdersByCustomerIdNotAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of(order, order)));
@@ -287,7 +287,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void findOrdersByCustomerIdNotAndStatus_returnsEmptyPage(){
+    void findOrdersByCustomerIdNotAndStatus_returnsEmptyPage() {
         when(orderRepository.findOrdersByCustomerIdNotAndStatus(
                 1, OrderStatus.PUBLISHED, PageRequest.of(0, 10)))
                 .thenReturn(new PageImpl<>(List.of()));

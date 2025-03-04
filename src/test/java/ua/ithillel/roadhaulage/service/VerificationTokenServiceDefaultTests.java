@@ -35,7 +35,7 @@ public class VerificationTokenServiceDefaultTests {
     private VerificationToken verificationToken;
 
     @BeforeEach
-    void init(){
+    void init() {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         User user = new User();
@@ -54,7 +54,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void save(){
+    void save() {
         when(verificationTokenMapper.toEntity(verificationTokenDto)).thenReturn(verificationToken);
         when(verificationTokenRepository.save(verificationToken)).thenReturn(verificationToken);
         when(verificationTokenMapper.toDto(verificationToken)).thenReturn(verificationTokenDto);
@@ -67,7 +67,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void delete(){
+    void delete() {
         when(verificationTokenMapper.toEntity(verificationTokenDto)).thenReturn(verificationToken);
         verificationTokenServiceDefault.delete(verificationTokenDto);
 
@@ -75,7 +75,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void getToken_returnsOptionalVerificationToken(){
+    void getToken_returnsOptionalVerificationToken() {
         when(verificationTokenMapper.toDto(verificationToken)).thenReturn(verificationTokenDto);
         when(verificationTokenRepository.findByToken(anyString())).
                 thenReturn(Optional.of(verificationToken));
@@ -87,7 +87,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void getToken_returnsEmptyOptional(){
+    void getToken_returnsEmptyOptional() {
         when(verificationTokenRepository.findByToken(anyString())).thenReturn(Optional.empty());
 
         Optional<VerificationTokenDto> result = verificationTokenServiceDefault.getToken(anyString());
@@ -96,7 +96,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void findByUser_returnsOptionalVerificationToken(){
+    void findByUser_returnsOptionalVerificationToken() {
         when(verificationTokenMapper.toDto(verificationToken)).thenReturn(verificationTokenDto);
         when(verificationTokenRepository.findByUser(any(User.class))).
                 thenReturn(Optional.of(verificationToken));
@@ -111,7 +111,7 @@ public class VerificationTokenServiceDefaultTests {
     }
 
     @Test
-    void findByUser_returnsEmptyOptional(){
+    void findByUser_returnsEmptyOptional() {
         when(verificationTokenRepository.findByUser(any(User.class)))
                 .thenReturn(Optional.empty());
         when(usermapper.toEntity(any(UserDto.class)))

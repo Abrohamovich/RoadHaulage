@@ -25,7 +25,7 @@ public class UserApiController {
 
     @GetMapping("/find-by")
     public ResponseEntity<UserDto> findBy(@RequestParam(required = false) Long id,
-                                            @RequestParam(required = false) String email) {
+                                          @RequestParam(required = false) String email) {
         if (email != null && !email.trim().isEmpty()) {
             return ResponseEntity.of(userService.findByEmail(email));
         }

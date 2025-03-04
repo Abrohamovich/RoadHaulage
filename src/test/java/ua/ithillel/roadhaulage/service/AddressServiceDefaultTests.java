@@ -33,7 +33,7 @@ public class AddressServiceDefaultTests {
     private Address address;
 
     @BeforeEach
-    void init(){
+    void init() {
         addressDto = new AddressDto();
         addressDto.setId(1L);
         addressDto.setStreet("Street");
@@ -51,7 +51,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void save(){
+    void save() {
         when(addressMapper.toEntity(addressDto)).thenReturn(address);
         when(addressRepository.save(address)).thenReturn(address);
         when(addressMapper.toDto(address)).thenReturn(addressDto);
@@ -63,7 +63,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void findAll_returnsFullList(){
+    void findAll_returnsFullList() {
         Page<Address> addressPage = new PageImpl<>(List.of(address));
 
         when(addressRepository.findAll(any(PageRequest.class))).thenReturn(addressPage);
@@ -77,7 +77,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void findAll_returnsEmptyList(){
+    void findAll_returnsEmptyList() {
         when(addressRepository.findAll(any(PageRequest.class))).thenReturn(Page.empty());
 
         List<AddressDto> result = addressService.findAll(1, 1);
@@ -86,7 +86,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void findById_returnsPresentOptional(){
+    void findById_returnsPresentOptional() {
         when(addressRepository.findById(anyLong())).
                 thenReturn(Optional.of(address));
         when(addressMapper.toDto(address)).thenReturn(addressDto);
@@ -98,7 +98,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void findById_returnsEmptyOptional(){
+    void findById_returnsEmptyOptional() {
         when(addressRepository.findById(anyLong())).
                 thenReturn(Optional.empty());
 
@@ -109,7 +109,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void createAddress_returnsNewAddress(){
+    void createAddress_returnsNewAddress() {
         String addressString = "Street, City, State, 68932, Country";
         String street = "Street";
         String city = "City";
@@ -134,7 +134,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void createAddress_returnsExistedAddress(){
+    void createAddress_returnsExistedAddress() {
         String addressString = "Street, City, State, 68932, Country";
         String street = "Street";
         String city = "City";
@@ -158,7 +158,7 @@ public class AddressServiceDefaultTests {
     }
 
     @Test
-    void createAddress_throwsAddressCreateException(){
+    void createAddress_throwsAddressCreateException() {
         String addressString = "42 Pastera street";
 
         AddressCreateException exception = assertThrows(AddressCreateException.class, () ->

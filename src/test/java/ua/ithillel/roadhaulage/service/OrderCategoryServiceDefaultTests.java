@@ -32,7 +32,7 @@ public class OrderCategoryServiceDefaultTests {
     private OrderCategory orderCategory;
 
     @BeforeEach
-    void init(){
+    void init() {
         orderCategoryDto = new OrderCategoryDto();
         orderCategoryDto.setId(1L);
         orderCategoryDto.setName("Test");
@@ -42,7 +42,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void save(){
+    void save() {
         when(orderCategoryMapper.toEntity(orderCategoryDto)).thenReturn(orderCategory);
         when(orderCategoryRepository.save(orderCategory)).thenReturn(orderCategory);
         when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
@@ -54,7 +54,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findAll_returnsEmptyList(){
+    void findAll_returnsEmptyList() {
         when(orderCategoryRepository.findAll()).thenReturn(List.of());
 
         List<OrderCategoryDto> result = orderCategoryService.findAll();
@@ -63,7 +63,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findAll_returnsFullList(){
+    void findAll_returnsFullList() {
         when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
 
         when(orderCategoryRepository.findAll()).thenReturn(List.of(orderCategory));
@@ -75,17 +75,17 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findAllPageable_returnsEmptyList(){
+    void findAllPageable_returnsEmptyList() {
         when(orderCategoryRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        List<OrderCategoryDto> result = orderCategoryService.findAllPageable(0,1);
+        List<OrderCategoryDto> result = orderCategoryService.findAllPageable(0, 1);
 
         assertEquals(0, result.size());
     }
 
     @Test
-    void findAllPageable_returnsFullList(){
+    void findAllPageable_returnsFullList() {
         when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
 
         when(orderCategoryRepository.findAll(PageRequest.of(0, 1)))
@@ -98,7 +98,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findById_returnsPresentOptional(){
+    void findById_returnsPresentOptional() {
         when(orderCategoryRepository.findById(anyLong())).
                 thenReturn(Optional.of(orderCategory));
         when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
@@ -110,7 +110,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findById_returnsEmptyOptional(){
+    void findById_returnsEmptyOptional() {
         when(orderCategoryRepository.findById(anyLong())).
                 thenReturn(Optional.empty());
 
@@ -121,7 +121,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findByName_returnsOptionalOfOrderCategory(){
+    void findByName_returnsOptionalOfOrderCategory() {
         when(orderCategoryMapper.toDto(orderCategory)).thenReturn(orderCategoryDto);
         when(orderCategoryRepository.findByName(anyString()))
                 .thenReturn(Optional.of(orderCategory));
@@ -133,7 +133,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void findByName_returnsOptionalOfNull(){
+    void findByName_returnsOptionalOfNull() {
         when(orderCategoryRepository.findByName(anyString()))
                 .thenReturn(Optional.empty());
 
@@ -143,7 +143,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void createOrderCategorySet_returnsSetOfNewOrderCategory(){
+    void createOrderCategorySet_returnsSetOfNewOrderCategory() {
         String categoryNamesString = " test ";
 
         when(orderCategoryRepository.findByName(anyString())).thenReturn(Optional.empty());
@@ -155,7 +155,7 @@ public class OrderCategoryServiceDefaultTests {
     }
 
     @Test
-    void createOrderCategorySet_returnsSetOfExistedOrderCategory(){
+    void createOrderCategorySet_returnsSetOfExistedOrderCategory() {
         String categoryNamesString = " test ";
 
         when(orderCategoryRepository.findByName(anyString()))
