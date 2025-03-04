@@ -18,8 +18,10 @@ public class LoggingFilter implements Filter{
         HttpServletResponse res = (HttpServletResponse) response;
         log.info("Request: {} {}", req.getMethod(), req.getRequestURI());
 
-        request.getParameterMap().forEach((key, value) ->
-                log.info("Request param: {} = {}", key, String.join(",", value)));
+        request.getParameterMap().forEach((key, value) -> {
+            if (key.equals("password")) {return;}
+            log.info("Request param: {} = {}", key, String.join(",", value));
+        });
 
         chain.doFilter(request, response);
 

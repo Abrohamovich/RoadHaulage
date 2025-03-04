@@ -25,38 +25,6 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-//                        .usernameParameter("email")
-//                        .defaultSuccessUrl("/home", true)
-//                        .failureUrl("/login?error=true")
-//                )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(
-//                                "/js/**",
-//                                "/css/**",
-//                                "/home",
-//                                "/about-us",
-//                                "/contact",
-//                                "/logout",
-//                                "/register/**",
-//                                "/orders/**",
-//                                "/verify-email",
-//                                "/password-recovery/**").permitAll()
-//                        .requestMatchers("/account/**", "/generate-report").hasAuthority(UserRole.USER.name())
-//                        .requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.name())
-//                        .anyRequest().authenticated()
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/home")
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID")
-//                        .permitAll())
-//                .build();
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
@@ -84,6 +52,7 @@ public class SpringSecurityConfiguration {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/home")
+                        .deleteCookies("jwtToken")
                         .permitAll())
                 .build();
     }
