@@ -92,17 +92,18 @@ convenient and economical way to send a parcel, things, or even a small cargo.
 
     ```
     ADMIN_EMAIL=
-    ADMIN_PASSWORD= (watch isValid() method in UserServiceDefault)
+    ADMIN_PASSWORD=#watch isValidPassword() method in RegisterServiceDefault
     ADMIN_PHONE_CODE=
     ADMIN_PHONE_NUMBER=
     MAIL_PASSWORD='abcd efgh klmn oprs'
     MAIL_USERNAME=
     MYSQL_DATABASE=
+    JWT_SECRET=
     MYSQL_USER=
     MYSQL_PASSWORD=
     MYSQL_ROOT_PASSWORD=
-    DATABASE_HOST=db
-    DATABASE_PORT=3306
+    DATABASE_HOST=
+    DATABASE_PORT=
     ```
 
 4. **Run docker command** in project directory
