@@ -39,7 +39,7 @@ public class UserServiceDefaultTests {
     private User user;
 
     @BeforeEach
-    void init(){
+    void init() {
         userDto = new UserDto();
         userDto.setId(1L);
         userDto.setRole(UserRole.USER);
@@ -129,7 +129,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    void findAllPageable_returnsFullList(){
+    void findAllPageable_returnsFullList() {
         when(userMapper.toDto(user)).thenReturn(userDto);
         when(userRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of(user)));
@@ -141,7 +141,7 @@ public class UserServiceDefaultTests {
     }
 
     @Test
-    void findAllPageable_returnsEmptyList(){
+    void findAllPageable_returnsEmptyList() {
         when(userRepository.findAll(PageRequest.of(0, 1)))
                 .thenReturn(new PageImpl<>(List.of()));
 

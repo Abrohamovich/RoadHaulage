@@ -108,7 +108,7 @@ public class UserRatingServiceDefaultTests {
     }
 
     @Test
-    void findByUserEmail_ShouldReturnEmptyOptional(){
+    void findByUserEmail_ShouldReturnEmptyOptional() {
         when(repository.findUserRatingByUserEmail(anyString()))
                 .thenReturn(Optional.empty());
 

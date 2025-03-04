@@ -36,7 +36,7 @@ public class RegisterServiceDefaultTests {
     private User user;
 
     @BeforeEach
-    void init(){
+    void init() {
         userDto = new UserDto();
         userDto.setId(1L);
         userDto.setRole(UserRole.USER);
@@ -227,7 +227,7 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void update_withoutPasswordChanges(){
+    void update_withoutPasswordChanges() {
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userMapper.toDto(any())).thenReturn(userDto);
@@ -236,7 +236,7 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void update_withPasswordChanges(){
+    void update_withPasswordChanges() {
         User userFromDB = new User();
         userFromDB.setId(1L);
         userFromDB.setPassword("oaiwhdOI(#R#(WQHf3wf");
