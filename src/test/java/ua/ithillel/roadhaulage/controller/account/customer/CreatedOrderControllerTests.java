@@ -39,7 +39,7 @@ public class CreatedOrderControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setRole(UserRole.USER);
 
@@ -49,7 +49,7 @@ public class CreatedOrderControllerTests extends TestParent {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(

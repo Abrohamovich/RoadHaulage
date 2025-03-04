@@ -22,35 +22,6 @@ public class ReportGenerator {
 
     private final static String templatePath = "document/reportTemplate.docx";
 
-    public void generateReport(UserDto userDto, List<OrderDto> customerOrderList, List<OrderDto> courierOrderList, ByteArrayOutputStream outputStream) {
-        try (FileInputStream fis = new FileInputStream(templatePath);
-        ) {
-            XWPFDocument document = new XWPFDocument(fis);
-
-            String[] data = new String[4];
-
-            data[0] = String.valueOf(customerOrderList.size());
-            data[1] = String.valueOf(courierOrderList.size());
-            data[2] = generateFullPriceString(customerOrderList);
-            data[3] = generateFullPriceString(courierOrderList);
-
-            for (XWPFParagraph paragraph : document.getParagraphs()) {
-                replacePlaceholdersInParagraph(paragraph, userDto, data);
-            }
-
-            List<OrderStatus> statusCustomerArray = List.of(OrderStatus.CREATED, OrderStatus.PUBLISHED, OrderStatus.ACCEPTED, OrderStatus.COMPLETED);
-            List<OrderStatus> statusCourierArray = List.of(OrderStatus.ACCEPTED, OrderStatus.COMPLETED);
-
-            generateOrderTables(document, customerOrderList, statusCustomerArray, 0, 3);
-            generateOrderTables(document, courierOrderList, statusCourierArray, 4, 5);
-
-            document.write(outputStream);
-
-        } catch (IOException e) {
-            System.err.println("Error while generating" + e.getMessage());
-        }
-    }
-
     private static void replacePlaceholdersInParagraph(XWPFParagraph paragraph, UserDto userDto, String[] data) {
         List<XWPFRun> runs = paragraph.getRuns();
         if (runs != null) {
@@ -64,7 +35,7 @@ public class ReportGenerator {
                     .replace("{{firstName}}", userDto.getFirstName())
                     .replace("{{lastName}}", userDto.getLastName())
                     .replace("{{email}}", userDto.getEmail())
-                    .replace("{{phone}}", userDto.getPhone())
+                    .replace("{{phone}}", userDto.getLocalPhone())
                     .replace("{{createdOrderNum}}", data[0])
                     .replace("{{deliveredOrderNum}}", data[1])
                     .replace("{{moneyEarned}}", data[3])
@@ -107,7 +78,8 @@ public class ReportGenerator {
                     row.getCell(5).setText(order.getCost() + " " + order.getCurrency());
                     row.getCell(6).setText(order.getCreationDate().toString());
                     if (targetStatus == OrderStatus.ACCEPTED) row.getCell(7).setText(order.getAcceptDate().toString());
-                    if (targetStatus == OrderStatus.COMPLETED) row.getCell(7).setText(order.getCompletionDate().toString());
+                    if (targetStatus == OrderStatus.COMPLETED)
+                        row.getCell(7).setText(order.getCompletionDate().toString());
 
                     rowIndex++;
                 }
@@ -121,7 +93,7 @@ public class ReportGenerator {
             XWPFTableRow additionalRow = table.insertNewTableRow(rowIndex);
 
             short k = 7;
-            if (targetStatus == OrderStatus.ACCEPTED || targetStatus== OrderStatus.COMPLETED) k = 8;
+            if (targetStatus == OrderStatus.ACCEPTED || targetStatus == OrderStatus.COMPLETED) k = 8;
 
             for (int i = 0; i < k; i++) {
                 XWPFTableCell cell = additionalRow.addNewTableCell();
@@ -168,5 +140,34 @@ public class ReportGenerator {
             sb.append(entry.getValue()).append(" ").append(entry.getKey()).append(" ");
         }
         return sb.toString();
+    }
+
+    public void generateReport(UserDto userDto, List<OrderDto> customerOrderList, List<OrderDto> courierOrderList, ByteArrayOutputStream outputStream) {
+        try (FileInputStream fis = new FileInputStream(templatePath)
+        ) {
+            XWPFDocument document = new XWPFDocument(fis);
+
+            String[] data = new String[4];
+
+            data[0] = String.valueOf(customerOrderList.size());
+            data[1] = String.valueOf(courierOrderList.size());
+            data[2] = generateFullPriceString(customerOrderList);
+            data[3] = generateFullPriceString(courierOrderList);
+
+            for (XWPFParagraph paragraph : document.getParagraphs()) {
+                replacePlaceholdersInParagraph(paragraph, userDto, data);
+            }
+
+            List<OrderStatus> statusCustomerArray = List.of(OrderStatus.CREATED, OrderStatus.PUBLISHED, OrderStatus.ACCEPTED, OrderStatus.COMPLETED);
+            List<OrderStatus> statusCourierArray = List.of(OrderStatus.ACCEPTED, OrderStatus.COMPLETED);
+
+            generateOrderTables(document, customerOrderList, statusCustomerArray, 0, 3);
+            generateOrderTables(document, courierOrderList, statusCourierArray, 4, 5);
+
+            document.write(outputStream);
+
+        } catch (IOException e) {
+            System.err.println("Error while generating" + e.getMessage());
+        }
     }
 }

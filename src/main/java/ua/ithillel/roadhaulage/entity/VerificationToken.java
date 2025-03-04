@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name="t_verification_token")
+@Table(name = "t_verification_token")
 public class VerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

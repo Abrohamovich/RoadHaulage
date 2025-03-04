@@ -5,100 +5,112 @@
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadHaulage</title>
-  <style>
-    #create-new-link{
-      display: inline-block;
-      padding: 10px;
-      margin: 0 0 0 20px;
-      background-color: #007bff;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-    }
-    #create-new-link a{
-      color: white;
-    }
-    #create-new-link a::after{
-      background-color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RoadHaulage</title>
+    <style>
+        #create-new-link {
+            display: inline-block;
+            padding: 10px;
+            margin: 0 0 0 20px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        #create-new-link a {
+            color: white;
+        }
+
+        #create-new-link a::after {
+            background-color: white;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="~{account/sidebar.html}"></div>
-  <main>
-    <form th:action="@{/account/my-orders/create/create}" method="post">
-      <div class="form-group">
-        <label for="firstName">Customer full name</label>
-        <input type="text" id="firstName" name="buyerFullName" th:value="${firstName} + ' '+ ${lastName}"
-               readonly>
-      </div>
-      <div class="form-group">
-        <label for="categoryNames">Category</label>
-        <input type="text" id="categoryNames" name="categoryNames" placeholder="Goods, Food, Toys, Grocery" required
-               oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');">
-      </div>
-      <div class="form-group">
-        <label for="departureAddressString">Departure address</label>
-        <input type="text" id="departureAddressString" name="departureAddressString" placeholder="Street, City, State, zip, Country" required
-               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
-      </div>
-      <div class="form-group">
-        <label for="deliveryAddressString">Delivery address</label>
-        <input type="text" id="deliveryAddressString" name="deliveryAddressString" placeholder="Street, City, State, zip, Country" required
-               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
-      </div>
-      <div class="form-group selector">
-        <label for="weight">Weight</label>
-        <input type="text" id="weight" name="weight" placeholder="2.5" required
-               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
-        <select id="weight-unit" name="weight-unit" required>
-          <option value="kg">kg</option>
-          <option value="lbs">lbs</option>
-        </select>
-      </div>
-      <div class="form-group selector">
-        <label for="dimensions">Dimensions</label>
-        <input type="text" id="dimensions" name="dimensions" placeholder="20x40x50" required
-               oninput="this.value = this.value.replace(/[^0-9x]/g, '');">
-        <select id="dimensions-unit" name="dimensions-unit" required>
-          <option value="cm">cm</option>
-          <option value="inch">inch</option>
-          <option value="m">m</option>
-          <option value="foot">foot</option>
-        </select>
-      </div>
-      <div class="form-group selector">
-        <label for="cost">Cost</label>
-        <input type="text" id="cost" name="cost" placeholder="70.5" required
-               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
-        <select id="currency" name="currency" required>
-          <option value="EUR">EUR</option>
-          <option value="USD">USD</option>
-          <option value="GBP">GBP</option>
-          <option value="CHF">CHF</option>
-          <option value="PLN">PLN</option>
-          <option value="UAH">UAH</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="additionalInfo">Additional info</label>
-        <input type="text" id="additionalInfo" name="additionalInfo" required maxlength="256">
-      </div>
-      <div class="form-group">
-        <label for="acceptDate">Date of creation</label>
-        <input type="text" id="acceptDate" name="acceptDate" th:value="${acceptDate}" readonly>
-      </div>
-      <div th:if="errorMessage">
-        <p th:text="${errorMessage}"></p>
-      </div>
-      <button type="submit">Create</button>
-    </form>
-  </main>
+    <div th:replace="~{account/sidebar.html}"></div>
+    <main>
+        <form method="post" th:action="@{/account/my-orders/create/create}">
+            <div class="form-group">
+                <label for="firstName">Customer full name</label>
+                <input id="firstName" name="buyerFullName" readonly th:value="${firstName} + ' '+ ${lastName}"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="categoryNames">Category</label>
+                <input id="categoryNames" name="categoryNames"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');"
+                       placeholder="Goods, Food, Toys, Grocery"
+                       required
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="departureAddressString">Departure address</label>
+                <input id="departureAddressString" name="departureAddressString"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');"
+                       placeholder="Street, City, State, zip, Country" required
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="deliveryAddressString">Delivery address</label>
+                <input id="deliveryAddressString" name="deliveryAddressString"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');"
+                       placeholder="Street, City, State, zip, Country" required
+                       type="text">
+            </div>
+            <div class="form-group selector">
+                <label for="weight">Weight</label>
+                <input id="weight" name="weight" oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');"
+                       placeholder="2.5" required
+                       type="text">
+                <select id="weight-unit" name="weight-unit" required>
+                    <option value="kg">kg</option>
+                    <option value="lbs">lbs</option>
+                </select>
+            </div>
+            <div class="form-group selector">
+                <label for="dimensions">Dimensions</label>
+                <input id="dimensions" name="dimensions" oninput="this.value = this.value.replace(/[^0-9x]/g, '');"
+                       placeholder="20x40x50" required
+                       type="text">
+                <select id="dimensions-unit" name="dimensions-unit" required>
+                    <option value="cm">cm</option>
+                    <option value="inch">inch</option>
+                    <option value="m">m</option>
+                    <option value="foot">foot</option>
+                </select>
+            </div>
+            <div class="form-group selector">
+                <label for="cost">Cost</label>
+                <input id="cost" name="cost" oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');"
+                       placeholder="70.5" required
+                       type="text">
+                <select id="currency" name="currency" required>
+                    <option value="EUR">EUR</option>
+                    <option value="USD">USD</option>
+                    <option value="GBP">GBP</option>
+                    <option value="CHF">CHF</option>
+                    <option value="PLN">PLN</option>
+                    <option value="UAH">UAH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="additionalInfo">Additional info</label>
+                <input id="additionalInfo" maxlength="256" name="additionalInfo" required type="text">
+            </div>
+            <div class="form-group">
+                <label for="acceptDate">Date of creation</label>
+                <input id="acceptDate" name="acceptDate" readonly th:value="${acceptDate}" type="text">
+            </div>
+            <div th:if="errorMessage">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <button type="submit">Create</button>
+        </form>
+    </main>
 </div>
 </body>
 </html>

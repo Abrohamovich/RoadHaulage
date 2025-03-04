@@ -35,7 +35,7 @@ public class OrderDto {
     private UserDto customer;
     private UserDto courier;
 
-    public void defineView(){
+    public void defineView() {
         this.categoriesString = this.categories.stream()
                 .map(OrderCategoryDto::toString)
                 .collect(Collectors.joining(", "));

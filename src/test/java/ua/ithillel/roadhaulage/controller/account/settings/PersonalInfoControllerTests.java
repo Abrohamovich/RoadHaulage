@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.ithillel.roadhaulage.config.TestParent;
-import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.RegisterService;
@@ -35,7 +34,7 @@ public class PersonalInfoControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setRole(UserRole.USER);
 
@@ -44,7 +43,7 @@ public class PersonalInfoControllerTests extends TestParent {
         user.setRole(UserRole.USER);
         user.setFirstName("John");
         user.setLastName("Doe");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(
@@ -60,20 +59,20 @@ public class PersonalInfoControllerTests extends TestParent {
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/settings/personal-information"))
                 .andExpect(model().attributeExists("codes", "firstName",
-                        "lastName", "phone", "iban"));
+                        "lastName", "localPhone", "iban"));
     }
 
     @Test
     void update_success() throws Exception {
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(userService.findByPhoneCodeAndPhone(anyString(), anyString()))
+        when(userService.findByCountryCodeAndLocalPhone(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(post("/account/settings/personal-information/update")
                         .param("firstName", "JohnUpdated")
                         .param("lastName", "DoeUpdated")
-                        .param("phoneCode", "1")
-                        .param("phone", "987654321")
+                        .param("countryCode", "1")
+                        .param("localPhone", "987654321")
                         .param("iban", "IBAN67890"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/settings/personal-information"));
@@ -84,19 +83,19 @@ public class PersonalInfoControllerTests extends TestParent {
     @Test
     void update_userWithPhoneAlreadyExists() throws Exception {
         UserDto existingUser = new UserDto();
-        existingUser.setPhone("123456789");
-        existingUser.setPhoneCode("380");
+        existingUser.setLocalPhone("123456789");
+        existingUser.setCountryCode("380");
 
         when(userService.findById(anyLong())).thenReturn(Optional.of(user));
-        when(userService.findByPhoneCodeAndPhone(anyString(), anyString()))
+        when(userService.findByCountryCodeAndLocalPhone(anyString(), anyString()))
                 .thenReturn(Optional.of(existingUser));
 
         mockMvc.perform(post("/account/settings/personal-information/update")
                         .param("firstName", "")
                         .param("lastName", "")
                         .param("iban", "")
-                        .param("phoneCode", "380")
-                        .param("phone", "987654321"))
+                        .param("countryCode", "380")
+                        .param("localPhone", "987654321"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/settings/personal-information"))
                 .andExpect(flash().attributeExists("phoneError"))

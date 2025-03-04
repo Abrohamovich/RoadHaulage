@@ -32,13 +32,13 @@ public class UserProfileController {
     public String getUserProfileInfo(@PathVariable String email, Model model) {
         Optional<UserDto> userDB = userService.findByEmail(email);
         Optional<UserRatingDto> userRatingDto = userRatingService.findByUserEmail(email);
-        if(userDB.isPresent() && userRatingDto.isPresent()) {
+        if (userDB.isPresent() && userRatingDto.isPresent()) {
             UserDto userDto = userDB.get();
             Map<String, String> map = new HashMap<>();
             map.put("firstName", userDto.getFirstName());
             map.put("lastName", userDto.getLastName());
             map.put("email", userDto.getEmail());
-            map.put("phone", userDto.getPhoneCode() + userDto.getPhone());
+            map.put("localPhone", userDto.getCountryCode() + userDto.getLocalPhone());
             map.put("rating", String.valueOf(userRatingDto.get().getAverage()));
             map.put("count", String.valueOf(userRatingDto.get().getCount()));
             model.addAllAttributes(map);
@@ -50,7 +50,7 @@ public class UserProfileController {
     @GetMapping("/{email}/orders/page={page}")
     public String getUserProfileOrders(@PathVariable String email, @PathVariable int page, Model model) {
         Optional<UserDto> userDB = userService.findByEmail(email);
-        if(userDB.isPresent()) {
+        if (userDB.isPresent()) {
             UserDto userDto = userDB.get();
             Page<OrderDto> ordersPage = orderService.findOrdersByCustomerIdAndStatus(userDto.getId(), OrderStatus.PUBLISHED, page, 10);
             List<OrderDto> orders = ordersPage.getContent();
@@ -68,9 +68,9 @@ public class UserProfileController {
 
     @GetMapping("/{email}/order/{id}")
     public String getUserProfileOrder(@PathVariable String email,
-                                      @PathVariable long id,  Model model) {
+                                      @PathVariable long id, Model model) {
         Optional<OrderDto> orderDB = orderService.findById(id);
-        if(orderDB.isPresent()) {
+        if (orderDB.isPresent()) {
             OrderDto orderDto = orderDB.get();
             orderDto.defineView();
             model.addAttribute("email", email);

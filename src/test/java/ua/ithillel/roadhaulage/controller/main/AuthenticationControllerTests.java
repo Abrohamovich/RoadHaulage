@@ -61,7 +61,7 @@ public class AuthenticationControllerTests extends TestParent {
     }
 
     @Test
-    void login_success_redirectToHomePage() throws Exception{
+    void login_success_redirectToHomePage() throws Exception {
         authUser.setId(1L);
         authUser.setRole(UserRole.USER);
         authUser.setEmail("test@test.com");
@@ -91,13 +91,14 @@ public class AuthenticationControllerTests extends TestParent {
     }
 
     @Test
-    void login_failure_redirectToLoginPage() throws Exception{
+    void login_failure_redirectToLoginPage() throws Exception {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setEmail("test@test.com");
         authRequest.setPassword("password");
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new AuthenticationException("Invalid credentials") {});
+                .thenThrow(new AuthenticationException("Invalid credentials") {
+                });
 
         mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)

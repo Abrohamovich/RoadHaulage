@@ -41,7 +41,7 @@ public class AcceptedOrdersController {
     //Sets the current user as the courier of an order with the status PUBLISHED
     @PostMapping("/accept")
     public String acceptOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                              @RequestParam long id){
+                              @RequestParam long id) {
         Optional<UserDto> userOptional = userService.findById(authUserDto.getId());
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent() && userOptional.isPresent()) {
@@ -60,11 +60,11 @@ public class AcceptedOrdersController {
     //Removes the current courier user from the order with the status ACCEPTED
     @PostMapping("/decline")
     public String declineOrder(@AuthenticationPrincipal AuthUserDto authUserDto,
-                               @RequestParam long id){
+                               @RequestParam long id) {
         Optional<OrderDto> orderOptional = orderService.findById(id);
         if (orderOptional.isPresent()) {
             OrderDto orderDto = orderOptional.get();
-            if(!orderDto.getCourier().getId().equals(authUserDto.getId()) ||
+            if (!orderDto.getCourier().getId().equals(authUserDto.getId()) ||
                     !orderDto.getStatus().equals(OrderStatus.ACCEPTED)) {
                 return "redirect:/error";
             }

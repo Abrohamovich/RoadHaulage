@@ -8,6 +8,7 @@
     align-items: flex-start;
     align-content: flex-start;
 }
+
 .order {
     border: 1px solid #007bff;
     border-radius: 10px;
@@ -37,6 +38,7 @@
     display: block;
     margin-bottom: 10px;
 }
+
 .button-container {
     position: sticky;
     bottom: 0;
@@ -48,6 +50,7 @@
     align-items: center;
     justify-content: space-evenly;
 }
+
 .button-container button {
     margin-left: 0;
     padding: 8px 15px;
@@ -78,7 +81,7 @@
 
 .order ion-icon {
     font-size: 18px;
-    color:white;
+    color: white;
     display: block;
     margin: 5px 0;
 }

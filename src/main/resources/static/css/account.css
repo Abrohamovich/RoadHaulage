@@ -7,6 +7,7 @@
     background-color: #ffffff;
     padding: 20px;
 }
+
 main {
     display: flex;
     flex-wrap: wrap;
@@ -16,6 +17,7 @@ main {
     overflow-y: auto;
     flex: 1;
 }
+
 aside {
     width: 250px;
     border-right: 2px solid black;
@@ -43,6 +45,7 @@ aside ul li a {
     text-decoration: none;
     color: #000;
 }
+
 aside ul li a::after {
     content: '';
     position: absolute;
@@ -82,7 +85,8 @@ aside ul li a:hover::after {
     border: 1px solid blue;
     border-radius: 15px;
 }
-.selector input{
+
+.selector input {
     width: calc(45vw - 130px);
 }
 
@@ -107,6 +111,7 @@ button {
     border-radius: 15px;
     cursor: pointer;
 }
+
 .delete {
 
 }

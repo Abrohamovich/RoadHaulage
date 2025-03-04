@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 @Entity
 @Data
 @Table(name = "t_category")
@@ -16,6 +14,4 @@ public class OrderCategory {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @ManyToMany(mappedBy = "categories")
-    private List<Order> orders;
 }

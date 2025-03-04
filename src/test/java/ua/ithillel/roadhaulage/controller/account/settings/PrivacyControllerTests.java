@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.ithillel.roadhaulage.config.TestParent;
-import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.dto.VerificationTokenDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
@@ -42,7 +41,7 @@ public class PrivacyControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setRole(UserRole.USER);
         authUser.setEmail("john@doe.com");
@@ -53,7 +52,7 @@ public class PrivacyControllerTests extends TestParent {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         SecurityContextHolder.getContext().setAuthentication(

@@ -28,23 +28,23 @@ public class EmailServiceDefault implements EmailService {
     public void sendEmailConfirmation(String email, String token, UserDto userDto) {
         String confirmUrl = "http://localhost:8080/verify-email?token=" + token;
         String emailBody = """
-        Hello, %s!
-        
-        You have provided this email address to register or update your details on our website.
-        To complete the registration process and confirm your address, please click on the link below:
-        
-        %s
-        
-        If you have not requested a confirmation email, simply PASS this message.
-        Your account will remain secure and no changes will be made.
-        
-        If you have any questions or concerns, please contact our support team.
-        
-        Thank you for using our service!
-        
-        Regards,
-        RoadHaulage Team
-        """;
+                Hello, %s!
+                
+                You have provided this email address to register or update your details on our website.
+                To complete the registration process and confirm your address, please click on the link below:
+                
+                %s
+                
+                If you have not requested a confirmation email, simply PASS this message.
+                Your account will remain secure and no changes will be made.
+                
+                If you have any questions or concerns, please contact our support team.
+                
+                Thank you for using our service!
+                
+                Regards,
+                RoadHaulage Team
+                """;
         sendEmail(email, "Confirmation of email address",
                 String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl));
     }
@@ -53,22 +53,22 @@ public class EmailServiceDefault implements EmailService {
     public void sendPasswordResetEmail(String email, String token, UserDto userDto) {
         String confirmUrl = "http://localhost:8080/password-recovery/recover?token=" + token;
         String emailBody = """
-        Hello, %s!
-        
-        You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
-        
-        %s
-        
-        If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
-        
-        If you have any questions or concerns, please contact our support team.
-        
-        Thank you for using our service!
-        
-        Regards, \s
-        RoadHaulage Team
-        
-        """;
+                Hello, %s!
+                
+                You have requested to change your password on our website. To confirm this change and update your password, please click on the link below:
+                
+                %s
+                
+                If you have not requested a password change, please IGNORE this message. Your account will remain secure, and no changes will be made.
+                
+                If you have any questions or concerns, please contact our support team.
+                
+                Thank you for using our service!
+                
+                Regards, \s
+                RoadHaulage Team
+                
+                """;
         sendEmail(email, "Confirmation of password recovery",
                 String.format(emailBody, userDto.getFirstName() + " " + userDto.getLastName(), confirmUrl));
     }

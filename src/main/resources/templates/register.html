@@ -4,20 +4,22 @@
 <link rel="stylesheet" th:href="@{/css/register.css}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Register</title>
 </head>
 <body>
 <div class="register-container">
     <h1>Register</h1>
-    <form th:action="@{/register/reg}" method="post">
-        <input type="text" name="firstName" placeholder="First name" required
-               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
-        <input type="text" name="lastName" placeholder="Last name" required
-               oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');">
-        <input type="email" name="email" placeholder="Email" required>
+    <form method="post" th:action="@{/register/reg}">
+        <input name="firstName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');" placeholder="First name"
+               required
+               type="text">
+        <input name="lastName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');" placeholder="Last name"
+               required
+               type="text">
+        <input name="email" placeholder="Email" required type="email">
         <div class="phone-container">
-            <select name="countryCode" id="">
+            <select id="" name="countryCode">
                 <option data-countryCode="AD" value="376">+376</option>
                 <option data-countryCode="AL" value="355">+355</option>
                 <option data-countryCode="AM" value="374">+374</option>
@@ -70,10 +72,11 @@
                 <option data-countryCode="VA" value="379">+379</option>
                 <option data-countryCode="XK" value="383">+383</option>
             </select>
-            <input type="text" pattern="[0-9]+" name="phone" placeholder="Phone number" required
-                   oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            <input name="localPhone" oninput="this.value = this.value.replace(/[^0-9]/g, '');" pattern="[0-9]+"
+                   placeholder="Phone number" required
+                   type="text">
         </div>
-        <input type="password" name="password" placeholder="Password" required minlength="8">
+        <input minlength="8" name="password" placeholder="Password" required type="password">
         <button type="submit">Register</button>
     </form>
     <p style="color: red" th:if="${errorMessage}" th:text="${errorMessage}"></p>

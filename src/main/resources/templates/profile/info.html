@@ -6,7 +6,7 @@
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>RoadHaulage</title>
 </head>
 <style>
@@ -35,23 +35,23 @@
     <main style="align-content: flex-start">
         <div class="form-group">
             <label>First name</label>
-            <input type="text" name="firstName" th:value="${firstName}" readonly>
+            <input name="firstName" readonly th:value="${firstName}" type="text">
         </div>
         <div class="form-group">
             <label>Last name</label>
-            <input type="text" name="lastName" th:value="${lastName}" readonly>
+            <input name="lastName" readonly th:value="${lastName}" type="text">
         </div>
         <div class="form-group">
             <label>Last name</label>
-            <input type="text" name="lastName" th:value="${email}" readonly>
+            <input name="lastName" readonly th:value="${email}" type="text">
         </div>
         <div class="form-group">
             <label>Contact phone</label>
-            <input type="text" name="phone" th:value="${phone}" readonly>
+            <input name="localPhone" readonly th:value="${localPhone}" type="text">
         </div>
         <div class="form-group">
             <label>Rating</label>
-            <input type="text" name="rating" th:value="${rating} + ' (' + ${count} + ')'" readonly>
+            <input name="rating" readonly th:value="${rating} + ' (' + ${count} + ')'" type="text">
         </div>
     </main>
 </div>

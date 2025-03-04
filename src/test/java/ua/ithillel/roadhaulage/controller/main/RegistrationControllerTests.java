@@ -49,8 +49,8 @@ public class RegistrationControllerTests extends TestParent {
         String email = "test@test.com";
         String firstName = "Test";
         String lastName = "Test";
-        String phoneCode = "1";
-        String phone = "995251532";
+        String countryCode = "1";
+        String localPhone = "995251532";
         String password = "Lolipop1Capop";
         String token = "test";
 
@@ -61,8 +61,8 @@ public class RegistrationControllerTests extends TestParent {
         user.setLastName(lastName);
         user.setEnabled(false);
         user.setRole(UserRole.USER);
-        user.setPhoneCode(phoneCode);
-        user.setPhone(phone);
+        user.setCountryCode(countryCode);
+        user.setLocalPhone(localPhone);
         user.setPassword(password);
 
         VerificationTokenDto verificationToken = new VerificationTokenDto();
@@ -74,8 +74,8 @@ public class RegistrationControllerTests extends TestParent {
         mockMvc.perform(post("/register/reg")
                         .param("email", email)
                         .param("password", password)
-                        .param("countryCode", phoneCode)
-                        .param("phone", phone)
+                        .param("countryCode", countryCode)
+                        .param("localPhone", localPhone)
                         .param("firstName", firstName)
                         .param("lastName", lastName))
                 .andExpect(status().is3xxRedirection())
@@ -86,8 +86,8 @@ public class RegistrationControllerTests extends TestParent {
     void register_throwsUserCreateException() throws Exception {
         String email = "test@test.com";
         String password = "Lolipop1Capop";
-        String phoneCode = "1";
-        String phone = "995251532";
+        String countryCode = "1";
+        String localPhone = "995251532";
         String firstName = "Test";
         String lastName = "Test";
 
@@ -97,8 +97,8 @@ public class RegistrationControllerTests extends TestParent {
         mockMvc.perform(post("/register/reg")
                         .param("email", email)
                         .param("password", password)
-                        .param("countryCode", phoneCode)
-                        .param("phone", phone)
+                        .param("countryCode", countryCode)
+                        .param("localPhone", localPhone)
                         .param("firstName", firstName)
                         .param("lastName", lastName))
                 .andExpect(status().is3xxRedirection())

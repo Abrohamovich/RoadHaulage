@@ -11,7 +11,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.ithillel.roadhaulage.config.TestParent;
-import ua.ithillel.roadhaulage.dto.*;
+import ua.ithillel.roadhaulage.dto.AddressDto;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.OrderCategoryService;
@@ -37,7 +40,7 @@ public class OrdersPageControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setEmail("test@test.com");
         authUser.setRole(UserRole.USER);

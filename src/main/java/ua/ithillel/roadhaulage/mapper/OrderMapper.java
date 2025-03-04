@@ -11,6 +11,7 @@ public interface OrderMapper {
     @Mapping(target = "departureAddressString", ignore = true)
     @Mapping(target = "deliveryAddressString", ignore = true)
     OrderDto toDto(Order order);
+
     @Mapping(target = "categories.orders", ignore = true)
     @Mapping(target = "customer.customerOrders", ignore = true)
     @Mapping(target = "customer.courierOrders", ignore = true)

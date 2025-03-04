@@ -10,7 +10,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.ithillel.roadhaulage.config.TestParent;
-import ua.ithillel.roadhaulage.dto.*;
+import ua.ithillel.roadhaulage.dto.AddressDto;
+import ua.ithillel.roadhaulage.dto.OrderCategoryDto;
+import ua.ithillel.roadhaulage.dto.OrderDto;
+import ua.ithillel.roadhaulage.dto.UserDto;
 import ua.ithillel.roadhaulage.entity.OrderStatus;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.exception.AddressCreateException;
@@ -42,7 +45,7 @@ public class ChangeOrderControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setRole(UserRole.USER);
 
@@ -52,7 +55,7 @@ public class ChangeOrderControllerTests extends TestParent {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhone("123456789");
+        user.setLocalPhone("123456789");
         user.setIban("IBAN12345");
 
         OrderCategoryDto category = new OrderCategoryDto();

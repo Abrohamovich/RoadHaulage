@@ -32,7 +32,7 @@ public class OrdersPageController {
         List<OrderDto> orders = ordersPage.getContent().stream()
                 .peek(OrderDto::defineView)
                 .toList();
-        if(!orders.isEmpty()) addModels(model, orders);
+        if (!orders.isEmpty()) addModels(model, orders);
         model.addAttribute("categories", orderCategoryService.findAll());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", ordersPage.getTotalPages());

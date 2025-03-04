@@ -5,101 +5,116 @@
 <link rel="stylesheet" th:href="@{/css/account.css}">
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadHaulage</title>
-  <style>
-      .cancel-button{
-        margin-bottom: 10px;
-          padding: 8px 15px;
-          font-size: 14px;
-          color: #fff;
-          text-decoration: none;
-          background-color: red;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-      }
-  </style>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RoadHaulage</title>
+    <style>
+        .cancel-button {
+            margin-bottom: 10px;
+            padding: 8px 15px;
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+            background-color: red;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
 <div class="container">
-  <div th:replace="~{account/sidebar.html}"></div>
-  <main>
-    <form th:action="@{/account/my-orders/change/edit}" th:object="${order}" method="post">
-      <input type="hidden" name="id" th:value="${order.id}" />
-      <div class="form-group">
-        <label for="categoriesString">Category</label>
-        <input type="text" id="categoriesString" name="categoriesString" th:value="${order.categoriesString}"
-               oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');">
-      </div>
-      <div class="form-group">
-        <label for="departureAddressString">Departure address</label>
-        <input type="text" id="departureAddressString" name="departureAddressString" th:value="${order.departureAddressString}"
-               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
-      </div>
-      <div class="form-group">
-        <label for="deliveryAddressString">Delivery address</label>
-        <input type="text" id="deliveryAddressString" name="deliveryAddressString" th:value="${order.deliveryAddressString}"
-               oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');">
-      </div>
-      <div class="form-group">
-        <label for="weight">Weight</label>
-        <input type="text" id="weight" name="weight" th:value="${order.weight}"
-               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
-        <div>
-          <label for="weight-unit"></label>
-          <select id="weight-unit" name="weight-unit" th:value="${order.weightUnit}">
-            <option value="kg">kg</option>
-            <option value="lbs">lbs</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="dimensions">Dimensions</label>
-        <input type="text" id="dimensions" name="dimensions" th:value="${order.dimensions}" required
-               oninput="this.value = this.value.replace(/[^0-9x]/g, '');">
-        <div>
-          <label for="dimensions-unit"></label>
-          <select id="dimensions-unit" name="dimensions-unit" th:value="${order.dimensionsUnit}">
-            <option value="m">m</option>
-            <option value="cm">cm</option>
-            <option value="inch">inch</option>
-            <option value="foot">foot</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="cost">Cost</label>
-        <input type="text" id="cost" name="cost" th:value="${order.cost}"
-               oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');">
-        <div>
-          <label for="currency"></label>
-          <select id="currency" name="currency" th:value="${order.currency}">
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="UAH">UAH</option>
-            <option value="GBP">GBP</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="additionalInfo">Additional info</label>
-        <input type="text" id="additionalInfo" name="additionalInfo" th:value="${order.additionalInfo}" required maxlength="256">
-      </div>
-      <div th:if="errorMessage">
-        <p th:text="${errorMessage}"></p>
-      </div>
-      <div class="button-container">
-        <button type="submit" title="Update order"><ion-icon name="arrow-undo-outline"></ion-icon></button>
-      </div>
-    </form>
-    <button style="background-color: red" type="reset" onclick="window.location.href='/account/my-orders/created'">Cancel</button>
-  </main>
+    <div th:replace="~{account/sidebar.html}"></div>
+    <main>
+        <form method="post" th:action="@{/account/my-orders/change/edit}" th:object="${order}">
+            <input name="id" th:value="${order.id}" type="hidden"/>
+            <div class="form-group">
+                <label for="categoriesString">Category</label>
+                <input id="categoriesString" name="categoriesString"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z, ]/g, '');"
+                       th:value="${order.categoriesString}"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="departureAddressString">Departure address</label>
+                <input id="departureAddressString" name="departureAddressString"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');"
+                       th:value="${order.departureAddressString}"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="deliveryAddressString">Delivery address</label>
+                <input id="deliveryAddressString" name="deliveryAddressString"
+                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9, ]/g, '');"
+                       th:value="${order.deliveryAddressString}"
+                       type="text">
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight</label>
+                <input id="weight" name="weight" oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');"
+                       th:value="${order.weight}"
+                       type="text">
+                <div>
+                    <label for="weight-unit"></label>
+                    <select id="weight-unit" name="weight-unit" th:value="${order.weightUnit}">
+                        <option value="kg">kg</option>
+                        <option value="lbs">lbs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="dimensions">Dimensions</label>
+                <input id="dimensions" name="dimensions" oninput="this.value = this.value.replace(/[^0-9x]/g, '');"
+                       required th:value="${order.dimensions}"
+                       type="text">
+                <div>
+                    <label for="dimensions-unit"></label>
+                    <select id="dimensions-unit" name="dimensions-unit" th:value="${order.dimensionsUnit}">
+                        <option value="m">m</option>
+                        <option value="cm">cm</option>
+                        <option value="inch">inch</option>
+                        <option value="foot">foot</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input id="cost" name="cost" oninput="this.value = this.value.replace(/[^0-9.]|\.(?=.*\.)/g, '');"
+                       th:value="${order.cost}"
+                       type="text">
+                <div>
+                    <label for="currency"></label>
+                    <select id="currency" name="currency" th:value="${order.currency}">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="UAH">UAH</option>
+                        <option value="GBP">GBP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="additionalInfo">Additional info</label>
+                <input id="additionalInfo" maxlength="256" name="additionalInfo" required
+                       th:value="${order.additionalInfo}"
+                       type="text">
+            </div>
+            <div th:if="errorMessage">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <div class="button-container">
+                <button title="Update order" type="submit">
+                    <ion-icon name="arrow-undo-outline"></ion-icon>
+                </button>
+            </div>
+        </form>
+        <button onclick="window.location.href='/account/my-orders/created'" style="background-color: red" type="reset">
+            Cancel
+        </button>
+    </main>
 </div>
 </body>
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" type="module"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </html>

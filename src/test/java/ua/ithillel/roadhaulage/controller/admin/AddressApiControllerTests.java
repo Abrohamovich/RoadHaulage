@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.ithillel.roadhaulage.config.TestParent;
 import ua.ithillel.roadhaulage.dto.AddressDto;
-import ua.ithillel.roadhaulage.dto.AuthUserDto;
 import ua.ithillel.roadhaulage.entity.UserRole;
 import ua.ithillel.roadhaulage.service.interfaces.AddressService;
 
@@ -40,7 +39,7 @@ public class AddressApiControllerTests extends TestParent {
 
     @BeforeEach
     void init() {
-        
+
         authUser.setId(1L);
         authUser.setRole(UserRole.ADMIN);
 

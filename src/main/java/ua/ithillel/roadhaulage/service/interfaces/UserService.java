@@ -8,9 +8,14 @@ import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
     Optional<UserDto> findById(long id);
+
     Optional<UserDto> findByEmail(String email);
-    Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone);
+
+    Optional<UserDto> findByCountryCodeAndLocalPhone(String countryCode, String localPhone);
+
     List<UserDto> findAllPageable(int page, int pageSize);
+
     short verifyEmail(String token);
+
     short verifyPassword(String token);
 }

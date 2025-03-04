@@ -10,9 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name="t_user")
-@EqualsAndHashCode(of = {"id", "email", "phone", "phoneCode"})
-public class User{
+@Table(name = "t_user")
+@EqualsAndHashCode(of = {"id", "email", "countryCode", "localPhone"})
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,9 +21,9 @@ public class User{
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
-    private String phoneCode;
+    private String countryCode;
     @Column(nullable = false)
-    private String phone;
+    private String localPhone;
     private boolean enabled;
     @Enumerated(EnumType.STRING)
     private UserRole role;

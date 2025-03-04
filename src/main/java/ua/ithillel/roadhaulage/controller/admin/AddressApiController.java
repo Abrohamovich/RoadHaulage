@@ -17,7 +17,7 @@ public class AddressApiController {
 
     @GetMapping("/find-all")
     public ResponseEntity<List<AddressDto>> findAll(@RequestParam int page,
-                                                   @RequestParam int pageSize) {
+                                                    @RequestParam int pageSize) {
         return ResponseEntity.ok(addressService.findAll(page, pageSize));
     }
 

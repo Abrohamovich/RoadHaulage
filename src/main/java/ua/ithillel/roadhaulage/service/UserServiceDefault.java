@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceDefault implements UserService{
+public class UserServiceDefault implements UserService {
     private final UserRepository userRepository;
     private final VerificationTokenService verificationTokenService;
     private final UserMapper userMapper;
@@ -35,14 +35,14 @@ public class UserServiceDefault implements UserService{
     @Override
     public Optional<UserDto> findByEmail(String email) {
         log.info("Finding user by email: {}", email);
-       return userRepository.findByEmail(email)
-               .map(userMapper::toDto);
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDto);
     }
 
     @Override
-    public Optional<UserDto> findByPhoneCodeAndPhone(String phoneCode, String phone) {
-        log.info("Finding user by phone code: {} and phone: {}", phoneCode, phone);
-        return userRepository.findByPhoneCodeAndPhone(phoneCode, phone)
+    public Optional<UserDto> findByCountryCodeAndLocalPhone(String countryCode, String localPhone) {
+        log.info("Finding user by countryCode code: {} and localPhone: {}", countryCode, localPhone);
+        return userRepository.findByCountryCodeAndLocalPhone(countryCode, localPhone)
                 .map(userMapper::toDto);
     }
 
@@ -78,7 +78,7 @@ public class UserServiceDefault implements UserService{
     public AuthUserDto loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<AuthUserDto> authUserDto = userRepository.findByEmail(email)
                 .map(userMapper::toAuthDto);
-        if(authUserDto.isEmpty()) {
+        if (authUserDto.isEmpty()) {
             throw new UsernameNotFoundException("Cant find user with username: " + email);
         }
         return authUserDto.get();

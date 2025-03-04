@@ -44,8 +44,8 @@ public class RegisterServiceDefaultTests {
         userDto.setFirstName("John");
         userDto.setLastName("Doe");
         userDto.setEmail("john@doe.com");
-        userDto.setPhoneCode("1");
-        userDto.setPhone("123456789");
+        userDto.setCountryCode("1");
+        userDto.setLocalPhone("123456789");
         userDto.setPassword("password1LdadL");
         userDto.setEnabled(true);
         user = new User();
@@ -55,21 +55,21 @@ public class RegisterServiceDefaultTests {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@doe.com");
-        user.setPhoneCode("1");
-        user.setPhone("123456789");
+        user.setCountryCode("1");
+        user.setLocalPhone("123456789");
         user.setPassword("password1LdadL");
         user.setEnabled(true);
     }
 
     @Test
-    void save_success() {
+    void register_success() {
         userDto.setPassword("ENCODED_PASSWORD");
 
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(userDto);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("ENCODED_PASSWORD");
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByCountryCodeAndLocalPhone(anyString(), anyString())).thenReturn(Optional.empty());
         when(userRepository.save(user)).thenReturn(user);
 
         UserDto result = registerServiceDefault.register(userDto);
@@ -79,7 +79,7 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void save_throwsException_EmailAlreadyExists() {
+    void register_throwsException_EmailAlreadyExists() {
         userDto.setPassword("plain1Password");
         user.setPassword("plain1Password");
 
@@ -93,27 +93,27 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void save_throwsException_PhoneAlreadyExists() {
+    void register_throwsException_PhoneAlreadyExists() {
         String password = "plain1Password";
-        userDto.setPhoneCode("1");
-        userDto.setPhone("123456789");
+        userDto.setCountryCode("1");
+        userDto.setLocalPhone("123456789");
         userDto.setPassword(password);
-        user.setPhoneCode("1");
-        user.setPhone("123456789");
+        user.setCountryCode("1");
+        user.setLocalPhone("123456789");
         user.setPassword(password);
 
         when(userMapper.toEntity(userDto)).thenReturn(user);
-        when(userRepository.findByPhoneCodeAndPhone(user.getPhoneCode(), user.getPhone()))
+        when(userRepository.findByCountryCodeAndLocalPhone(user.getCountryCode(), user.getLocalPhone()))
                 .thenReturn(Optional.of(mock(User.class)));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 registerServiceDefault.register(userDto));
 
-        assertTrue(exception.getMessage().contains("A user with phone " + user.getPhoneCode() + user.getPhone() + " already exists"));
+        assertTrue(exception.getMessage().contains("A user with phone " + user.getCountryCode() + user.getLocalPhone() + " already exists"));
     }
 
     @Test
-    void save_throwsException_InvalidPassword() {
+    void register_throwsException_InvalidPassword() {
         userDto.setPassword("password");
         user.setPassword("password");
 
@@ -126,35 +126,35 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void save_throwsException_PhoneAndEmailAlreadyExist() {
-        String phoneCode = "1";
-        String phone = "123456789";
+    void register_throwsException_PhoneAndEmailAlreadyExist() {
+        String countryCode = "1";
+        String localPhone = "123456789";
         String email = "test@example.com";
         String password = "plain1Password";
-        userDto.setPhoneCode(phoneCode);
-        userDto.setPhone(phone);
+        userDto.setCountryCode(countryCode);
+        userDto.setLocalPhone(localPhone);
         userDto.setEmail(email);
         userDto.setPassword(password);
-        user.setPhoneCode(phoneCode);
-        user.setPhone(phone);
+        user.setCountryCode(countryCode);
+        user.setLocalPhone(localPhone);
         user.setEmail(email);
         user.setPassword(password);
 
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(userRepository.findByEmail(anyString())).
                 thenReturn(Optional.of(mock(User.class)));
-        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString()))
+        when(userRepository.findByCountryCodeAndLocalPhone(anyString(), anyString()))
                 .thenReturn(Optional.of(mock(User.class)));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 registerServiceDefault.register(userDto));
 
         assertTrue(exception.getMessage().contains("A user with email " + email + " already exists." +
-                " A user with phone " + phoneCode + phone + " already exists"));
+                " A user with phone " + countryCode + localPhone + " already exists"));
     }
 
     @Test
-    void save_throwsException_EmailAlreadyExistsAndInvalidPassword() {
+    void register_throwsException_EmailAlreadyExistsAndInvalidPassword() {
         String email = "test@example.com";
         String password = "password";
         user.setEmail(email);
@@ -174,47 +174,47 @@ public class RegisterServiceDefaultTests {
     }
 
     @Test
-    void save_throwsException_PhoneAlreadyExistsAndInvalidPassword() {
-        String phoneCode = "1";
-        String phone = "123456789";
+    void register_throwsException_PhoneAlreadyExistsAndInvalidPassword() {
+        String countryCode = "1";
+        String localPhone = "123456789";
         String password = "password";
-        user.setPhone(phone);
-        user.setPhoneCode(phoneCode);
+        user.setLocalPhone(localPhone);
+        user.setCountryCode(countryCode);
         user.setPassword(password);
-        userDto.setPhoneCode(phoneCode);
-        userDto.setPhone(phone);
+        userDto.setCountryCode(countryCode);
+        userDto.setLocalPhone(localPhone);
         user.setPassword(password);
 
         when(userMapper.toEntity(userDto)).thenReturn(user);
-        when(userRepository.findByPhoneCodeAndPhone(anyString(), anyString()))
+        when(userRepository.findByCountryCodeAndLocalPhone(anyString(), anyString()))
                 .thenReturn(Optional.of(new User()));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
                 registerServiceDefault.register(userDto));
 
         assertTrue(exception.getMessage()
-                .contains("A user with phone " + phoneCode + phone + " already exists." +
+                .contains("A user with phone " + countryCode + localPhone + " already exists." +
                         " Password must contain at least one digit and one uppercase"));
     }
 
     @Test
-    void save_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword() {
+    void register_throwsException_EmailAndPhoneAlreadyExistsAndInvalidPassword() {
         String email = "test@example.com";
-        String phoneCode = "1";
-        String phone = "123456789";
+        String countryCode = "1";
+        String localPhone = "123456789";
         String password = "password";
         user.setEmail(email);
-        user.setPhone(phone);
-        user.setPhoneCode(phoneCode);
+        user.setLocalPhone(localPhone);
+        user.setCountryCode(countryCode);
         user.setPassword(password);
         userDto.setEmail(email);
-        userDto.setPhoneCode(phoneCode);
-        userDto.setPhone(phone);
+        userDto.setCountryCode(countryCode);
+        userDto.setLocalPhone(localPhone);
         user.setPassword(password);
 
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(mock(User.class)));
-        when(userRepository.findByPhoneCodeAndPhone(phoneCode, phone))
+        when(userRepository.findByCountryCodeAndLocalPhone(countryCode, localPhone))
                 .thenReturn(Optional.of(mock(User.class)));
 
         UserCreateException exception = assertThrows(UserCreateException.class, () ->
@@ -222,7 +222,7 @@ public class RegisterServiceDefaultTests {
 
         assertTrue(exception.getMessage()
                 .contains("A user with email " + email + " already exists." +
-                        " A user with phone " + phoneCode + phone + " already exists." +
+                        " A user with phone " + countryCode + localPhone + " already exists." +
                         " Password must contain at least one digit and one uppercase"));
     }
 

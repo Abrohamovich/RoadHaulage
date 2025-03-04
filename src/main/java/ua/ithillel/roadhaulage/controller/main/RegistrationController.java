@@ -37,19 +37,19 @@ public class RegistrationController {
     @PostMapping("/reg")
     public String register(@RequestParam String email,
                            @RequestParam String password,
-                           @RequestParam(name = "countryCode") String phoneCode,
-                           @RequestParam String phone,
+                           @RequestParam(name = "countryCode") String countryCode,
+                           @RequestParam String localPhone,
                            @RequestParam String firstName,
                            @RequestParam String lastName, RedirectAttributes redirectAttributes) {
-        try{
+        try {
             UserDto userDto = new UserDto();
             userDto.setEmail(email);
             userDto.setRole(UserRole.USER);
             userDto.setEnabled(false);
             userDto.setFirstName(firstName);
             userDto.setLastName(lastName);
-            userDto.setPhoneCode(phoneCode);
-            userDto.setPhone(phone);
+            userDto.setCountryCode(countryCode);
+            userDto.setLocalPhone(localPhone);
             userDto.setPassword(password);
 
             userDto = registerService.register(userDto);
@@ -76,7 +76,7 @@ public class RegistrationController {
                     "Please check your email to confirm registration. The link is valid for 20 minutes");
             return "redirect:/login";
 
-        } catch (UserCreateException ex){
+        } catch (UserCreateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/register";
         }

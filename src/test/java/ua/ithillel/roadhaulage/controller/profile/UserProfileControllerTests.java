@@ -40,8 +40,8 @@ public class UserProfileControllerTests extends TestParent {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
-        user.setPhoneCode("1");
-        user.setPhone("98565785");
+        user.setCountryCode("1");
+        user.setLocalPhone("98565785");
         UserRatingDto userRating = new UserRatingDto();
         userRating.setId(1L);
         userRating.setAverage(3.3);
@@ -55,7 +55,7 @@ public class UserProfileControllerTests extends TestParent {
         mockMvc.perform(get("/user/john.doe@example.com/info"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("firstName", "lastName", "email",
-                        "phone", "rating", "count"))
+                        "localPhone", "rating", "count"))
                 .andExpect(view().name("profile/info"));
     }
 
@@ -79,8 +79,8 @@ public class UserProfileControllerTests extends TestParent {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
-        user.setPhoneCode("1");
-        user.setPhone("995251532");
+        user.setCountryCode("1");
+        user.setLocalPhone("995251532");
         OrderDto order = new OrderDto();
         order.setCustomer(user);
         order.setStatus(OrderStatus.PUBLISHED);

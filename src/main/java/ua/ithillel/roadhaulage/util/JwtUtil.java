@@ -26,6 +26,7 @@ public class JwtUtil {
                 .signWith(Keys.hmacShaKeyFor(TOKEN_SECRET.getBytes()))
                 .compact();
     }
+
     public Claims parseToken(String token) {
         JwtParser jwtParserBuilder = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(TOKEN_SECRET.getBytes()))

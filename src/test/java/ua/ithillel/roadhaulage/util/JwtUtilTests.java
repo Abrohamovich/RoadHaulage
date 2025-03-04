@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import ua.ithillel.roadhaulage.dto.AuthUserDto;
 
@@ -19,11 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtUtilTests {
+    private static final String secretKey = "121212121212121212121212121212121212121212121212";
     @InjectMocks
     private JwtUtil jwtUtil;
-
     private AuthUserDto authUser;
-    private static final String secretKey = "121212121212121212121212121212121212121212121212";
 
     @BeforeEach
     public void setUp() {

@@ -20,6 +20,20 @@ public class PersonalInfoController {
     private final UserService userService;
     private final RegisterService registerService;
 
+    private static List<String> getCodes(String userPhoneCode) {
+        List<String> codes = new ArrayList<>(List.of(
+                "376", "355", "374", "43", "994", "375", "32", "387", "359",
+                "385", "357", "420", "45", "372", "358", "33", "995", "49",
+                "30", "36", "354", "353", "39", "7", "371", "423", "370",
+                "352", "356", "373", "377", "382", "31", "389", "47", "48",
+                "351", "40", "378", "381", "421", "386", "34", "46",
+                "41", "90", "380", "44", "379", "383"
+        ));
+        codes.remove(userPhoneCode);
+        codes.addFirst(userPhoneCode);
+        return codes;
+    }
+
     @GetMapping
     public String personalInfoPage(@ModelAttribute("firstNameError") String firstNameError,
                                    @ModelAttribute("lastNameError") String lastNameError,
@@ -27,11 +41,11 @@ public class PersonalInfoController {
                                    @AuthenticationPrincipal AuthUserDto authUserDto,
                                    Model model) {
         UserDto userDto = userService.findById(authUserDto.getId()).get();
-        List<String> codes = getCodes(userDto.getPhoneCode());
+        List<String> codes = getCodes(userDto.getCountryCode());
         Map<String, String> map = new HashMap<>();
         map.put("firstName", userDto.getFirstName());
         map.put("lastName", userDto.getLastName());
-        map.put("phone", userDto.getPhone());
+        map.put("localPhone", userDto.getLocalPhone());
         map.put("iban", userDto.getIban());
         model.addAttribute("codes", codes);
         model.addAllAttributes(map);
@@ -42,8 +56,8 @@ public class PersonalInfoController {
     public String update(@AuthenticationPrincipal AuthUserDto authUserDto,
                          @RequestParam(required = false) String firstName,
                          @RequestParam(required = false) String lastName,
-                         @RequestParam(required = false) String phoneCode,
-                         @RequestParam(required = false) String phone,
+                         @RequestParam(required = false) String countryCode,
+                         @RequestParam(required = false) String localPhone,
                          @RequestParam(required = false) String iban,
                          RedirectAttributes redirectAttributes) {
         Optional<UserDto> userDtoOptional = userService.findById(authUserDto.getId());
@@ -57,37 +71,23 @@ public class PersonalInfoController {
         if (iban.isEmpty()) {
             iban = userDto.getIban();
         }
-        if (userService.findByPhoneCodeAndPhone(phoneCode, phone).isPresent() &&
-                !userDto.getPhone().equals(phone)) {
+        if (userService.findByCountryCodeAndLocalPhone(countryCode, localPhone).isPresent() &&
+                !userDto.getLocalPhone().equals(localPhone)) {
             redirectAttributes.addFlashAttribute("phoneError",
                     "Phone number already exists");
             return "redirect:/account/settings/personal-information";
-        } else if (phone.isEmpty()) {
-            phone = userDto.getPhone();
+        } else if (localPhone.isEmpty()) {
+            localPhone = userDto.getLocalPhone();
         }
 
         userDto.setFirstName(firstName);
         userDto.setLastName(lastName);
-        userDto.setPhoneCode(phoneCode);
-        userDto.setPhone(phone);
+        userDto.setCountryCode(countryCode);
+        userDto.setLocalPhone(localPhone);
         userDto.setIban(iban);
         registerService.update(userDto);
 
         return "redirect:/account/settings/personal-information";
-    }
-
-    private static List<String> getCodes(String userPhoneCode) {
-        List<String> codes = new ArrayList<>(List.of(
-                "376", "355", "374", "43", "994", "375", "32", "387", "359",
-                "385", "357", "420", "45", "372", "358", "33", "995", "49",
-                "30", "36", "354", "353", "39", "7", "371", "423", "370",
-                "352", "356", "373", "377", "382", "31", "389", "47", "48",
-                "351", "40", "378", "381", "421", "386", "34", "46",
-                "41", "90", "380", "44", "379", "383"
-        ));
-        codes.remove(userPhoneCode);
-        codes.addFirst(userPhoneCode);
-        return codes;
     }
 
 }

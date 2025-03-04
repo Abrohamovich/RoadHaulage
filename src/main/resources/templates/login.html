@@ -4,15 +4,15 @@
 <link rel="stylesheet" th:href="@{/css/login.css}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Login</title>
 </head>
 <body>
 <div class="login-container">
     <h1>Login</h1>
-    <form th:action="@{/login}" th:object="${authRequest}" method="POST">
-        <input type="email" name="email" id="email" th:field="*{email}" placeholder="Email" required>
-        <input type="password" name="password" id="password" th:field="*{password}" placeholder="Password" required>
+    <form method="POST" th:action="@{/login}" th:object="${authRequest}">
+        <input id="email" name="email" placeholder="Email" required th:field="*{email}" type="email">
+        <input id="password" name="password" placeholder="Password" required th:field="*{password}" type="password">
         <button type="submit">Login</button>
     </form>
     <div th:if="${param.error}">

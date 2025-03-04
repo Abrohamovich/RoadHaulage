@@ -7,6 +7,7 @@ body {
     height: 100vh;
     margin: 0;
 }
+
 .login-container {
     background-color: #fff;
     padding: 20px;
@@ -15,15 +16,18 @@ body {
     width: 300px;
     text-align: center;
 }
+
 .login-container h1 {
     margin-bottom: 20px;
     font-size: 24px;
     color: #333;
 }
+
 .login-container form {
     display: flex;
     flex-direction: column;
 }
+
 .login-container input {
     margin-bottom: 15px;
     padding: 10px;
@@ -31,6 +35,7 @@ body {
     border-radius: 4px;
     font-size: 16px;
 }
+
 .login-container button {
     padding: 10px;
     background-color: #007bff;
@@ -40,14 +45,17 @@ body {
     font-size: 16px;
     cursor: pointer;
 }
+
 .login-container button:hover {
     background-color: #0056b3;
 }
+
 .login-container a {
     color: #007bff;
     text-decoration: none;
     font-size: 14px;
 }
+
 .login-container a:hover {
     text-decoration: underline;
 }
